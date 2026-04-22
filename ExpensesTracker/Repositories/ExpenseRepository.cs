@@ -4,18 +4,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExpensesTracker.Repositories
 {
-    public class ExpenceRepository : IExpenceRepository
+    public class ExpenseRepository : IExpenseRepository
     {
         private readonly ExpenseTrackerDbContext context;
 
-        public ExpenceRepository(ExpenseTrackerDbContext expenseTrackerDbContext)
+        public ExpenseRepository(ExpenseTrackerDbContext expenseTrackerDbContext)
         {
             this.context = expenseTrackerDbContext ?? throw new ArgumentNullException(nameof(expenseTrackerDbContext));
         }
         public async Task<IEnumerable<Expense>> GetAllExpensesAsync()
         {
-            return await this.context.Expenses.OrderBy(x => x.Date).ToListAsync();
+            return await this.context.Expenses
+            .Include(x => x.Category)
+            .Include(x => x.PaymentMethod)
+            .OrderByDescending(x => x.Date)
+            .ToListAsync();
         }
+
         public async Task<Expense?> GetExpenseByIdAsync(int id, bool includeCategory, bool includePaymentMethod)
         {
             IQueryable<Expense> query = this.context.Expenses;
@@ -35,25 +40,27 @@ namespace ExpensesTracker.Repositories
 
         public async Task AddExpenseAsync(Expense expense)
         {
-            if(expense != null)
+            if(expense == null)
             {
-                await this.context.Expenses.AddAsync(expense);
+                throw new ArgumentNullException(nameof(expense));
             }
+            
+            await this.context.Expenses.AddAsync(expense);       
         }
 
-        public async Task DeleteExpenseByIdAsync(int id)
+        public void DeleteExpenseAsync(Expense expense)
         {
-            var expense = await this.GetExpenseByIdAsync(id, false, false);
-
-            if(expense != null)
+            if(expense == null)
             {
-                await this.context.Expenses.Remove(expense);
+                throw new ArgumentNullException(nameof(expense));
             }
+
+            this.context.Expenses.Remove(expense);  
         }
 
-        public Task<bool> SaveChangesAsync()
+        public async Task SaveChangesAsync()
         {
-            throw new NotImplementedException();
+            await this.context.SaveChangesAsync();
         }
     }
 }

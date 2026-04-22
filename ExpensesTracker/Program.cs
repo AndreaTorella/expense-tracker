@@ -1,4 +1,5 @@
 using ExpensesTracker.Data;
+using ExpensesTracker.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpensesTracker
@@ -19,6 +20,8 @@ namespace ExpensesTracker
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
 
             var app = builder.Build();
 
