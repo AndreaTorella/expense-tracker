@@ -1,5 +1,6 @@
 using ExpensesTracker.Data;
 using ExpensesTracker.Repositories;
+using ExpensesTracker.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpensesTracker
@@ -22,6 +23,12 @@ namespace ExpensesTracker
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
+
+            builder.Services.AddScoped<IExpenseService, ExpenseService>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
 
             var app = builder.Build();
 

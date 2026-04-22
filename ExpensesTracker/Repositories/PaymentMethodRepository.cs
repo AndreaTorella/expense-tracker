@@ -17,6 +17,11 @@ namespace ExpensesTracker.Repositories
         {
             return await this.context.PaymentMethod.ToListAsync();
         }
+        
+        public async Task<PaymentMethod?> GetPaymentMethodByIdAsync(int paymentMethodId)
+        {
+            return await this.context.PaymentMethod.FirstOrDefaultAsync(x => x.Id == paymentMethodId);
+        }
 
         public async Task AddPaymentMethodAsync(PaymentMethod paymentMethod)
         {

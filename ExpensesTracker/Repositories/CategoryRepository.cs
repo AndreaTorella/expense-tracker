@@ -18,6 +18,11 @@ namespace ExpensesTracker.Repositories
             return await this.context.Category.ToListAsync();
         }
 
+        public async Task<Category?> GetCategoryByIdAsync(int id)
+        {
+            return await this.context.Category.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
         public async Task AddCategoryAsync(Category category)
         {
             if(category == null)
