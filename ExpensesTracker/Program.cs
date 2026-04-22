@@ -2,6 +2,7 @@ using ExpensesTracker.Data;
 using ExpensesTracker.Repositories;
 using ExpensesTracker.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 namespace ExpensesTracker
 {
@@ -11,13 +12,10 @@ namespace ExpensesTracker
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddOpenApi();
 
-            builder.Services.AddEndpointsApiExplorer(); //Servizi per swagger
-
-            // DbContext EF Core + SQL Server
-            builder.Services.AddDbContext<ExpenseTrackerDbContext>(options => 
+            builder.Services.AddDbContext<ExpenseTrackerDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -30,22 +28,30 @@ namespace ExpensesTracker
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
 
+            //Tutti gli enum venogno convertiti in stringa, invece che in numero, quando vengono serializzati in JSON
+            builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
+
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment())
+            {
+                app.MapOpenApi();
+            }
+            else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();
-            app.MapStaticAssets();
 
-            // Per i controller API con [Route("api/[controller]")]
+            app.MapStaticAssets();
             app.MapControllers();
 
             app.MapControllerRoute(

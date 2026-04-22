@@ -6,7 +6,7 @@ namespace ExpensesTracker.Services
     {
         Task<IEnumerable<ExpenseListDto>> GetAllExpensesAsync();
         Task<ExpenseListDto?> GetExpenseByIdAsync(int id, bool includeCategory, bool includePaymentMethod);
-        Task AddExpenseAsync(CreateExpenseDto expenseDto);
+        Task<ExpenseListDto> AddExpenseAsync(CreateExpenseDto expenseDto);
         Task<bool> DeleteExpenseAsync(int expenseId);
     }
 }

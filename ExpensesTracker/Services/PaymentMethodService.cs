@@ -18,47 +18,49 @@ namespace ExpensesTracker.Services
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<IEnumerable<PaymentMethodDto>> GetAllPaymentMethodAsync()
+        public async Task<IEnumerable<PaymentMethodDto>> GetAllPaymentMethodsAsync()
         {
-            var paymentMethodEntity = await this.paymentMethodRepository.GetAllPaymentMethodsAsync();
-            return this.mapper.Map<IEnumerable<PaymentMethodDto>>(paymentMethodEntity);
+            var paymentMethodEntity = await paymentMethodRepository.GetAllPaymentMethodsAsync();
+            return mapper.Map<IEnumerable<PaymentMethodDto>>(paymentMethodEntity);
         }
 
         public async Task<PaymentMethodDto?> GetPaymentMethodByIdAsync(int paymentMethodId)
         {
-            var paymentMethodEntity = await this.paymentMethodRepository.GetPaymentMethodByIdAsync(paymentMethodId);
+            var paymentMethodEntity = await paymentMethodRepository.GetPaymentMethodByIdAsync(paymentMethodId);
 
-            if(paymentMethodEntity == null)
+            if (paymentMethodEntity == null)
             {
                 return null;
             }
 
-            return this.mapper.Map<PaymentMethodDto>(paymentMethodEntity);
+            return mapper.Map<PaymentMethodDto>(paymentMethodEntity);
         }
 
-        public async Task AddPaymentMethodAsync(PaymentMethodDto paymentMethodDto)
+        public async Task<PaymentMethodDto> AddPaymentMethodAsync(PaymentMethodDto paymentMethodDto)
         {
-            if(paymentMethodDto == null)
+            if (paymentMethodDto == null)
             {
                 throw new ArgumentNullException(nameof(paymentMethodDto));
             }
-            
-            var paymentMethodEntity = this.mapper.Map<PaymentMethod>(paymentMethodDto);
-            await this.paymentMethodRepository.AddPaymentMethodAsync(paymentMethodEntity);
-            await this.paymentMethodRepository.SaveChangesAsync();
+
+            var paymentMethodEntity = mapper.Map<PaymentMethod>(paymentMethodDto);
+            await paymentMethodRepository.AddPaymentMethodAsync(paymentMethodEntity);
+            await paymentMethodRepository.SaveChangesAsync();
+
+            return mapper.Map<PaymentMethodDto>(paymentMethodEntity);
         }
 
         public async Task<bool> DeletePaymentMethodAsync(int paymentMethodId)
         {
-            var paymentMethodEntity = await this.paymentMethodRepository.GetPaymentMethodByIdAsync(paymentMethodId);
+            var paymentMethodEntity = await paymentMethodRepository.GetPaymentMethodByIdAsync(paymentMethodId);
 
             if (paymentMethodEntity == null)
             {
                 return false;
             }
 
-            this.paymentMethodRepository.DeletePaymentMethodAsync(paymentMethodEntity);
-            await this.paymentMethodRepository.SaveChangesAsync();
+            paymentMethodRepository.DeletePaymentMethodAsync(paymentMethodEntity);
+            await paymentMethodRepository.SaveChangesAsync();
             return true;
         }
     }

@@ -6,7 +6,7 @@ namespace ExpensesTracker.Services
     {
         Task<IEnumerable<CategoryDto>> GetAllCategoriesAsync();
         Task<CategoryDto?> GetCategoryByIdAsync(int categoryId);
-        Task AddCategoryAsync(CategoryDto categoryDto);
+        Task<CategoryDto> AddCategoryAsync(CategoryDto categoryDto);
         Task<bool> DeleteCategoryAsync(int categoryId);
     }
 }

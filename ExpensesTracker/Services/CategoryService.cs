@@ -20,45 +20,47 @@ namespace ExpensesTracker.Services
 
         public async Task<IEnumerable<CategoryDto>> GetAllCategoriesAsync()
         {
-            var categoryEntities = await this.categoryRepository.GetAllCategoriesAsync();
-            return this.mapper.Map<IEnumerable<CategoryDto>>(categoryEntities);
+            var categoryEntities = await categoryRepository.GetAllCategoriesAsync();
+            return mapper.Map<IEnumerable<CategoryDto>>(categoryEntities);
         }
 
         public async Task<CategoryDto?> GetCategoryByIdAsync(int categoryId)
         {
-            var categoryEntity = await this.categoryRepository.GetCategoryByIdAsync(categoryId);
+            var categoryEntity = await categoryRepository.GetCategoryByIdAsync(categoryId);
 
-            if(categoryEntity == null)
+            if (categoryEntity == null)
             {
                 return null;
             }
 
-            return this.mapper.Map<CategoryDto>(categoryEntity);
+            return mapper.Map<CategoryDto>(categoryEntity);
         }
 
-        public async Task AddCategoryAsync(CategoryDto categoryDto)
+        public async Task<CategoryDto> AddCategoryAsync(CategoryDto categoryDto)
         {
-            if(categoryDto == null)
+            if (categoryDto == null)
             {
                 throw new ArgumentNullException(nameof(categoryDto));
             }
-            
-            var categoryEntity = this.mapper.Map<Category>(categoryDto);
-            await this.categoryRepository.AddCategoryAsync(categoryEntity);
-            await this.categoryRepository.SaveChangesAsync();
+
+            var categoryEntity = mapper.Map<Category>(categoryDto);
+            await categoryRepository.AddCategoryAsync(categoryEntity);
+            await categoryRepository.SaveChangesAsync();
+
+            return mapper.Map<CategoryDto>(categoryEntity);
         }
 
         public async Task<bool> DeleteCategoryAsync(int categoryId)
         {
-            var categoryEntity = await this.categoryRepository.GetCategoryByIdAsync(categoryId);
+            var categoryEntity = await categoryRepository.GetCategoryByIdAsync(categoryId);
 
             if (categoryEntity == null)
             {
                 return false;
             }
 
-            this.categoryRepository.DeleteCategoryAsync(categoryEntity);
-            await this.categoryRepository.SaveChangesAsync();
+            categoryRepository.DeleteCategoryAsync(categoryEntity);
+            await categoryRepository.SaveChangesAsync();
             return true;
         }
     }

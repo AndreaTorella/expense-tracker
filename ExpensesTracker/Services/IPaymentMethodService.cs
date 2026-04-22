@@ -4,9 +4,9 @@ namespace ExpensesTracker.Services
 {
     public interface IPaymentMethodService
     {
-        Task<IEnumerable<PaymentMethodDto>> GetAllPaymentMethodAsync();
+        Task<IEnumerable<PaymentMethodDto>> GetAllPaymentMethodsAsync();
         Task<PaymentMethodDto?> GetPaymentMethodByIdAsync(int paymentMethodId);
-        Task AddPaymentMethodAsync(PaymentMethodDto paymentMethodDto);
+        Task<PaymentMethodDto> AddPaymentMethodAsync(PaymentMethodDto paymentMethodDto);
         Task<bool> DeletePaymentMethodAsync(int paymentMethodId);
     }
 }
