@@ -26,7 +26,6 @@ namespace ExpensesTracker.Repositories
             IQueryable<Expense> query = this.context.Expenses;
 
             return await query
-                .AsNoTracking()
                 .Include(x => x.Category)
                 .Include(x => x.PaymentMethod)
                 .FirstOrDefaultAsync(x => x.Id == id);
