@@ -8,5 +8,6 @@ namespace ExpensesTracker.Services
         Task<ExpenseListDto?> GetExpenseByIdAsync(int id);
         Task<ExpenseListDto> AddExpenseAsync(CreateExpenseDto expenseDto);
         Task<bool> DeleteExpenseAsync(int expenseId);
+        Task<ExpenseListDto?> UpdateExpenseAsync(int id, UpdateExpenseDto updateExpenseDto);
     }
 }

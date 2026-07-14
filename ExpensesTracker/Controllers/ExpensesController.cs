@@ -51,6 +51,26 @@ namespace ExpensesTracker.Controllers
                 createdExpense);
         }
 
+        [HttpPut("{id}")]
+        public async Task<ActionResult<ExpenseListDto>> UpdateExpenseAsync(
+            int id,
+            [FromBody] UpdateExpenseDto updateExpenseDto)
+        {
+            if (updateExpenseDto == null)
+            {
+                return BadRequest();
+            }
+
+            var updatedExpense = await expenseService.UpdateExpenseAsync(id, updateExpenseDto);
+
+            if (updatedExpense == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(updatedExpense);
+        }
+
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteExpenseAsync(int id)
         {

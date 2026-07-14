@@ -15,9 +15,9 @@ namespace ExpensesTracker.Repositories
         public async Task<IEnumerable<Expense>> GetAllExpensesAsync()
         {
             return await this.context.Expenses
+            .AsNoTracking()
             .Include(x => x.Category)
             .Include(x => x.PaymentMethod)
-            .OrderByDescending(x => x.Date)
             .ToListAsync();
         }
 
@@ -26,6 +26,7 @@ namespace ExpensesTracker.Repositories
             IQueryable<Expense> query = this.context.Expenses;
 
             return await query
+                .AsNoTracking()
                 .Include(x => x.Category)
                 .Include(x => x.PaymentMethod)
                 .FirstOrDefaultAsync(x => x.Id == id);

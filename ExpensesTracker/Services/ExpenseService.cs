@@ -52,6 +52,25 @@ namespace ExpensesTracker.Services
             return mapper.Map<ExpenseListDto>(createdExpense);
         }
 
+        public async Task<ExpenseListDto?> UpdateExpenseAsync(
+            int id,
+            UpdateExpenseDto updateExpenseDto)
+        {
+            var expenseEntity = await expenseRepository.GetExpenseByIdAsync(id);
+
+            if (expenseEntity == null)
+            {
+                return null;
+            }
+
+            mapper.Map(updateExpenseDto, expenseEntity);
+            await expenseRepository.SaveChangesAsync();
+
+            var updatedExpense = await expenseRepository.GetExpenseByIdAsync(id);
+
+            return mapper.Map<ExpenseListDto>(updatedExpense);
+        }
+
         public async Task<bool> DeleteExpenseAsync(int expenseId)
         {
             var expenseEntityToDelete = await expenseRepository.GetExpenseByIdAsync(expenseId);
