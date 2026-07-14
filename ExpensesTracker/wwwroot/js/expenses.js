@@ -2,7 +2,8 @@
     getExpenses,
     getCategories,
     getPaymentMethods,
-    createExpense
+    createExpense,
+    deleteExpense as deleteExpenseApi
 } from "./api.js";
 
 export async function loadExpenses() {
@@ -21,6 +22,9 @@ export async function saveExpense(expense) {
     return await createExpense(expense)
 }
 
+export async function removeExpense(id) {
+    await deleteExpenseApi(id);
+}
 
 // filterExpensesByMonth
 // calculateTotal

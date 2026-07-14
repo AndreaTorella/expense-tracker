@@ -53,3 +53,15 @@ export async function createExpense(expense) {
 
     return await response.json();
 }
+
+export async function deleteExpense(id) {
+    const response = await fetch(`${baseUrl}/Expenses/${id}`, {
+        method: "DELETE"
+    });
+
+    if (!response.ok) {
+        throw new Error(
+            `Errore durante l'eliminazione della spesa. Status: ${response.status}`
+        );
+    }
+}

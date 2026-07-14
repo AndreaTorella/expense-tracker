@@ -7,11 +7,26 @@
         const row = document.createElement("tr");
 
         row.innerHTML = `
-            <td>${formatDate(expense.date)}</td>
-            <td>${expense.title}</td>
-            <td>${expense.categoryName}</td>
-            <td>${expense.paymentMethodName}</td>
-            <td>${formatAmount(expense.amount)}</td>
+        <td>${formatDate(expense.date)}</td>
+        <td>${expense.title}</td>
+        <td>${expense.categoryName}</td>
+        <td>${expense.paymentMethodName}</td>
+        <td>${formatAmount(expense.amount)}</td>
+        <td>
+            <button
+                type="button"
+                class="edit-expense-button"
+                data-expense-id="${expense.id}">
+                Modifica
+            </button>
+
+            <button
+                type="button"
+                class="delete-expense-button"
+                data-expense-id="${expense.id}">
+                Elimina
+            </button>
+        </td>
         `;
 
         tableBody.appendChild(row);
@@ -59,6 +74,14 @@ export function getExpenseFormData() {
         categoryId: Number(categorySelect.value),
         paymentMethodId: Number(paymentMethodSelect.value)
     };
+}
+
+export function setDefaultExpenseDate() {
+    const dateInput = document.querySelector("#date");
+
+    if (!dateInput.value) {
+        dateInput.value = new Date().toISOString().split("T")[0];
+    }
 }
 
 export function resetExpenseForm() {
