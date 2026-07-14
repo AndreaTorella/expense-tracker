@@ -23,9 +23,9 @@ namespace ExpensesTracker.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ExpenseListDto>> GetExpenseById(int id, bool includeCategory = false, bool includePaymentMethod = false)
+        public async Task<ActionResult<ExpenseListDto>> GetExpenseById(int id)
         {
-            var expense = await expenseService.GetExpenseByIdAsync(id, includeCategory, includePaymentMethod);
+            var expense = await expenseService.GetExpenseByIdAsync(id);
 
             if (expense == null)
             {
@@ -36,14 +36,14 @@ namespace ExpensesTracker.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ExpenseListDto>> AddExpenseAsync([FromBody] CreateExpenseDto expenseCreateDto)
+        public async Task<ActionResult<ExpenseListDto>> AddExpenseAsync([FromBody] CreateExpenseDto createExpenseDto)
         {
-            if (expenseCreateDto == null)
+            if (createExpenseDto == null)
             {
                 return BadRequest();
             }
 
-            var createdExpense = await expenseService.AddExpenseAsync(expenseCreateDto);
+            var createdExpense = await expenseService.AddExpenseAsync(createExpenseDto);
 
             return CreatedAtAction(
                 nameof(GetExpenseById),

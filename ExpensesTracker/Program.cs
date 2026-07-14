@@ -12,7 +12,6 @@ namespace ExpensesTracker
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddControllersWithViews();
             builder.Services.AddOpenApi();
 
             builder.Services.AddDbContext<ExpenseTrackerDbContext>(options =>
@@ -29,7 +28,8 @@ namespace ExpensesTracker
             builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
 
             //Tutti gli enum venogno convertiti in stringa, invece che in numero, quando vengono serializzati in JSON
-            builder.Services.AddControllers()
+            builder.Services
+                .AddControllersWithViews()
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());

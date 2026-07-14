@@ -21,41 +21,34 @@ namespace ExpensesTracker.Repositories
             .ToListAsync();
         }
 
-        public async Task<Expense?> GetExpenseByIdAsync(int id, bool includeCategory, bool includePaymentMethod)
+        public async Task<Expense?> GetExpenseByIdAsync(int id)
         {
             IQueryable<Expense> query = this.context.Expenses;
 
-            if (includeCategory)
-            {
-                query = query.Include(x => x.Category);
-            }
-
-            if (includePaymentMethod)
-            {
-                query = query.Include(x => x.PaymentMethod);
-            }
-
-            return await query.FirstOrDefaultAsync(x => x.Id == id);
+            return await query
+                .Include(x => x.Category)
+                .Include(x => x.PaymentMethod)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task AddExpenseAsync(Expense expense)
         {
-            if(expense == null)
+            if (expense == null)
             {
                 throw new ArgumentNullException(nameof(expense));
             }
-            
-            await this.context.Expenses.AddAsync(expense);       
+
+            await this.context.Expenses.AddAsync(expense);
         }
 
         public void DeleteExpenseAsync(Expense expense)
         {
-            if(expense == null)
+            if (expense == null)
             {
                 throw new ArgumentNullException(nameof(expense));
             }
 
-            this.context.Expenses.Remove(expense);  
+            this.context.Expenses.Remove(expense);
         }
 
         public async Task SaveChangesAsync()

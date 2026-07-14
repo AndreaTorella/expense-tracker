@@ -24,9 +24,9 @@ namespace ExpensesTracker.Services
             return mapper.Map<IEnumerable<ExpenseListDto>>(expenseEntities);
         }
 
-        public async Task<ExpenseListDto?> GetExpenseByIdAsync(int id, bool includeCategory, bool includePaymentMethod)
+        public async Task<ExpenseListDto?> GetExpenseByIdAsync(int id)
         {
-            var expenseEntity = await expenseRepository.GetExpenseByIdAsync(id, includeCategory, includePaymentMethod);
+            var expenseEntity = await expenseRepository.GetExpenseByIdAsync(id);
 
             if (expenseEntity == null)
             {
@@ -47,12 +47,14 @@ namespace ExpensesTracker.Services
             await expenseRepository.AddExpenseAsync(expenseEntity);
             await expenseRepository.SaveChangesAsync();
 
-            return mapper.Map<ExpenseListDto>(expenseEntity);
+            var createdExpense = await expenseRepository.GetExpenseByIdAsync(expenseEntity.Id);
+
+            return mapper.Map<ExpenseListDto>(createdExpense);
         }
 
         public async Task<bool> DeleteExpenseAsync(int expenseId)
         {
-            var expenseEntityToDelete = await expenseRepository.GetExpenseByIdAsync(expenseId, false, false);
+            var expenseEntityToDelete = await expenseRepository.GetExpenseByIdAsync(expenseId);
 
             if (expenseEntityToDelete == null)
             {
