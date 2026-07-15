@@ -1,89 +1,193 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Expense Tracker</title>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/css/app.css">
 </head>
 
 <body>
-    <main>
-        <h1>Expense Tracker</h1>
+    <main class="app-shell">
+        <section class="app-hero" aria-labelledby="page-title">
+            <div class="container">
+                <div class="row align-items-end g-4">
+                    <div class="col-lg-7">
+                        <span class="app-eyebrow">Dashboard finanziaria</span>
+                        <h1 id="page-title">Expense Tracker</h1>
+                        <p class="app-hero-copy">
+                            Registra e controlla le spese con una vista pulita, rapida e pronta a crescere.
+                        </p>
+                    </div>
 
-        <p id="loading-message">Caricamento spese...</p>
-
-        <p id="error-message" hidden></p>
-
-        <section>
-            <h2>Nuova spesa</h2>
-
-            <form id="expense-form">
-                <div>
-                    <label for="title">Titolo</label>
-                    <input type="text"
-                           id="title"
-                           name="title"
-                           required>
+                    <div class="col-lg-5">
+                        <div class="hero-actions">
+                            <button type="button"
+                                    class="btn btn-light btn-lg shadow-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#expense-modal">
+                                <i class="bi bi-plus-lg" aria-hidden="true"></i>
+                                Nuova spesa
+                            </button>
+                        </div>
+                    </div>
                 </div>
-
-                <div>
-                    <label for="amount">Importo</label>
-                    <input type="number"
-                           id="amount"
-                           name="amount"
-                           step="0.01"
-                           min="0.01"
-                           required>
-                </div>
-
-                <div>
-                    <label for="date">Data</label>
-                    <input type="date"
-                           id="date"
-                           name="date"
-                           required>
-                </div>
-
-                <div>
-                    <label for="category">Categoria</label>
-                    <select id="category"
-                            name="categoryId"
-                            required>
-                        <option value="">Seleziona una categoria</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label for="payment-method">Metodo di pagamento</label>
-                    <select id="payment-method"
-                            name="paymentMethodId"
-                            required>
-                        <option value="">Seleziona un metodo</option>
-                    </select>
-                </div>
-
-                <button type="submit">Salva spesa</button>
-            </form>
+            </div>
         </section>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Data</th>
-                    <th>Titolo</th>
-                    <th>Categoria</th>
-                    <th>Metodo di pagamento</th>
-                    <th>Importo</th>
-                    <th>Azioni</th>
-                </tr>
-            </thead>
+        <div class="container app-content">
+            <p id="loading-message" class="status-message">
+                <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                Caricamento spese...
+            </p>
 
-            <tbody id="expenses-table-body">
-            </tbody>
-        </table>
+            <div id="error-message"
+                 class="alert alert-danger"
+                 role="alert"
+                 hidden></div>
+
+            <section class="table-card" aria-labelledby="expenses-heading">
+                <div class="table-card-header">
+                    <div>
+                        <span class="section-kicker">Movimenti</span>
+                        <h2 id="expenses-heading">Spese recenti</h2>
+                    </div>
+
+                    <div class="table-toolbar" aria-label="Strumenti futuri">
+                        <button type="button"
+                                class="btn btn-outline-secondary btn-sm"
+                                disabled>
+                            <i class="bi bi-funnel" aria-hidden="true"></i>
+                            Filtri
+                        </button>
+                        <button type="button"
+                                class="btn btn-outline-secondary btn-sm"
+                                disabled>
+                            <i class="bi bi-arrow-down-up" aria-hidden="true"></i>
+                            Ordina
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table expenses-table align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">Data</th>
+                                <th scope="col">Titolo</th>
+                                <th scope="col">Categoria</th>
+                                <th scope="col">Metodo di pagamento</th>
+                                <th scope="col" class="text-end">Importo</th>
+                                <th scope="col" class="text-end">Azioni</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="expenses-table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <div class="modal fade"
+             id="expense-modal"
+             tabindex="-1"
+             aria-labelledby="expense-modal-title"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div>
+                            <span class="section-kicker">Inserimento</span>
+                            <h2 class="modal-title fs-4" id="expense-modal-title">Nuova spesa</h2>
+                        </div>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Chiudi"></button>
+                    </div>
+
+                    <form id="expense-form">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Titolo</label>
+                                <input type="text"
+                                       class="form-control"
+                                       id="title"
+                                       name="title"
+                                       autocomplete="off"
+                                       required>
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <label for="amount" class="form-label">Importo</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">EUR</span>
+                                        <input type="number"
+                                               class="form-control"
+                                               id="amount"
+                                               name="amount"
+                                               step="0.01"
+                                               min="0.01"
+                                               required>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <label for="date" class="form-label">Data</label>
+                                    <input type="date"
+                                           class="form-control"
+                                           id="date"
+                                           name="date"
+                                           required>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mt-0">
+                                <div class="col-sm-6">
+                                    <label for="category" class="form-label">Categoria</label>
+                                    <select id="category"
+                                            class="form-select"
+                                            name="categoryId"
+                                            required>
+                                        <option value="">Seleziona una categoria</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <label for="payment-method" class="form-label">Metodo di pagamento</label>
+                                    <select id="payment-method"
+                                            class="form-select"
+                                            name="paymentMethodId"
+                                            required>
+                                        <option value="">Seleziona un metodo</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button"
+                                    class="btn btn-outline-secondary"
+                                    data-bs-dismiss="modal">
+                                Annulla
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check2" aria-hidden="true"></i>
+                                Salva spesa
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </main>
 
+    <script src="/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="/js/main.js"></script>
 </body>
 </html>

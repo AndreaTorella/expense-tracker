@@ -1,4 +1,6 @@
-﻿export function renderExpenses(expenses) {
+let loadingRequests = 0;
+
+export function renderExpenses(expenses) {
     const tableBody = document.querySelector("#expenses-table-body");
 
     tableBody.innerHTML = "";
@@ -8,24 +10,32 @@
 
         row.innerHTML = `
         <td>${formatDate(expense.date)}</td>
-        <td>${expense.title}</td>
-        <td>${expense.categoryName}</td>
-        <td>${expense.paymentMethodName}</td>
-        <td>${formatAmount(expense.amount)}</td>
         <td>
+            <div class="expense-title">${expense.title}</div>
+            <div class="expense-meta">ID ${expense.id}</div>
+        </td>
+        <td><span class="category-pill">${expense.categoryName}</span></td>
+        <td><span class="payment-pill">${expense.paymentMethodName}</span></td>
+        <td class="text-end expense-amount">${formatAmount(expense.amount)}</td>
+        <td>
+            <div class="row-actions">
             <button
                 type="button"
-                class="edit-expense-button"
-                data-expense-id="${expense.id}">
-                Modifica
+                class="btn btn-outline-secondary btn-sm edit-expense-button"
+                data-expense-id="${expense.id}"
+                disabled>
+                <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                <span class="visually-hidden">Modifica spesa</span>
             </button>
 
             <button
                 type="button"
-                class="delete-expense-button"
+                class="btn btn-outline-danger btn-sm delete-expense-button"
                 data-expense-id="${expense.id}">
-                Elimina
+                <i class="bi bi-trash3" aria-hidden="true"></i>
+                <span class="visually-hidden">Elimina spesa</span>
             </button>
+            </div>
         </td>
         `;
 
@@ -89,14 +99,46 @@ export function resetExpenseForm() {
     form.reset();
 }
 
+export function hideExpenseModal() {
+    const modalElement = document.querySelector("#expense-modal");
+
+    if (!modalElement || !window.bootstrap) {
+        return;
+    }
+
+    const modal = window.bootstrap.Modal.getInstance(modalElement);
+
+    if (modal) {
+        modal.hide();
+    }
+}
+
 export function showLoading() {
     const loadingMessage = document.querySelector("#loading-message");
+    const loadingOverlay = getLoadingOverlay();
+
+    loadingRequests += 1;
+
     loadingMessage.hidden = false;
+    loadingOverlay.hidden = false;
+    document.body.classList.add("app-is-loading");
+    document.body.setAttribute("aria-busy", "true");
 }
 
 export function hideLoading() {
     const loadingMessage = document.querySelector("#loading-message");
+    const loadingOverlay = getLoadingOverlay();
+
+    loadingRequests = Math.max(loadingRequests - 1, 0);
+
+    if (loadingRequests > 0) {
+        return;
+    }
+
     loadingMessage.hidden = true;
+    loadingOverlay.hidden = true;
+    document.body.classList.remove("app-is-loading");
+    document.body.removeAttribute("aria-busy");
 }
 
 export function showError(message) {
@@ -117,4 +159,40 @@ function formatAmount(amount) {
         style: "currency",
         currency: "EUR"
     });
+}
+
+function getLoadingOverlay() {
+    let loadingOverlay = document.querySelector("#app-loading-overlay");
+
+    if (loadingOverlay) {
+        return loadingOverlay;
+    }
+
+    loadingOverlay = document.createElement("div");
+    loadingOverlay.id = "app-loading-overlay";
+    loadingOverlay.className = "loading-overlay";
+    loadingOverlay.setAttribute("role", "status");
+    loadingOverlay.setAttribute("aria-live", "polite");
+    loadingOverlay.hidden = true;
+    loadingOverlay.innerHTML = `
+        <div class="loading-spinner" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <span class="visually-hidden">Operazione in corso...</span>
+    `;
+
+    document.body.appendChild(loadingOverlay);
+
+    return loadingOverlay;
 }

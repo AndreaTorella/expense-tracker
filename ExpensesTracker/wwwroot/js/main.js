@@ -14,7 +14,9 @@ import {
     hideLoading,
     showError,
     getExpenseFormData,
-    resetExpenseForm
+    resetExpenseForm,
+    setDefaultExpenseDate,
+    hideExpenseModal
 } from "./ui.js";
 
 async function initializePage() {
@@ -34,6 +36,7 @@ async function initializePage() {
         renderExpenses(expenses);
         renderCategories(categories);
         renderPaymentMethods(paymentMethods);
+        setDefaultExpenseDate();
 
         const expenseForm = document.querySelector("#expense-form");
 
@@ -60,6 +63,7 @@ async function initializePage() {
 
 async function handleExpenseFormSubmit(event) {
     event.preventDefault();
+    showLoading();
 
     try {
         const expense = getExpenseFormData();
@@ -68,12 +72,15 @@ async function handleExpenseFormSubmit(event) {
 
         resetExpenseForm();
         setDefaultExpenseDate();
+        hideExpenseModal();
 
         const expenses = await loadExpenses();
         renderExpenses(expenses);
     } catch (error) {
         console.error(error);
         showError("Non è stato possibile salvare la spesa.");
+    } finally {
+        hideLoading();
     }
 }
 
@@ -95,6 +102,8 @@ async function handleExpensesTableClick(event) {
     }
 
     try {
+        showLoading();
+
         await removeExpense(expenseId);
 
         const expenses = await loadExpenses();
@@ -102,6 +111,8 @@ async function handleExpensesTableClick(event) {
     } catch (error) {
         console.error(error);
         showError("Non è stato possibile eliminare la spesa.");
+    } finally {
+        hideLoading();
     }
 }
 
