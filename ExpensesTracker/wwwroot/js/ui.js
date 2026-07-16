@@ -43,30 +43,38 @@ export function renderExpenses(expenses) {
 }
 
 export function renderCategories(categories) {
-    const categorySelect = document.querySelector("#category");
+    appendSelectOptions("#category", categories);
+}
 
-    for (const category of categories) {
-        const option = document.createElement("option");
-
-        option.value = category.id;
-        option.textContent = category.name;
-
-        categorySelect.appendChild(option);
-    }
+export function renderFilterCategories(categories) {
+    appendSelectOptions("#filter-category", categories);
 }
 
 export function renderPaymentMethods(paymentMethods) {
-    const paymentMethodSelect =
-        document.querySelector("#payment-method");
+    appendSelectOptions("#payment-method", paymentMethods);
+}
 
-    for (const paymentMethod of paymentMethods) {
-        const option = document.createElement("option");
+export function renderFilterPaymentMethods(paymentMethods) {
+    appendSelectOptions("#filter-payment-method", paymentMethods);
+}
 
-        option.value = paymentMethod.id;
-        option.textContent = paymentMethod.name;
+export function getExpenseFilters() {
+    return {
+        Search: document.querySelector("#filter-search").value.trim(),
+        FromDate: document.querySelector("#filter-from-date").value,
+        ToDate: document.querySelector("#filter-to-date").value,
+        CategoryId: document.querySelector("#filter-category").value,
+        PaymentMethodId: document.querySelector("#filter-payment-method").value
+    };
+}
 
-        paymentMethodSelect.appendChild(option);
-    }
+export function updateExpensesSummary(expenses) {
+    const summary = document.querySelector("#expenses-summary");
+    const count = expenses.length;
+
+    summary.textContent = count === 1
+        ? "1 spesa trovata"
+        : `${count} spese trovate`;
 }
 
 export function getExpenseFormData() {
@@ -214,6 +222,19 @@ function formatDate(dateValue) {
     const date = new Date(dateValue);
 
     return date.toLocaleDateString("it-IT");
+}
+
+function appendSelectOptions(selector, options) {
+    const select = document.querySelector(selector);
+
+    for (const optionData of options) {
+        const option = document.createElement("option");
+
+        option.value = optionData.id;
+        option.textContent = optionData.name;
+
+        select.appendChild(option);
+    }
 }
 
 function formatAmount(amount) {

@@ -230,6 +230,54 @@ body.app-is-loading {
     font-weight: 800;
 }
 
+.filters-panel {
+    padding: 1.25rem;
+    background: var(--app-surface-muted);
+    border-bottom: 1px solid var(--app-border);
+}
+
+.filters-panel-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.filters-panel-header .section-kicker {
+    margin-bottom: 0.25rem;
+}
+
+.filters-panel-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 800;
+}
+
+.filters-panel-header p {
+    max-width: 25rem;
+    margin: 0;
+    color: var(--app-muted);
+    font-size: 0.92rem;
+}
+
+.filters-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+}
+
+.expenses-summary {
+    min-height: 1.25rem;
+    margin: 0;
+    padding: 0.75rem 1.25rem;
+    color: var(--app-muted);
+    border-bottom: 1px solid var(--app-border);
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
 .table-toolbar,
 .row-actions {
     display: flex;
@@ -433,6 +481,10 @@ body.app-is-loading {
 
     .table-card-header {
         align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .filters-panel-header {
         flex-direction: column;
     }
 

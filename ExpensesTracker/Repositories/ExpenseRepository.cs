@@ -1,5 +1,6 @@
 ﻿using ExpensesTracker.Data;
 using ExpensesTracker.Entities;
+using ExpensesTracker.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpensesTracker.Repositories
@@ -12,13 +13,47 @@ namespace ExpensesTracker.Repositories
         {
             this.context = expenseTrackerDbContext ?? throw new ArgumentNullException(nameof(expenseTrackerDbContext));
         }
-        public async Task<IEnumerable<Expense>> GetAllExpensesAsync()
+        public async Task<IEnumerable<Expense>> GetExpensesAsync(ExpenseFilterDto filters)
         {
-            return await this.context.Expenses
-            .AsNoTracking()
-            .Include(x => x.Category)
-            .Include(x => x.PaymentMethod)
-            .ToListAsync();
+            IQueryable<Expense> query = this.context.Expenses
+                .AsNoTracking()
+                .Include(x => x.Category)
+                .Include(x => x.PaymentMethod);
+
+            if (!string.IsNullOrWhiteSpace(filters.Search))
+            {
+                var searchText = filters.Search.Trim();
+
+                query = query.Where(x => x.Title.Contains(searchText));
+            }
+
+            if (filters.FromDate is DateTime fromDate)
+            {
+                query = query.Where(x => x.Date >= fromDate.Date);
+            }
+
+            if (filters.ToDate is DateTime toDate)
+            {
+                var endDateExclusive = toDate.Date.AddDays(1);
+
+                query = query.Where(x =>
+                    x.Date < endDateExclusive);
+            }
+
+            if (filters.CategoryId is int categoryId)
+            {
+                query = query.Where(x => x.CategoryId == categoryId);
+            }
+
+            if (filters.PaymentMethodId is int paymentMethodId)
+            {
+                query = query.Where(x => x.PaymentMethodId == paymentMethodId);
+            }
+
+            return await query
+                .OrderByDescending(x => x.Date)
+                .ThenByDescending(x => x.Id)
+                .ToListAsync();
         }
 
         public async Task<Expense?> GetExpenseByIdAsync(int id)

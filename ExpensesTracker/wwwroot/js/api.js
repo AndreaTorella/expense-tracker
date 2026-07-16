@@ -1,7 +1,23 @@
 ﻿const baseUrl = "/api";
 
-export async function getExpenses() {
-    const response = await fetch(`${baseUrl}/Expenses`);
+export async function getExpenses(filters = {}) {
+    const queryParams = new URLSearchParams();
+
+    Object.entries(filters).forEach(([key, value]) => {
+        if (value !== null &&
+            value !== undefined &&
+            value !== "") {
+            queryParams.set(key, value);
+        }
+    });
+
+    const queryString = queryParams.toString();
+
+    const url = queryString
+        ? `${baseUrl}/Expenses?${queryString}`
+        : `${baseUrl}/Expenses`;
+
+    const response = await fetch(url);
 
     if (!response.ok) {
         throw new Error(

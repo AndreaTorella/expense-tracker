@@ -57,10 +57,14 @@
                         <h2 id="expenses-heading">Spese recenti</h2>
                     </div>
 
-                    <div class="table-toolbar" aria-label="Strumenti futuri">
+                    <div class="table-toolbar" aria-label="Strumenti tabella">
                         <button type="button"
                                 class="btn btn-outline-secondary btn-sm"
-                                disabled>
+                                id="filters-toggle-button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#filters-panel"
+                                aria-expanded="false"
+                                aria-controls="filters-panel">
                             <i class="bi bi-funnel" aria-hidden="true"></i>
                             Filtri
                         </button>
@@ -72,6 +76,68 @@
                         </button>
                     </div>
                 </div>
+
+                <div class="collapse" id="filters-panel">
+                    <form id="filters-form" class="filters-panel" novalidate>
+                        <div class="filters-panel-header">
+                            <div>
+                                <span class="section-kicker">Ricerca avanzata</span>
+                                <h3>Filtra le spese</h3>
+                            </div>
+                            <p>Combina uno o più criteri per trovare rapidamente i movimenti.</p>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-lg-4">
+                                <label for="filter-search" class="form-label">Cerca</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span>
+                                    <input type="search"
+                                           class="form-control"
+                                           id="filter-search"
+                                           name="search"
+                                           placeholder="Titolo della spesa">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 col-lg-2">
+                                <label for="filter-from-date" class="form-label">Da data</label>
+                                <input type="date" class="form-control" id="filter-from-date" name="fromDate">
+                            </div>
+
+                            <div class="col-sm-6 col-lg-2">
+                                <label for="filter-to-date" class="form-label">A data</label>
+                                <input type="date" class="form-control" id="filter-to-date" name="toDate">
+                            </div>
+
+                            <div class="col-sm-6 col-lg-2">
+                                <label for="filter-category" class="form-label">Categoria</label>
+                                <select id="filter-category" class="form-select" name="categoryId">
+                                    <option value="">Tutte</option>
+                                </select>
+                            </div>
+
+                            <div class="col-sm-6 col-lg-2">
+                                <label for="filter-payment-method" class="form-label">Pagamento</label>
+                                <select id="filter-payment-method" class="form-select" name="paymentMethodId">
+                                    <option value="">Tutti</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="filters-actions">
+                            <button type="button" class="btn btn-outline-secondary" id="reset-filters-button">
+                                Reimposta
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-funnel-fill" aria-hidden="true"></i>
+                                Applica filtri
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <p id="expenses-summary" class="expenses-summary" role="status" aria-live="polite"></p>
 
                 <div class="table-responsive">
                     <table class="table expenses-table align-middle mb-0">

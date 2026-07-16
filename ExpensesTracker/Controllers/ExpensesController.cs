@@ -16,9 +16,10 @@ namespace ExpensesTracker.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ExpenseListDto>>> GetAllExpenses()
+        public async Task<ActionResult<IEnumerable<ExpenseListDto>>> GetAllExpenses(
+            [FromQuery] ExpenseFilterDto filters)
         {
-            var fullExpenses = await expenseService.GetAllExpensesAsync();
+            var fullExpenses = await expenseService.GetAllExpensesAsync(filters);
             return Ok(fullExpenses);
         }
 

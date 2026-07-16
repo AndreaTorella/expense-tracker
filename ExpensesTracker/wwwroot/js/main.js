@@ -11,7 +11,9 @@
 import {
     renderExpenses,
     renderCategories,
+    renderFilterCategories,
     renderPaymentMethods,
+    renderFilterPaymentMethods,
     showLoading,
     hideLoading,
     showError,
@@ -20,7 +22,9 @@ import {
     setDefaultExpenseDate,
     hideExpenseModal,
     showToast,
-    confirmExpenseDeletion
+    confirmExpenseDeletion,
+    getExpenseFilters,
+    updateExpensesSummary
 } from "./ui.js";
 
 let editingExpenseId = null;
@@ -41,7 +45,10 @@ async function initializePage() {
 
         renderExpenses(expenses);
         renderCategories(categories);
+        renderFilterCategories(categories);
         renderPaymentMethods(paymentMethods);
+        renderFilterPaymentMethods(paymentMethods);
+        updateExpensesSummary(expenses);
         setDefaultExpenseDate();
 
         const expenseForm =
@@ -53,6 +60,11 @@ async function initializePage() {
         const newExpenseButton =
             document.querySelector("#new-expense-button");
 
+        const filtersForm = document.querySelector("#filters-form");
+
+        const resetFiltersButton =
+            document.querySelector("#reset-filters-button");
+
         expenseForm.addEventListener(
             "submit",
             handleExpenseFormSubmit
@@ -62,6 +74,9 @@ async function initializePage() {
             "click",
             handleExpensesTableClick
         );
+
+        filtersForm.addEventListener("submit", handleFiltersSubmit);
+        resetFiltersButton.addEventListener("click", handleFiltersReset);
 
         newExpenseButton.addEventListener("click", () => {
             editingExpenseId = null;
@@ -102,8 +117,7 @@ async function handleExpenseFormSubmit(event) {
         setDefaultExpenseDate();
         hideExpenseModal();
 
-        const expenses = await loadExpenses();
-        renderExpenses(expenses);
+        await refreshExpenses();
         showToast(isNewExpense ? "Spesa aggiunta correttamente" : "Spesa modificata");
     } catch (error) {
         console.error(error);
@@ -173,8 +187,7 @@ async function handleDeleteExpense(deleteButton) {
 
         await removeExpense(expenseId);
 
-        const expenses = await loadExpenses();
-        renderExpenses(expenses);
+        await refreshExpenses();
         showToast("Spesa eliminata");
     } catch (error) {
         console.error(error);
@@ -182,6 +195,48 @@ async function handleDeleteExpense(deleteButton) {
     } finally {
         hideLoading();
     }
+}
+
+async function handleFiltersSubmit(event) {
+    event.preventDefault();
+
+    const filters = getExpenseFilters();
+
+    if (filters.FromDate && filters.ToDate && filters.FromDate > filters.ToDate) {
+        showError("La data iniziale non può essere successiva alla data finale.");
+        return;
+    }
+
+    try {
+        showLoading();
+        await refreshExpenses(filters);
+    } catch (error) {
+        console.error(error);
+        showError("Non è stato possibile applicare i filtri alle spese.");
+    } finally {
+        hideLoading();
+    }
+}
+
+async function handleFiltersReset() {
+    document.querySelector("#filters-form").reset();
+
+    try {
+        showLoading();
+        await refreshExpenses({});
+    } catch (error) {
+        console.error(error);
+        showError("Non è stato possibile ripristinare l'elenco delle spese.");
+    } finally {
+        hideLoading();
+    }
+}
+
+async function refreshExpenses(filters = getExpenseFilters()) {
+    const expenses = await loadExpenses(filters);
+
+    renderExpenses(expenses);
+    updateExpensesSummary(expenses);
 }
 
 function populateExpenseForm(expense) {

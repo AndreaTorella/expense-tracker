@@ -8,8 +8,8 @@
     deleteExpense as deleteExpenseApi
 } from "./api.js";
 
-export async function loadExpenses() {
-    return await getExpenses();
+export async function loadExpenses(filters = {}) {
+    return await getExpenses(filters);
 }
 
 export async function loadExpenseById(id) {
