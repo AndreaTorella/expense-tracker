@@ -1,5 +1,6 @@
 ﻿import {
     getExpenses,
+    getExpenseById,
     getCategories,
     getPaymentMethods,
     createExpense,
@@ -9,6 +10,10 @@
 
 export async function loadExpenses() {
     return await getExpenses();
+}
+
+export async function loadExpenseById() {
+    return await getExpenseById();
 }
 
 export async function loadCategories() {
@@ -23,8 +28,8 @@ export async function saveExpense(expense) {
     return await createExpense(expense);
 }
 
-export async function modifyExpense(expense) {
-    return await updateExpense(expense);
+export async function modifyExpense(id, expenseData) {
+    return await updateExpense(id, expenseData);
 }
 
 export async function removeExpense(id) {

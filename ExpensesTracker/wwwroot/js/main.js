@@ -3,6 +3,7 @@
     loadCategories,
     loadPaymentMethods,
     saveExpense,
+    loadExpenseById,
     modifyExpense,
     removeExpense
 } from "./expenses.js";
@@ -19,6 +20,8 @@ import {
     setDefaultExpenseDate,
     hideExpenseModal
 } from "./ui.js";
+
+let editingExpenseId = null;
 
 async function initializePage() {
     try {
@@ -39,23 +42,38 @@ async function initializePage() {
         renderPaymentMethods(paymentMethods);
         setDefaultExpenseDate();
 
-        const expenseForm = document.querySelector("#expense-form");
+        const expenseForm =
+            document.querySelector("#expense-form");
+
+        const tableBody =
+            document.querySelector("#expenses-table-body");
+
+        const newExpenseButton =
+            document.querySelector("#new-expense-button");
 
         expenseForm.addEventListener(
             "submit",
             handleExpenseFormSubmit
         );
 
-        const tableBody = document.querySelector("#expenses-table-body");
-
         tableBody.addEventListener(
             "click",
             handleExpensesTableClick
         );
 
+        newExpenseButton.addEventListener("click", () => {
+            editingExpenseId = null;
+
+            resetExpenseForm();
+            setDefaultExpenseDate();
+
+            const modalTitle =
+                document.querySelector("#expense-modal-title");
+
+            modalTitle.textContent = "Nuova spesa";
+        });
     } catch (error) {
         console.error(error);
-
         showError("Non è stato possibile caricare i dati.");
     } finally {
         hideLoading();
@@ -69,7 +87,11 @@ async function handleExpenseFormSubmit(event) {
     try {
         const expense = getExpenseFormData();
 
-        await saveExpense(expense);
+        if (editingExpenseId === null) {
+            await saveExpense(expense);
+        } else {
+            await modifyExpense(editingExpenseId, expense)
+        }
 
         resetExpenseForm();
         setDefaultExpenseDate();
@@ -105,21 +127,21 @@ async function handleEditExpense(updateButton) {
     try {
         showLoading();
 
-        const expenseTobeUpdated = await getExpenseById(expenseId);
+        const expenseTobeUpdated = await loadExpenseById(expenseId);
+        editingExpenseId = expenseId; //Usato per distinguere save/update nel submit
+
         populateExpenseForm(expenseTobeUpdated);
 
         const modalElement = document.getElementById("expense-modal");
         const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
 
         modal.show();
-        renderExpenses(expenses);
     } catch (error) {
         console.error(error);
-        showError("Non è stato possibile eliminare la spesa.");
+        showError("Non è stato possibile modificare la spesa.");
     } finally {
         hideLoading();
     }
-
 }
 
 async function handleDeleteExpense(deleteButton) {
@@ -148,34 +170,17 @@ async function handleDeleteExpense(deleteButton) {
     }
 }
 
-export function populateExpenseForm(expense) {
-    const titleInput = document.querySelector("#title");
-    const amountInput = document.querySelector("#amount");
-    const dateInput = document.querySelector("#date");
-    const categorySelect = document.querySelector("#category");
-    const paymentMethodSelect = document.querySelector("#payment-method");
+function populateExpenseForm(expense) {
+    document.querySelector("#title").value = expense.title;
+    document.querySelector("#amount").value = expense.amount;
+    document.querySelector("#date").value =
+        expense.date.split("T")[0];
 
-    titleInput.value = expense.title;
-    amountInput.value = expense.amount;
-    dateInput.value = expense.date.split("T")[0];
+    document.querySelector("#category").value =
+        String(expense.categoryId);
 
-    selectOptionByText(categorySelect, expense.categoryName);
-    selectOptionByText(
-        paymentMethodSelect,
-        expense.paymentMethodName
-    );
-}
-
-function selectOptionByText(selectElement, text) {
-    const matchingOption = Array.from(selectElement.options)
-        .find(option => option.textContent.trim() === text);
-
-    if (!matchingOption) {
-        selectElement.value = "";
-        return;
-    }
-
-    selectElement.value = matchingOption.value;
+    document.querySelector("#payment-method").value =
+        String(expense.paymentMethodId);
 }
 
 initializePage();

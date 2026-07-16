@@ -12,6 +12,18 @@ export async function getExpenses() {
     return await response.json();
 }
 
+export async function getExpenseById(expenseId) {
+    const response = await fetch(`${baseUrl}/Expenses/${expenseId}`);
+
+    if (!response.ok) {
+        throw new Error(
+            `Errore durante il caricamento della spesa. Status: ${response.status}`
+        );
+    }
+
+    return await response.json();
+}
+
 export async function getCategories() {
     const response = await fetch(`${baseUrl}/Categories`);
 
