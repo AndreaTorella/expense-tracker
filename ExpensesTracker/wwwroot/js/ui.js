@@ -22,8 +22,7 @@ export function renderExpenses(expenses) {
             <button
                 type="button"
                 class="btn btn-outline-secondary btn-sm edit-expense-button"
-                data-expense-id="${expense.id}"
-                disabled>
+                data-expense-id="${expense.id}">
                 <i class="bi bi-pencil-square" aria-hidden="true"></i>
                 <span class="visually-hidden">Modifica spesa</span>
             </button>

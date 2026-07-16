@@ -3,6 +3,7 @@
     getCategories,
     getPaymentMethods,
     createExpense,
+    updateExpense,
     deleteExpense as deleteExpenseApi
 } from "./api.js";
 
@@ -19,7 +20,11 @@ export async function loadPaymentMethods() {
 }
 
 export async function saveExpense(expense) {
-    return await createExpense(expense)
+    return await createExpense(expense);
+}
+
+export async function modifyExpense(expense) {
+    return await updateExpense(expense);
 }
 
 export async function removeExpense(id) {

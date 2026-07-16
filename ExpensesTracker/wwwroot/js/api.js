@@ -54,6 +54,24 @@ export async function createExpense(expense) {
     return await response.json();
 }
 
+export async function updateExpense(id, expenseData) {
+    const response = await fetch(`${baseUrl}/Expenses/${id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(expenseData)
+    });
+
+    if (!response.ok) {
+        throw new Error(
+            `Errore durante la modifica della spesa. Status: ${response.status}`
+        );
+    }
+
+    return await response.json();
+}
+
 export async function deleteExpense(id) {
     const response = await fetch(`${baseUrl}/Expenses/${id}`, {
         method: "DELETE"
