@@ -12,8 +12,8 @@ export async function loadExpenses() {
     return await getExpenses();
 }
 
-export async function loadExpenseById() {
-    return await getExpenseById();
+export async function loadExpenseById(id) {
+    return await getExpenseById(id);
 }
 
 export async function loadCategories() {

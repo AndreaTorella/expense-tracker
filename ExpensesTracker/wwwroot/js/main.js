@@ -90,9 +90,10 @@ async function handleExpenseFormSubmit(event) {
         if (editingExpenseId === null) {
             await saveExpense(expense);
         } else {
-            await modifyExpense(editingExpenseId, expense)
+            await modifyExpense(editingExpenseId, expense);
         }
 
+        editingExpenseId = null;
         resetExpenseForm();
         setDefaultExpenseDate();
         hideExpenseModal();
@@ -127,18 +128,27 @@ async function handleEditExpense(updateButton) {
     try {
         showLoading();
 
-        const expenseTobeUpdated = await loadExpenseById(expenseId);
-        editingExpenseId = expenseId; //Usato per distinguere save/update nel submit
+        const expenseToBeUpdated =
+            await loadExpenseById(expenseId);
 
-        populateExpenseForm(expenseTobeUpdated);
+        editingExpenseId = expenseId;
 
-        const modalElement = document.getElementById("expense-modal");
+        populateExpenseForm(expenseToBeUpdated);
+
+        const modalTitle = document.querySelector("#expense-modal-title");
+
+        modalTitle.textContent = "Modifica spesa";
+
+        const modalElement = document.querySelector("#expense-modal");
+
         const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
 
         modal.show();
     } catch (error) {
         console.error(error);
-        showError("Non è stato possibile modificare la spesa.");
+        showError(
+            "Non è stato possibile caricare la spesa da modificare."
+        );
     } finally {
         hideLoading();
     }
