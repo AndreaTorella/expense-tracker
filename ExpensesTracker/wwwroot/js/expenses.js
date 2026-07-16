@@ -40,5 +40,3 @@ export async function removeExpense(id) {
 // calculateTotal
 // sortExpenses
 // createExpense
-// updateExpense
-// deleteExpense

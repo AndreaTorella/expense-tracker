@@ -18,7 +18,9 @@ import {
     getExpenseFormData,
     resetExpenseForm,
     setDefaultExpenseDate,
-    hideExpenseModal
+    hideExpenseModal,
+    showToast,
+    confirmExpenseDeletion
 } from "./ui.js";
 
 let editingExpenseId = null;
@@ -87,7 +89,9 @@ async function handleExpenseFormSubmit(event) {
     try {
         const expense = getExpenseFormData();
 
-        if (editingExpenseId === null) {
+        const isNewExpense = editingExpenseId === null;
+
+        if (isNewExpense) {
             await saveExpense(expense);
         } else {
             await modifyExpense(editingExpenseId, expense);
@@ -100,6 +104,7 @@ async function handleExpenseFormSubmit(event) {
 
         const expenses = await loadExpenses();
         renderExpenses(expenses);
+        showToast(isNewExpense ? "Spesa aggiunta correttamente" : "Spesa modificata");
     } catch (error) {
         console.error(error);
         showError("Non è stato possibile salvare la spesa.");
@@ -157,9 +162,7 @@ async function handleEditExpense(updateButton) {
 async function handleDeleteExpense(deleteButton) {
     const expenseId = Number(deleteButton.dataset.expenseId);
 
-    const confirmed = window.confirm(
-        "Sei sicuro di voler eliminare questa spesa?"
-    );
+    const confirmed = await confirmExpenseDeletion();
 
     if (!confirmed) {
         return;
@@ -172,6 +175,7 @@ async function handleDeleteExpense(deleteButton) {
 
         const expenses = await loadExpenses();
         renderExpenses(expenses);
+        showToast("Spesa eliminata");
     } catch (error) {
         console.error(error);
         showError("Non è stato possibile eliminare la spesa.");

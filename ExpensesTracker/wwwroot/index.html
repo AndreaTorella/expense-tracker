@@ -186,6 +186,49 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade"
+             id="delete-expense-modal"
+             tabindex="-1"
+             aria-labelledby="delete-expense-modal-title"
+             aria-describedby="delete-expense-modal-description"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-sm">
+                <div class="modal-content confirmation-modal">
+                    <div class="modal-header">
+                        <div>
+                            <span class="section-kicker">Conferma azione</span>
+                            <h2 class="modal-title fs-4" id="delete-expense-modal-title">Eliminare la spesa?</h2>
+                        </div>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Chiudi"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="mb-0" id="delete-expense-modal-description">
+                            Questa operazione non può essere annullata.
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">
+                            Annulla
+                        </button>
+                        <button type="button" class="btn btn-danger" id="confirm-delete-expense-button">
+                            <i class="bi bi-trash3" aria-hidden="true"></i>
+                            Elimina spesa
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="toast-container"
+             class="toast-container position-fixed top-0 end-0 p-3"
+             aria-live="polite"
+             aria-atomic="true"></div>
     </main>
 
     <script src="/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

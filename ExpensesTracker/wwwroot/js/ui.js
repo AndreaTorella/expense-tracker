@@ -145,6 +145,69 @@ export function showError(message) {
 
     errorMessage.textContent = message;
     errorMessage.hidden = false;
+    showToast(message, "error");
+}
+
+export function showToast(message, type = "success") {
+    const toastContainer = document.querySelector("#toast-container");
+
+    if (!toastContainer || !window.bootstrap) {
+        return;
+    }
+
+    const isError = type === "error";
+    const toastElement = document.createElement("div");
+
+    toastElement.className = `toast app-toast ${isError ? "app-toast-error" : "app-toast-success"}`;
+    toastElement.setAttribute("role", "status");
+    toastElement.setAttribute("aria-live", isError ? "assertive" : "polite");
+    toastElement.setAttribute("aria-atomic", "true");
+    toastElement.innerHTML = `
+        <div class="toast-body">
+            <i class="bi ${isError ? "bi-exclamation-circle-fill" : "bi-check-circle-fill"}" aria-hidden="true"></i>
+            <span></span>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Chiudi"></button>
+        </div>
+    `;
+
+    toastElement.querySelector("span").textContent = message;
+    toastContainer.appendChild(toastElement);
+
+    toastElement.addEventListener("hidden.bs.toast", () => {
+        toastElement.remove();
+    });
+
+    window.bootstrap.Toast.getOrCreateInstance(toastElement, {
+        delay: 5000
+    }).show();
+}
+
+export function confirmExpenseDeletion() {
+    const modalElement = document.querySelector("#delete-expense-modal");
+    const confirmButton = document.querySelector("#confirm-delete-expense-button");
+
+    if (!modalElement || !confirmButton || !window.bootstrap) {
+        return Promise.resolve(false);
+    }
+
+    return new Promise((resolve) => {
+        const modal = window.bootstrap.Modal.getOrCreateInstance(modalElement);
+        let confirmed = false;
+
+        const handleConfirmation = () => {
+            confirmed = true;
+            modal.hide();
+        };
+
+        const handleModalHidden = () => {
+            confirmButton.removeEventListener("click", handleConfirmation);
+            resolve(confirmed);
+        };
+
+        confirmButton.addEventListener("click", handleConfirmation);
+        modalElement.addEventListener("hidden.bs.modal", handleModalHidden, { once: true });
+        modal.show();
+    });
 }
 
 function formatDate(dateValue) {
