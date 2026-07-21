@@ -1,7 +1,9 @@
 ﻿using ExpensesTracker.Data;
 using ExpensesTracker.Entities;
 using ExpensesTracker.Models;
+using ExpensesTracker.Models.Enums;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace ExpensesTracker.Repositories
 {
@@ -50,10 +52,8 @@ namespace ExpensesTracker.Repositories
                 query = query.Where(x => x.PaymentMethodId == paymentMethodId);
             }
 
-            return await query
-                .OrderByDescending(x => x.Date)
-                .ThenByDescending(x => x.Id)
-                .ToListAsync();
+            query = ApplySorting(query, filters);
+            return await query.ToListAsync();
         }
 
         public async Task<Expense?> GetExpenseByIdAsync(int id)
@@ -89,6 +89,53 @@ namespace ExpensesTracker.Repositories
         public async Task SaveChangesAsync()
         {
             await this.context.SaveChangesAsync();
+        }
+
+        private static IQueryable<Expense> ApplySorting(
+            IQueryable<Expense> query,
+            ExpenseFilterDto filters)
+        {
+            return filters.ExpenseSortBy switch
+            {
+                ExpenseSortBy.Date =>
+                    ApplyOrder(query, x => x.Date, filters.SortDirection),
+
+                ExpenseSortBy.Amount =>
+                    ApplyOrder(query, x => x.Amount, filters.SortDirection),
+
+                ExpenseSortBy.Title =>
+                    ApplyOrder(query, x => x.Title, filters.SortDirection),
+
+                ExpenseSortBy.Category =>
+                    ApplyOrder(query, x => x.Category.Name, filters.SortDirection),
+
+                ExpenseSortBy.PaymentMethod =>
+                    ApplyOrder(
+                        query,
+                        x => x.PaymentMethod.Name,
+                        filters.SortDirection),
+
+                _ =>
+                    query
+                        .OrderByDescending(x => x.Date)
+                        .ThenByDescending(x => x.Id)
+            };
+        }
+
+        private static IQueryable<Expense> ApplyOrder<TKey>(
+            IQueryable<Expense> query,
+            Expression<Func<Expense, TKey>> orderBy,
+            SortDirection direction)
+        {
+            return direction == SortDirection.Asc
+                ? query
+                    .OrderBy(orderBy)
+                    .ThenByDescending(x => x.Date)
+                    .ThenByDescending(x => x.Id)
+                : query
+                    .OrderByDescending(orderBy)
+                    .ThenByDescending(x => x.Date)
+                    .ThenByDescending(x => x.Id);
         }
     }
 }

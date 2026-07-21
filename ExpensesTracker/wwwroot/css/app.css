@@ -80,18 +80,6 @@ body.app-is-loading {
     padding-bottom: 4rem;
 }
 
-.status-message {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    margin: 0 0 1rem;
-    padding: 0.8rem 1rem;
-    color: var(--app-muted);
-    background: rgba(255, 255, 255, 0.86);
-    border: 1px solid var(--app-border);
-    border-radius: 0.5rem;
-}
-
 .loading-overlay {
     position: fixed;
     inset: 0;
@@ -284,6 +272,31 @@ body.app-is-loading {
     align-items: center;
     justify-content: flex-end;
     gap: 0.5rem;
+}
+
+.sort-control {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.2rem 0.45rem;
+    color: var(--app-muted);
+    background: var(--app-surface);
+    border: 1px solid var(--app-border);
+    border-radius: 0.375rem;
+}
+
+.sort-control .form-select {
+    width: 11.75rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    color: var(--app-ink);
+    border: 0;
+    box-shadow: none;
+    font-weight: 700;
+}
+
+.sort-control .form-select:focus {
+    box-shadow: none;
 }
 
 .table-toolbar .btn,
@@ -495,6 +508,14 @@ body.app-is-loading {
 
     .table-toolbar .btn {
         flex: 1 1 0;
+    }
+
+    .sort-control {
+        flex: 1 1 0;
+    }
+
+    .sort-control .form-select {
+        width: 100%;
     }
 }
 

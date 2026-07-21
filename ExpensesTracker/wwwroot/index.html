@@ -40,11 +40,6 @@
         </section>
 
         <div class="container app-content">
-            <p id="loading-message" class="status-message">
-                <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-                Caricamento spese...
-            </p>
-
             <div id="error-message"
                  class="alert alert-danger"
                  role="alert"
@@ -68,12 +63,22 @@
                             <i class="bi bi-funnel" aria-hidden="true"></i>
                             Filtri
                         </button>
-                        <button type="button"
-                                class="btn btn-outline-secondary btn-sm"
-                                disabled>
+                        <div class="sort-control">
+                            <label class="visually-hidden" for="expenses-sort">Ordina spese</label>
                             <i class="bi bi-arrow-down-up" aria-hidden="true"></i>
-                            Ordina
-                        </button>
+                            <select id="expenses-sort" class="form-select form-select-sm" aria-label="Ordina spese">
+                                <option value="Date:Desc">Data: più recenti</option>
+                                <option value="Date:Asc">Data: meno recenti</option>
+                                <option value="Amount:Desc">Importo: maggiore</option>
+                                <option value="Amount:Asc">Importo: minore</option>
+                                <option value="Title:Asc">Titolo: A-Z</option>
+                                <option value="Title:Desc">Titolo: Z-A</option>
+                                <option value="Category:Asc">Categoria: A-Z</option>
+                                <option value="Category:Desc">Categoria: Z-A</option>
+                                <option value="PaymentMethod:Asc">Pagamento: A-Z</option>
+                                <option value="PaymentMethod:Desc">Pagamento: Z-A</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 

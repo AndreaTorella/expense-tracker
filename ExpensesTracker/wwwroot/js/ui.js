@@ -68,6 +68,16 @@ export function getExpenseFilters() {
     };
 }
 
+export function getExpenseSorting() {
+    const [expenseSortBy, sortDirection] =
+        document.querySelector("#expenses-sort").value.split(":");
+
+    return {
+        ExpenseSortBy: expenseSortBy,
+        SortDirection: sortDirection
+    };
+}
+
 export function updateExpensesSummary(expenses) {
     const summary = document.querySelector("#expenses-summary");
     const count = expenses.length;
@@ -121,19 +131,16 @@ export function hideExpenseModal() {
 }
 
 export function showLoading() {
-    const loadingMessage = document.querySelector("#loading-message");
     const loadingOverlay = getLoadingOverlay();
 
     loadingRequests += 1;
 
-    loadingMessage.hidden = false;
     loadingOverlay.hidden = false;
     document.body.classList.add("app-is-loading");
     document.body.setAttribute("aria-busy", "true");
 }
 
 export function hideLoading() {
-    const loadingMessage = document.querySelector("#loading-message");
     const loadingOverlay = getLoadingOverlay();
 
     loadingRequests = Math.max(loadingRequests - 1, 0);
@@ -142,7 +149,6 @@ export function hideLoading() {
         return;
     }
 
-    loadingMessage.hidden = true;
     loadingOverlay.hidden = true;
     document.body.classList.remove("app-is-loading");
     document.body.removeAttribute("aria-busy");

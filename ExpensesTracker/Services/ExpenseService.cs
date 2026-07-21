@@ -20,11 +20,6 @@ namespace ExpensesTracker.Services
 
         public async Task<IEnumerable<ExpenseListDto>> GetAllExpensesAsync(ExpenseFilterDto filters)
         {
-            if (!ValidateFilters(filters))
-            {
-                throw new ArgumentException(nameof(filters));
-            }
-
             var expenseEntities = await expenseRepository.GetExpensesAsync(filters);
             return mapper.Map<IEnumerable<ExpenseListDto>>(expenseEntities);
         }
@@ -85,18 +80,6 @@ namespace ExpensesTracker.Services
 
             expenseRepository.DeleteExpenseAsync(expenseEntityToDelete);
             await expenseRepository.SaveChangesAsync();
-            return true;
-        }
-
-        private bool ValidateFilters(ExpenseFilterDto filters)
-        {
-            if (filters.FromDate.HasValue
-                && filters.ToDate.HasValue
-                && filters.FromDate > filters.ToDate)
-            {
-                return false;
-            }
-
             return true;
         }
     }

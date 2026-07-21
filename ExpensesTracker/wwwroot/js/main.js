@@ -24,6 +24,7 @@ import {
     showToast,
     confirmExpenseDeletion,
     getExpenseFilters,
+    getExpenseSorting,
     updateExpensesSummary
 } from "./ui.js";
 
@@ -65,6 +66,8 @@ async function initializePage() {
         const resetFiltersButton =
             document.querySelector("#reset-filters-button");
 
+        const expensesSort = document.querySelector("#expenses-sort");
+
         expenseForm.addEventListener(
             "submit",
             handleExpenseFormSubmit
@@ -77,6 +80,7 @@ async function initializePage() {
 
         filtersForm.addEventListener("submit", handleFiltersSubmit);
         resetFiltersButton.addEventListener("click", handleFiltersReset);
+        expensesSort.addEventListener("change", handleSortChange);
 
         newExpenseButton.addEventListener("click", () => {
             editingExpenseId = null;
@@ -232,8 +236,23 @@ async function handleFiltersReset() {
     }
 }
 
+async function handleSortChange() {
+    try {
+        showLoading();
+        await refreshExpenses();
+    } catch (error) {
+        console.error(error);
+        showError("Non è stato possibile ordinare le spese.");
+    } finally {
+        hideLoading();
+    }
+}
+
 async function refreshExpenses(filters = getExpenseFilters()) {
-    const expenses = await loadExpenses(filters);
+    const expenses = await loadExpenses({
+        ...filters,
+        ...getExpenseSorting()
+    });
 
     renderExpenses(expenses);
     updateExpensesSummary(expenses);
