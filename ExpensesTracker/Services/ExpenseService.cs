@@ -18,10 +18,17 @@ namespace ExpensesTracker.Services
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<IEnumerable<ExpenseListDto>> GetAllExpensesAsync(ExpenseFilterDto filters)
+        public async Task<PagedResultDto<ExpenseListDto>> GetAllExpensesAsync(ExpenseFilterDto filters)
         {
-            var expenseEntities = await expenseRepository.GetExpensesAsync(filters);
-            return mapper.Map<IEnumerable<ExpenseListDto>>(expenseEntities);
+            var result = await expenseRepository.GetExpensesAsync(filters);
+
+            return new PagedResultDto<ExpenseListDto>
+            {
+                Items = mapper.Map<IEnumerable<ExpenseListDto>>(result.Items),
+                PageNumber = filters.PageNumber,
+                PageSize = filters.PageSize,
+                TotalItems = result.TotalItems
+            };
         }
 
         public async Task<ExpenseListDto?> GetExpenseByIdAsync(int id)

@@ -31,6 +31,12 @@ namespace ExpensesTracker.Models
 
         public SortDirection SortDirection { get; set; } = Enums.SortDirection.Desc;
 
+        [Range(1, int.MaxValue)]
+        public int PageNumber { get; set; } = 1;
+
+        [Range(1, 100)]
+        public int PageSize { get; set; } = 10;
+
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (FromDate.HasValue && ToDate.HasValue && FromDate > ToDate)

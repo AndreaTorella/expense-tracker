@@ -15,7 +15,7 @@ namespace ExpensesTracker.Repositories
         {
             this.context = expenseTrackerDbContext ?? throw new ArgumentNullException(nameof(expenseTrackerDbContext));
         }
-        public async Task<IEnumerable<Expense>> GetExpensesAsync(ExpenseFilterDto filters)
+        public async Task<PagedResultDto<Expense>> GetExpensesAsync(ExpenseFilterDto filters)
         {
             IQueryable<Expense> query = this.context.Expenses
                 .AsNoTracking()
@@ -52,8 +52,20 @@ namespace ExpensesTracker.Repositories
                 query = query.Where(x => x.PaymentMethodId == paymentMethodId);
             }
 
+            var totalItems = await query.CountAsync();
+
             query = ApplySorting(query, filters);
-            return await query.ToListAsync();
+
+            var items = await query
+                .Skip((filters.PageNumber - 1) * filters.PageSize)
+                .Take(filters.PageSize)
+                .ToListAsync();
+
+            return new PagedResultDto<Expense>()
+            {
+                Items = items,
+                TotalItems = totalItems,
+            };
         }
 
         public async Task<Expense?> GetExpenseByIdAsync(int id)

@@ -266,6 +266,43 @@ body.app-is-loading {
     font-weight: 700;
 }
 
+.pagination-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.85rem 1.25rem;
+    background: var(--app-surface-muted);
+    border-top: 1px solid var(--app-border);
+}
+
+.page-size-control {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    color: var(--app-muted);
+    font-size: 0.88rem;
+    font-weight: 700;
+}
+
+.page-size-control .form-select {
+    width: 4.5rem;
+    color: var(--app-ink);
+    font-weight: 700;
+}
+
+.pagination {
+    --bs-pagination-color: var(--app-primary-dark);
+    --bs-pagination-border-color: var(--app-border);
+    --bs-pagination-hover-color: var(--app-primary-dark);
+    --bs-pagination-hover-bg: #e7f4f1;
+    --bs-pagination-hover-border-color: #cde5df;
+    --bs-pagination-active-bg: var(--app-primary);
+    --bs-pagination-active-border-color: var(--app-primary);
+    --bs-pagination-disabled-color: #98a2b3;
+    --bs-pagination-disabled-bg: var(--app-surface);
+}
+
 .table-toolbar,
 .row-actions {
     display: flex;
@@ -516,6 +553,11 @@ body.app-is-loading {
 
     .sort-control .form-select {
         width: 100%;
+    }
+
+    .pagination-bar {
+        align-items: flex-start;
+        flex-direction: column;
     }
 }
 

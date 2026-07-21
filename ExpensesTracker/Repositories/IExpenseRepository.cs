@@ -5,7 +5,7 @@ namespace ExpensesTracker.Repositories
 {
     public interface IExpenseRepository
     {
-        Task<IEnumerable<Expense>> GetExpensesAsync(ExpenseFilterDto filters);
+        Task<PagedResultDto<Expense>> GetExpensesAsync(ExpenseFilterDto filters);
         Task<Expense?> GetExpenseByIdAsync(int id);
         Task AddExpenseAsync(Expense expense);
         void DeleteExpenseAsync(Expense expense);

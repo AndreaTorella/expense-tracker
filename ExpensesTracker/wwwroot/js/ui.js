@@ -78,13 +78,47 @@ export function getExpenseSorting() {
     };
 }
 
-export function updateExpensesSummary(expenses) {
-    const summary = document.querySelector("#expenses-summary");
-    const count = expenses.length;
+export function getExpensesPageSize() {
+    return Number(document.querySelector("#expenses-page-size").value);
+}
 
-    summary.textContent = count === 1
-        ? "1 spesa trovata"
-        : `${count} spese trovate`;
+export function updateExpensesSummary(pagedExpenses) {
+    const summary = document.querySelector("#expenses-summary");
+    const { pageNumber, pageSize, totalItems } = pagedExpenses;
+
+    if (totalItems === 0) {
+        summary.textContent = "Nessuna spesa trovata";
+        return;
+    }
+
+    const firstItem = (pageNumber - 1) * pageSize + 1;
+    const lastItem = Math.min(pageNumber * pageSize, totalItems);
+
+    summary.textContent = `Visualizzate ${firstItem}-${lastItem} di ${totalItems} spese`;
+}
+
+export function renderPagination(pagedExpenses) {
+    const pagination = document.querySelector("#expenses-pagination");
+    const { pageNumber, totalPages } = pagedExpenses;
+
+    pagination.innerHTML = "";
+
+    if (totalPages <= 1) {
+        return;
+    }
+
+    appendPageButton(pagination, pageNumber - 1, "Precedente", pageNumber === 1);
+
+    for (const page of getVisiblePages(pageNumber, totalPages)) {
+        if (page === null) {
+            appendPaginationEllipsis(pagination);
+            continue;
+        }
+
+        appendPageButton(pagination, page, `Pagina ${page}`, false, page === pageNumber);
+    }
+
+    appendPageButton(pagination, pageNumber + 1, "Successiva", pageNumber === totalPages);
 }
 
 export function getExpenseFormData() {
@@ -241,6 +275,59 @@ function appendSelectOptions(selector, options) {
 
         select.appendChild(option);
     }
+}
+
+function getVisiblePages(currentPage, totalPages) {
+    const pages = new Set([1, totalPages]);
+
+    for (let page = currentPage - 1; page <= currentPage + 1; page += 1) {
+        if (page > 1 && page < totalPages) {
+            pages.add(page);
+        }
+    }
+
+    const sortedPages = [...pages].sort((firstPage, secondPage) => firstPage - secondPage);
+    const visiblePages = [];
+    let previousPage = 0;
+
+    for (const page of sortedPages) {
+        if (page - previousPage > 1) {
+            visiblePages.push(null);
+        }
+
+        visiblePages.push(page);
+        previousPage = page;
+    }
+
+    return visiblePages;
+}
+
+function appendPageButton(pagination, pageNumber, label, disabled, isActive = false) {
+    const item = document.createElement("li");
+    item.className = `page-item${isActive ? " active" : ""}${disabled ? " disabled" : ""}`;
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "page-link";
+    button.dataset.pageNumber = pageNumber;
+    button.textContent = isActive ? String(pageNumber) : label;
+    button.disabled = disabled;
+    button.setAttribute("aria-label", label);
+
+    if (isActive) {
+        button.setAttribute("aria-current", "page");
+    }
+
+    item.appendChild(button);
+    pagination.appendChild(item);
+}
+
+function appendPaginationEllipsis(pagination) {
+    const item = document.createElement("li");
+    item.className = "page-item disabled";
+    item.setAttribute("aria-hidden", "true");
+    item.innerHTML = '<span class="page-link">…</span>';
+    pagination.appendChild(item);
 }
 
 function formatAmount(amount) {

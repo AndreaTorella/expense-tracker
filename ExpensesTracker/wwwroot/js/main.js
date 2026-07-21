@@ -25,10 +25,13 @@ import {
     confirmExpenseDeletion,
     getExpenseFilters,
     getExpenseSorting,
-    updateExpensesSummary
+    getExpensesPageSize,
+    updateExpensesSummary,
+    renderPagination
 } from "./ui.js";
 
 let editingExpenseId = null;
+let currentPageNumber = 1;
 
 async function initializePage() {
     try {
@@ -39,12 +42,12 @@ async function initializePage() {
             categories,
             paymentMethods
         ] = await Promise.all([
-            loadExpenses(),
+            loadExpenses(getExpensesQuery()),
             loadCategories(),
             loadPaymentMethods()
         ]);
 
-        renderExpenses(expenses);
+        renderPagedExpenses(expenses);
         renderCategories(categories);
         renderFilterCategories(categories);
         renderPaymentMethods(paymentMethods);
@@ -68,6 +71,9 @@ async function initializePage() {
 
         const expensesSort = document.querySelector("#expenses-sort");
 
+        const expensesPageSize = document.querySelector("#expenses-page-size");
+        const expensesPagination = document.querySelector("#expenses-pagination");
+
         expenseForm.addEventListener(
             "submit",
             handleExpenseFormSubmit
@@ -81,6 +87,8 @@ async function initializePage() {
         filtersForm.addEventListener("submit", handleFiltersSubmit);
         resetFiltersButton.addEventListener("click", handleFiltersReset);
         expensesSort.addEventListener("change", handleSortChange);
+        expensesPageSize.addEventListener("change", handlePageSizeChange);
+        expensesPagination.addEventListener("click", handlePaginationClick);
 
         newExpenseButton.addEventListener("click", () => {
             editingExpenseId = null;
@@ -213,7 +221,7 @@ async function handleFiltersSubmit(event) {
 
     try {
         showLoading();
-        await refreshExpenses(filters);
+        await refreshExpenses(1, filters);
     } catch (error) {
         console.error(error);
         showError("Non è stato possibile applicare i filtri alle spese.");
@@ -227,7 +235,7 @@ async function handleFiltersReset() {
 
     try {
         showLoading();
-        await refreshExpenses({});
+        await refreshExpenses(1, {});
     } catch (error) {
         console.error(error);
         showError("Non è stato possibile ripristinare l'elenco delle spese.");
@@ -239,7 +247,7 @@ async function handleFiltersReset() {
 async function handleSortChange() {
     try {
         showLoading();
-        await refreshExpenses();
+        await refreshExpenses(1);
     } catch (error) {
         console.error(error);
         showError("Non è stato possibile ordinare le spese.");
@@ -248,14 +256,66 @@ async function handleSortChange() {
     }
 }
 
-async function refreshExpenses(filters = getExpenseFilters()) {
-    const expenses = await loadExpenses({
-        ...filters,
-        ...getExpenseSorting()
-    });
+async function handlePageSizeChange() {
+    try {
+        showLoading();
+        await refreshExpenses(1);
+    } catch (error) {
+        console.error(error);
+        showError("Non è stato possibile aggiornare le spese per pagina.");
+    } finally {
+        hideLoading();
+    }
+}
 
-    renderExpenses(expenses);
-    updateExpensesSummary(expenses);
+async function handlePaginationClick(event) {
+    const pageButton = event.target.closest("[data-page-number]");
+
+    if (!pageButton || pageButton.disabled) {
+        return;
+    }
+
+    try {
+        showLoading();
+        await refreshExpenses(Number(pageButton.dataset.pageNumber));
+    } catch (error) {
+        console.error(error);
+        showError("Non è stato possibile caricare la pagina richiesta.");
+    } finally {
+        hideLoading();
+    }
+}
+
+async function refreshExpenses(
+    pageNumber = currentPageNumber,
+    filters = getExpenseFilters()) {
+    const expenses = await loadExpenses(getExpensesQuery(pageNumber, filters));
+
+    if (expenses.items.length === 0 &&
+        expenses.totalItems > 0 &&
+        pageNumber > expenses.totalPages) {
+        return await refreshExpenses(expenses.totalPages, filters);
+    }
+
+    renderPagedExpenses(expenses);
+}
+
+function getExpensesQuery(
+    pageNumber = currentPageNumber,
+    filters = getExpenseFilters()) {
+    return {
+        ...filters,
+        ...getExpenseSorting(),
+        PageNumber: pageNumber,
+        PageSize: getExpensesPageSize()
+    };
+}
+
+function renderPagedExpenses(pagedExpenses) {
+    currentPageNumber = pagedExpenses.pageNumber;
+    renderExpenses(pagedExpenses.items);
+    updateExpensesSummary(pagedExpenses);
+    renderPagination(pagedExpenses);
 }
 
 function populateExpenseForm(expense) {
