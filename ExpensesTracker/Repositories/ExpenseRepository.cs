@@ -15,7 +15,7 @@ namespace ExpensesTracker.Repositories
         {
             this.context = expenseTrackerDbContext ?? throw new ArgumentNullException(nameof(expenseTrackerDbContext));
         }
-        public async Task<PagedResultDto<Expense>> GetExpensesAsync(ExpenseFilterDto filters)
+        public async Task<PagedResult<Expense>> GetExpensesAsync(ExpenseFilterDto filters)
         {
             IQueryable<Expense> query = this.context.Expenses
                 .AsNoTracking()
@@ -61,7 +61,7 @@ namespace ExpensesTracker.Repositories
                 .Take(filters.PageSize)
                 .ToListAsync();
 
-            return new PagedResultDto<Expense>()
+            return new PagedResult<Expense>()
             {
                 Items = items,
                 TotalItems = totalItems,
