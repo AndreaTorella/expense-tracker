@@ -11,8 +11,8 @@ namespace ExpensesTracker.Profiles
             this.CreateMap<CategoryTotal, CategoryTotalDto>();
             this.CreateMap<CategoryTotalDto, CategoryTotal>();
 
-            this.CreateMap<CategoryTotal, CategoryTotalDto>();
-            this.CreateMap<CategoryTotalDto, CategoryTotal>();
+            this.CreateMap<MonthlyTotal, MonthlyTotalDto>();
+            this.CreateMap<MonthlyTotalDto, MonthlyTotal>();
         }
     }
 }

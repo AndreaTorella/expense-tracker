@@ -30,15 +30,12 @@ namespace ExpensesTracker.Services
             var currentMonthTotal = await this.expenseRepository.GetTotalAsync(currentMonthStart, nextMonthStart);
             var previousMonthTotal = await this.expenseRepository.GetTotalAsync(previousMonthStart, currentMonthStart);
 
-            decimal? differencePercentage = null;
-
-            if (previousMonthTotal != 0)
-            {
-                differencePercentage =
-                    Math.Round((currentMonthTotal - previousMonthTotal)
-                    / previousMonthTotal
-                    * 100, 2);
-            }
+            var differencePercentage =
+                previousMonthTotal != 0
+                    ? Math.Round((currentMonthTotal - previousMonthTotal)
+                        / previousMonthTotal
+                        * 100, 2)
+                    : 0;
 
             var categoryTotalsDto =
                 this.mapper.Map<IEnumerable<CategoryTotalDto>>(
