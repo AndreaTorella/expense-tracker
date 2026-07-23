@@ -1,4 +1,4 @@
-﻿const baseUrl = "/api";
+const baseUrl = "/api";
 
 export async function getExpenses(filters = {}) {
     const queryParams = new URLSearchParams();
@@ -110,4 +110,21 @@ export async function deleteExpense(id) {
             `Errore durante l'eliminazione della spesa. Status: ${response.status}`
         );
     }
+}
+
+export async function getDashboardSummary(year, month) {
+    const params = new URLSearchParams({
+        year,
+        month
+    });
+
+    const response = await fetch(`${baseUrl}/DashboardSummary?${params}`);
+
+    if (!response.ok) {
+        throw new Error(
+            `Errore dashboard. Status: ${response.status}`
+        );
+    }
+
+    return await response.json();
 }

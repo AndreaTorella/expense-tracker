@@ -3,321 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Expense Tracker</title>
+    <title>Dashboard | Expense Tracker</title>
     <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="/css/app.css">
 </head>
-
 <body>
     <main class="app-shell">
-        <section class="app-hero" aria-labelledby="page-title">
+        <nav class="navbar navbar-expand-lg app-navigation" aria-label="Navigazione principale">
             <div class="container">
-                <div class="row align-items-end g-4">
-                    <div class="col-lg-7">
-                        <span class="app-eyebrow">Dashboard finanziaria</span>
-                        <h1 id="page-title">Expense Tracker</h1>
-                        <p class="app-hero-copy">
-                            Registra e controlla le spese con una vista pulita, rapida e pronta a crescere.
-                        </p>
-                    </div>
+                <a class="navbar-brand" href="/index.html">Expense Tracker</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main-navigation" aria-controls="main-navigation" aria-expanded="false" aria-label="Apri navigazione">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="main-navigation">
+                    <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="/index.html">Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/expenses.html">Spese</a></li>
+                        <li class="nav-item"><a class="btn btn-primary btn-sm nav-new-expense" href="/expenses.html#new-expense"><i class="bi bi-plus-lg" aria-hidden="true"></i> Nuova spesa</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
 
-                    <div class="col-lg-5">
-                        <div class="hero-actions">
-                            <button id="new-expense-button"
-                                    type="button"
-                                    class="btn btn-light btn-lg shadow-sm"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#expense-modal">
-                                <i class="bi bi-plus-lg" aria-hidden="true"></i>
-                                Nuova spesa
-                            </button>
-                        </div>
-                    </div>
+        <section class="app-hero dashboard-hero" aria-labelledby="page-title">
+            <div class="container dashboard-heading">
+                <div>
+                    <span class="app-eyebrow">Panoramica finanziaria</span>
+                    <h1 id="page-title">Il tuo riepilogo</h1>
+                    <p class="app-hero-copy">Tieni sotto controllo l’andamento delle spese e le categorie che incidono di più.</p>
+                </div>
+                <div class="month-picker" aria-label="Selettore mese">
+                    <button id="previous-month-button" class="btn btn-outline-light" type="button" aria-label="Mese precedente"><i class="bi bi-chevron-left" aria-hidden="true"></i></button>
+                    <span id="selected-month" aria-live="polite"></span>
+                    <button id="next-month-button" class="btn btn-outline-light" type="button" aria-label="Mese successivo"><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
                 </div>
             </div>
         </section>
 
-        <div class="container app-content">
-            <div id="error-message"
-                 class="alert alert-danger"
-                 role="alert"
-                 hidden></div>
+        <div class="container app-content dashboard-content">
+            <div id="error-message" class="alert alert-danger" role="alert" hidden></div>
+            <section class="row g-3" aria-label="Riepilogo del mese">
+                <div class="col-md-4"><article class="summary-card"><span>Spese del mese</span><strong id="current-month-total">—</strong><small id="current-month-label"></small></article></div>
+                <div class="col-md-4"><article class="summary-card"><span>Mese precedente</span><strong id="previous-month-total">—</strong><small id="previous-month-label"></small></article></div>
+                <div class="col-md-4"><article class="summary-card"><span>Variazione</span><strong id="difference-percentage">—</strong><small id="difference-description">Rispetto al mese precedente</small></article></div>
+            </section>
 
-            <section class="table-card" aria-labelledby="expenses-heading">
-                <div class="table-card-header">
-                    <div>
-                        <span class="section-kicker">Movimenti</span>
-                        <h2 id="expenses-heading">Spese recenti</h2>
-                    </div>
+            <section class="row g-4 dashboard-panels">
+                <div class="col-lg-5"><article class="dashboard-card h-100"><div class="dashboard-card-header"><div><span class="section-kicker">Distribuzione</span><h2>Per categoria</h2></div></div><div class="chart-wrap"><canvas id="category-chart" aria-label="Grafico a ciambella delle spese per categoria" role="img"></canvas><p class="chart-empty" id="category-chart-empty" hidden>Nessuna spesa per questo mese.</p></div></article></div>
+                <div class="col-lg-7"><article class="dashboard-card h-100"><div class="dashboard-card-header"><div><span class="section-kicker">Andamento</span><h2>Ultimi sei mesi</h2></div></div><div class="chart-wrap chart-wrap-wide"><canvas id="monthly-chart" aria-label="Grafico a barre delle spese degli ultimi sei mesi" role="img"></canvas></div></article></div>
+            </section>
 
-                    <div class="table-toolbar" aria-label="Strumenti tabella">
-                        <button type="button"
-                                class="btn btn-outline-secondary btn-sm"
-                                id="filters-toggle-button"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#filters-panel"
-                                aria-expanded="false"
-                                aria-controls="filters-panel">
-                            <i class="bi bi-funnel" aria-hidden="true"></i>
-                            Filtri
-                        </button>
-                        <div class="sort-control">
-                            <label class="visually-hidden" for="expenses-sort">Ordina spese</label>
-                            <i class="bi bi-arrow-down-up" aria-hidden="true"></i>
-                            <select id="expenses-sort" class="form-select form-select-sm" aria-label="Ordina spese">
-                                <option value="Date:Desc">Data: più recenti</option>
-                                <option value="Date:Asc">Data: meno recenti</option>
-                                <option value="Amount:Desc">Importo: maggiore</option>
-                                <option value="Amount:Asc">Importo: minore</option>
-                                <option value="Title:Asc">Titolo: A-Z</option>
-                                <option value="Title:Desc">Titolo: Z-A</option>
-                                <option value="Category:Asc">Categoria: A-Z</option>
-                                <option value="Category:Desc">Categoria: Z-A</option>
-                                <option value="PaymentMethod:Asc">Pagamento: A-Z</option>
-                                <option value="PaymentMethod:Desc">Pagamento: Z-A</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="collapse" id="filters-panel">
-                    <form id="filters-form" class="filters-panel" novalidate>
-                        <div class="filters-panel-header">
-                            <div>
-                                <span class="section-kicker">Ricerca avanzata</span>
-                                <h3>Filtra le spese</h3>
-                            </div>
-                            <p>Combina uno o più criteri per trovare rapidamente i movimenti.</p>
-                        </div>
-
-                        <div class="row g-3">
-                            <div class="col-lg-4">
-                                <label for="filter-search" class="form-label">Cerca</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span>
-                                    <input type="search"
-                                           class="form-control"
-                                           id="filter-search"
-                                           name="search"
-                                           placeholder="Titolo della spesa">
-                                </div>
-                            </div>
-
-                            <div class="col-sm-6 col-lg-2">
-                                <label for="filter-from-date" class="form-label">Da data</label>
-                                <input type="date" class="form-control" id="filter-from-date" name="fromDate">
-                            </div>
-
-                            <div class="col-sm-6 col-lg-2">
-                                <label for="filter-to-date" class="form-label">A data</label>
-                                <input type="date" class="form-control" id="filter-to-date" name="toDate">
-                            </div>
-
-                            <div class="col-sm-6 col-lg-2">
-                                <label for="filter-category" class="form-label">Categoria</label>
-                                <select id="filter-category" class="form-select" name="categoryId">
-                                    <option value="">Tutte</option>
-                                </select>
-                            </div>
-
-                            <div class="col-sm-6 col-lg-2">
-                                <label for="filter-payment-method" class="form-label">Pagamento</label>
-                                <select id="filter-payment-method" class="form-select" name="paymentMethodId">
-                                    <option value="">Tutti</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="filters-actions">
-                            <button type="button" class="btn btn-outline-secondary" id="reset-filters-button">
-                                Reimposta
-                            </button>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-funnel-fill" aria-hidden="true"></i>
-                                Applica filtri
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-                <p id="expenses-summary" class="expenses-summary" role="status" aria-live="polite"></p>
-
-                <div class="table-responsive">
-                    <table class="table expenses-table align-middle mb-0">
-                        <thead>
-                            <tr>
-                                <th scope="col">Data</th>
-                                <th scope="col">Titolo</th>
-                                <th scope="col">Categoria</th>
-                                <th scope="col">Metodo di pagamento</th>
-                                <th scope="col" class="text-end">Importo</th>
-                                <th scope="col" class="text-end">Azioni</th>
-                            </tr>
-                        </thead>
-
-                        <tbody id="expenses-table-body">
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="pagination-bar">
-                    <div class="page-size-control">
-                        <label for="expenses-page-size">Spese per pagina</label>
-                        <select id="expenses-page-size" class="form-select form-select-sm">
-                            <option value="10">10</option>
-                            <option value="20">20</option>
-                            <option value="50">50</option>
-                        </select>
-                    </div>
-
-                    <nav aria-label="Paginazione delle spese">
-                        <ul id="expenses-pagination" class="pagination pagination-sm mb-0"></ul>
-                    </nav>
-                </div>
+            <section class="dashboard-card latest-expenses" aria-labelledby="latest-expenses-heading">
+                <div class="dashboard-card-header"><div><span class="section-kicker">Movimenti recenti</span><h2 id="latest-expenses-heading">Ultime spese</h2></div><a class="btn btn-outline-secondary btn-sm" href="/expenses.html">Vedi tutte le spese <i class="bi bi-arrow-right" aria-hidden="true"></i></a></div>
+                <div id="latest-expenses-list" class="latest-expenses-list"></div>
             </section>
         </div>
-
-        <div class="modal fade"
-             id="expense-modal"
-             tabindex="-1"
-             aria-labelledby="expense-modal-title"
-             aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <div>
-                            <span class="section-kicker">Inserimento</span>
-                            <h2 class="modal-title fs-4" id="expense-modal-title">Nuova spesa</h2>
-                        </div>
-                        <button type="button"
-                                class="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Chiudi"></button>
-                    </div>
-
-                    <form id="expense-form">
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label for="title" class="form-label">Titolo</label>
-                                <input type="text"
-                                       class="form-control"
-                                       id="title"
-                                       name="title"
-                                       autocomplete="off"
-                                       required>
-                            </div>
-
-                            <div class="row g-3">
-                                <div class="col-sm-6">
-                                    <label for="amount" class="form-label">Importo</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">EUR</span>
-                                        <input type="number"
-                                               class="form-control"
-                                               id="amount"
-                                               name="amount"
-                                               step="0.01"
-                                               min="0.01"
-                                               required>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-6">
-                                    <label for="date" class="form-label">Data</label>
-                                    <input type="date"
-                                           class="form-control"
-                                           id="date"
-                                           name="date"
-                                           required>
-                                </div>
-                            </div>
-
-                            <div class="row g-3 mt-0">
-                                <div class="col-sm-6">
-                                    <label for="category" class="form-label">Categoria</label>
-                                    <select id="category"
-                                            class="form-select"
-                                            name="categoryId"
-                                            required>
-                                        <option value="">Seleziona una categoria</option>
-                                    </select>
-                                </div>
-
-                                <div class="col-sm-6">
-                                    <label for="payment-method" class="form-label">Metodo di pagamento</label>
-                                    <select id="payment-method"
-                                            class="form-select"
-                                            name="paymentMethodId"
-                                            required>
-                                        <option value="">Seleziona un metodo</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button"
-                                    class="btn btn-outline-secondary"
-                                    data-bs-dismiss="modal">
-                                Annulla
-                            </button>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-check2" aria-hidden="true"></i>
-                                Salva spesa
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal fade"
-             id="delete-expense-modal"
-             tabindex="-1"
-             aria-labelledby="delete-expense-modal-title"
-             aria-describedby="delete-expense-modal-description"
-             aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-sm">
-                <div class="modal-content confirmation-modal">
-                    <div class="modal-header">
-                        <div>
-                            <span class="section-kicker">Conferma azione</span>
-                            <h2 class="modal-title fs-4" id="delete-expense-modal-title">Eliminare la spesa?</h2>
-                        </div>
-                        <button type="button"
-                                class="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Chiudi"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p class="mb-0" id="delete-expense-modal-description">
-                            Questa operazione non può essere annullata.
-                        </p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button"
-                                class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal">
-                            Annulla
-                        </button>
-                        <button type="button" class="btn btn-danger" id="confirm-delete-expense-button">
-                            <i class="bi bi-trash3" aria-hidden="true"></i>
-                            Elimina spesa
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="toast-container"
-             class="toast-container position-fixed top-0 end-0 p-3"
-             aria-live="polite"
-             aria-atomic="true"></div>
+        <div id="toast-container" class="toast-container position-fixed top-0 end-0 p-3" aria-live="polite" aria-atomic="true"></div>
     </main>
-
     <script src="/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script type="module" src="/js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script type="module" src="/js/dashboard-page.js"></script>
 </body>
 </html>

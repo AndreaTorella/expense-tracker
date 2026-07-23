@@ -101,6 +101,10 @@ async function initializePage() {
 
             modalTitle.textContent = "Nuova spesa";
         });
+
+        if (window.location.hash === "#new-expense") {
+            newExpenseButton.click();
+        }
     } catch (error) {
         console.error(error);
         showError("Non è stato possibile caricare i dati.");
