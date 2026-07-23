@@ -1,6 +1,7 @@
 ﻿using ExpensesTracker.Data;
 using ExpensesTracker.Entities;
 using ExpensesTracker.Models;
+using ExpensesTracker.Models.Common;
 using ExpensesTracker.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -101,6 +102,56 @@ namespace ExpensesTracker.Repositories
         public async Task SaveChangesAsync()
         {
             await this.context.SaveChangesAsync();
+        }
+
+        public Task<decimal> GetTotalAsync(DateTime fromDate, DateTime toDate)
+        {
+            return this.context.Expenses
+                .Where(x => x.Date >= fromDate && x.Date < toDate)
+                .SumAsync(x => x.Amount);
+        }
+
+        public async Task<IEnumerable<CategoryTotal>> GetTotalsByCategoryAsync(DateTime fromDate, DateTime toDate)
+        {
+            var expenseByCategory = await this.context.Expenses
+                .Where(x => x.Date >= fromDate && x.Date < toDate)
+                .GroupBy(x => new
+                {
+                    x.CategoryId,
+                    x.Category.Name
+                })
+                .Select(group => new CategoryTotal
+                {
+                    CategoryId = group.Key.CategoryId,
+                    CategoryName = group.Key.Name,
+                    Total = group.Sum(x => x.Amount)
+                })
+                .OrderByDescending(x => x.Total)
+                .ToListAsync();
+
+            return expenseByCategory;
+        }
+
+        public async Task<IEnumerable<MonthlyTotal>> GetMonthlyTotalsAsync(DateTime fromDate, DateTime toDate)
+        {
+            var expenseByMonth = await this.context.Expenses
+                .Where(x => x.Date >= fromDate && x.Date < toDate)
+                .GroupBy(x => new
+                {
+                    x.Date.Month,
+                    x.Date.Year,
+                })
+                .Select(group => new MonthlyTotal
+                {
+                    Month = group.Key.Month,
+                    Year = group.Key.Year,
+                    Total = group.Sum(x => x.Amount)
+                })
+                .OrderBy(x => x.Year)
+                .ThenBy(x => x.Month)
+                .ToListAsync();
+
+            return expenseByMonth;
         }
 
         private static IQueryable<Expense> ApplySorting(

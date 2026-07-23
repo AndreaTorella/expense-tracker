@@ -1,4 +1,4 @@
-﻿namespace ExpensesTracker.Entities
+﻿namespace ExpensesTracker.Models.Common
 {
     public class PagedResult<T>
     {
