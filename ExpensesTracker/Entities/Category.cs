@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
         public CategoryName Name { get; set; }
-
-        public ICollection<Expense> Expenses { get; set; } = new List<Expense>();
+        public TransactionType TransactionType { get; set; }
+        public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
     }
 }

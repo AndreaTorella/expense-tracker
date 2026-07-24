@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ExpensesTracker.Models
 {
-    public class ExpenseFilterDto : IValidatableObject
+    public class TransactionFilterDto : IValidatableObject
     {
 
         [StringLength(
@@ -14,6 +14,8 @@ namespace ExpensesTracker.Models
         public DateTime? FromDate { get; set; }
 
         public DateTime? ToDate { get; set; }
+
+        public TransactionType? TransactionType { get; set; }
 
         [Range(
           1,
@@ -27,7 +29,7 @@ namespace ExpensesTracker.Models
             ErrorMessage = "L'identificativo del metodo di pagamento deve essere maggiore di zero.")]
         public int? PaymentMethodId { get; set; }
 
-        public ExpenseSortBy ExpenseSortBy { get; set; } = Enums.ExpenseSortBy.Date;
+        public TransactionSortBy TransactionSortBy { get; set; } = Enums.TransactionSortBy.Date;
 
         public SortDirection SortDirection { get; set; } = Enums.SortDirection.Desc;
 

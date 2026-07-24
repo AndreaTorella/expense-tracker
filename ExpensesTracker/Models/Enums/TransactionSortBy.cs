@@ -1,6 +1,6 @@
-﻿namespace ExpensesTracker.Models.Enums
+namespace ExpensesTracker.Models.Enums
 {
-    public enum ExpenseSortBy
+    public enum TransactionSortBy
     {
         Date,
         Amount,

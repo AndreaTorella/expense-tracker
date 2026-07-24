@@ -7,7 +7,7 @@ namespace ExpensesTracker.Data
     {
         public ExpenseTrackerDbContext(DbContextOptions<ExpenseTrackerDbContext> options) : base(options) { }
 
-        public DbSet<Expense> Expenses { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Category> Category { get; set; }
         public DbSet<PaymentMethod> PaymentMethod { get; set; }
 

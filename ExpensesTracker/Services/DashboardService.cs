@@ -8,14 +8,14 @@ namespace ExpensesTracker.Services
     {
         private const int DashboardMonthsCount = 6;
         private readonly IMapper mapper;
-        private readonly IExpenseRepository expenseRepository;
+        private readonly ITransactionRepository transactionRepository;
 
         public DashboardService(
             IMapper mapper,
-            IExpenseRepository expenseRepository)
+            ITransactionRepository transactionRepository)
         {
             this.mapper = mapper;
-            this.expenseRepository = expenseRepository;
+            this.transactionRepository = transactionRepository;
         }
 
         public async Task<DashboardSummaryDto> GetSummaryAsync(DashboardFilterDto filters)
@@ -28,8 +28,8 @@ namespace ExpensesTracker.Services
             var nextMonthStart = currentMonthStart.AddMonths(1);
             var previousMonthStart = currentMonthStart.AddMonths(-1);
 
-            var currentMonthTotal = await this.expenseRepository.GetTotalAsync(currentMonthStart, nextMonthStart);
-            var previousMonthTotal = await this.expenseRepository.GetTotalAsync(previousMonthStart, currentMonthStart);
+            var currentMonthTotal = await this.transactionRepository.GetTotalAsync(currentMonthStart, nextMonthStart);
+            var previousMonthTotal = await this.transactionRepository.GetTotalAsync(previousMonthStart, currentMonthStart);
 
             decimal? differencePercentage =
                 previousMonthTotal != 0
@@ -40,13 +40,13 @@ namespace ExpensesTracker.Services
 
             var categoryTotalsDto =
                 this.mapper.Map<IEnumerable<CategoryTotalDto>>(
-                    await this.expenseRepository.GetTotalsByCategoryAsync(currentMonthStart, nextMonthStart));
+                    await this.transactionRepository.GetTotalsByCategoryAsync(currentMonthStart, nextMonthStart));
 
             var sixMonthsBeforeStart = currentMonthStart.AddMonths(-5);
 
             var monthlyTotalsDto =
                 this.mapper.Map<IEnumerable<MonthlyTotalDto>>(
-                    await this.expenseRepository.GetMonthlyTotalsAsync(sixMonthsBeforeStart, nextMonthStart));
+                    await this.transactionRepository.GetMonthlyTotalsAsync(sixMonthsBeforeStart, nextMonthStart));
 
             var completeMonthlyTotals = Enumerable
                 .Range(0, DashboardMonthsCount)

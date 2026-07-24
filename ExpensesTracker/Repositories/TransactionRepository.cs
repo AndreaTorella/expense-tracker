@@ -8,17 +8,17 @@ using System.Linq.Expressions;
 
 namespace ExpensesTracker.Repositories
 {
-    public class ExpenseRepository : IExpenseRepository
+    public class TransactionRepository : ITransactionRepository
     {
         private readonly ExpenseTrackerDbContext context;
 
-        public ExpenseRepository(ExpenseTrackerDbContext expenseTrackerDbContext)
+        public TransactionRepository(ExpenseTrackerDbContext context)
         {
-            this.context = expenseTrackerDbContext ?? throw new ArgumentNullException(nameof(expenseTrackerDbContext));
+            this.context = context ?? throw new ArgumentNullException(nameof(context));
         }
-        public async Task<PagedResult<Expense>> GetExpensesAsync(ExpenseFilterDto filters)
+        public async Task<PagedResult<Transaction>> GetTransactionAsync(TransactionFilterDto filters)
         {
-            IQueryable<Expense> query = this.context.Expenses
+            IQueryable<Transaction> query = this.context.Transactions
                 .AsNoTracking()
                 .Include(x => x.Category)
                 .Include(x => x.PaymentMethod);
@@ -43,6 +43,11 @@ namespace ExpensesTracker.Repositories
                     x.Date < endDateExclusive);
             }
 
+            if (filters.TransactionType.HasValue)
+            {
+                query = query.Where(x => x.TransactionType == filters.TransactionType.Value);
+            }
+
             if (filters.CategoryId is int categoryId)
             {
                 query = query.Where(x => x.CategoryId == categoryId);
@@ -62,16 +67,16 @@ namespace ExpensesTracker.Repositories
                 .Take(filters.PageSize)
                 .ToListAsync();
 
-            return new PagedResult<Expense>()
+            return new PagedResult<Transaction>()
             {
                 Items = items,
                 TotalItems = totalItems,
             };
         }
 
-        public async Task<Expense?> GetExpenseByIdAsync(int id)
+        public async Task<Transaction?> GetTransactionByIdAsync(int id)
         {
-            IQueryable<Expense> query = this.context.Expenses;
+            IQueryable<Transaction> query = this.context.Transactions;
 
             return await query
                 .Include(x => x.Category)
@@ -79,24 +84,24 @@ namespace ExpensesTracker.Repositories
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public async Task AddExpenseAsync(Expense expense)
+        public async Task AddTransactionAsync(Transaction transaction)
         {
-            if (expense == null)
+            if (transaction == null)
             {
-                throw new ArgumentNullException(nameof(expense));
+                throw new ArgumentNullException(nameof(transaction));
             }
 
-            await this.context.Expenses.AddAsync(expense);
+            await this.context.Transactions.AddAsync(transaction);
         }
 
-        public void DeleteExpenseAsync(Expense expense)
+        public void DeleteTransactionAsync(Transaction transaction)
         {
-            if (expense == null)
+            if (transaction == null)
             {
-                throw new ArgumentNullException(nameof(expense));
+                throw new ArgumentNullException(nameof(transaction));
             }
 
-            this.context.Expenses.Remove(expense);
+            this.context.Transactions.Remove(transaction);
         }
 
         public async Task SaveChangesAsync()
@@ -106,14 +111,14 @@ namespace ExpensesTracker.Repositories
 
         public Task<decimal> GetTotalAsync(DateTime fromDate, DateTime toDate)
         {
-            return this.context.Expenses
+            return this.context.Transactions
                 .Where(x => x.Date >= fromDate && x.Date < toDate)
                 .SumAsync(x => x.Amount);
         }
 
         public async Task<IEnumerable<CategoryTotal>> GetTotalsByCategoryAsync(DateTime fromDate, DateTime toDate)
         {
-            var expenseByCategory = await this.context.Expenses
+            var transactionsByCategory = await this.context.Transactions
                 .Where(x => x.Date >= fromDate && x.Date < toDate)
                 .GroupBy(x => new
                 {
@@ -129,12 +134,12 @@ namespace ExpensesTracker.Repositories
                 .OrderByDescending(x => x.Total)
                 .ToListAsync();
 
-            return expenseByCategory;
+            return transactionsByCategory;
         }
 
         public async Task<IEnumerable<MonthlyTotal>> GetMonthlyTotalsAsync(DateTime fromDate, DateTime toDate)
         {
-            var expenseByMonth = await this.context.Expenses
+            var transactionsByMonth = await this.context.Transactions
                 .Where(x => x.Date >= fromDate && x.Date < toDate)
                 .GroupBy(x => new
                 {
@@ -151,28 +156,28 @@ namespace ExpensesTracker.Repositories
                 .ThenBy(x => x.Month)
                 .ToListAsync();
 
-            return expenseByMonth;
+            return transactionsByMonth;
         }
 
-        private static IQueryable<Expense> ApplySorting(
-            IQueryable<Expense> query,
-            ExpenseFilterDto filters)
+        private static IQueryable<Transaction> ApplySorting(
+            IQueryable<Transaction> query,
+            TransactionFilterDto filters)
         {
-            return filters.ExpenseSortBy switch
+            return filters.TransactionSortBy switch
             {
-                ExpenseSortBy.Date =>
+                TransactionSortBy.Date =>
                     ApplyOrder(query, x => x.Date, filters.SortDirection),
 
-                ExpenseSortBy.Amount =>
+                TransactionSortBy.Amount =>
                     ApplyOrder(query, x => x.Amount, filters.SortDirection),
 
-                ExpenseSortBy.Title =>
+                TransactionSortBy.Title =>
                     ApplyOrder(query, x => x.Title, filters.SortDirection),
 
-                ExpenseSortBy.Category =>
+                TransactionSortBy.Category =>
                     ApplyOrder(query, x => x.Category.Name, filters.SortDirection),
 
-                ExpenseSortBy.PaymentMethod =>
+                TransactionSortBy.PaymentMethod =>
                     ApplyOrder(
                         query,
                         x => x.PaymentMethod.Name,
@@ -185,9 +190,9 @@ namespace ExpensesTracker.Repositories
             };
         }
 
-        private static IQueryable<Expense> ApplyOrder<TKey>(
-            IQueryable<Expense> query,
-            Expression<Func<Expense, TKey>> orderBy,
+        private static IQueryable<Transaction> ApplyOrder<TKey>(
+            IQueryable<Transaction> query,
+            Expression<Func<Transaction, TKey>> orderBy,
             SortDirection direction)
         {
             return direction == SortDirection.Asc

@@ -2,7 +2,7 @@
 
 namespace ExpensesTracker.Models
 {
-    public class CreateExpenseDto
+    public class CreateTransactionDto
     {
         [Required]
         [MaxLength(150)]
@@ -13,6 +13,9 @@ namespace ExpensesTracker.Models
 
         [Required]
         public DateTime Date { get; set; }
+
+        [Required]
+        public TransactionType TransactionType { get; set; }
 
         [Range(1, int.MaxValue)]
         public int CategoryId { get; set; }

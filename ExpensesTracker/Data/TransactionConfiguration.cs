@@ -1,14 +1,14 @@
-﻿using ExpensesTracker.Entities;
+using ExpensesTracker.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ExpensesTracker.Data
 {
-    public class ExpenseConfiguration : IEntityTypeConfiguration<Expense>
+    public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
     {
-        public void Configure(EntityTypeBuilder<Expense> entity)
+        public void Configure(EntityTypeBuilder<Transaction> entity)
         {
-            entity.ToTable(nameof(Expense));
+            entity.ToTable(nameof(Transaction));
 
             entity.HasKey(e => e.Id);
 
@@ -23,13 +23,16 @@ namespace ExpensesTracker.Data
             entity.Property(e => e.Date)
                 .IsRequired();
 
+            entity.Property(e => e.TransactionType)
+                .IsRequired();
+
             entity.HasOne(e => e.Category)
-                .WithMany(c => c.Expenses)
+                .WithMany(c => c.Transactions)
                 .HasForeignKey(e => e.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             entity.HasOne(e => e.PaymentMethod)
-                .WithMany(pm => pm.Expenses)
+                .WithMany(pm => pm.Transactions)
                 .HasForeignKey(e => e.PaymentMethodId)
                 .OnDelete(DeleteBehavior.Restrict);
         }

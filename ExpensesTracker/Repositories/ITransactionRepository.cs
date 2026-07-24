@@ -4,12 +4,12 @@ using ExpensesTracker.Models.Common;
 
 namespace ExpensesTracker.Repositories
 {
-    public interface IExpenseRepository
+    public interface ITransactionRepository
     {
-        Task<PagedResult<Expense>> GetExpensesAsync(ExpenseFilterDto filters);
-        Task<Expense?> GetExpenseByIdAsync(int id);
-        Task AddExpenseAsync(Expense expense);
-        void DeleteExpenseAsync(Expense expense);
+        Task<PagedResult<Transaction>> GetTransactionAsync(TransactionFilterDto filters);
+        Task<Transaction?> GetTransactionByIdAsync(int id);
+        Task AddTransactionAsync(Transaction transaction);
+        void DeleteTransactionAsync(Transaction transaction);
         Task SaveChangesAsync();
 
         Task<decimal> GetTotalAsync(DateTime fromDate, DateTime toDate);
