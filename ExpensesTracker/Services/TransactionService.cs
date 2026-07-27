@@ -86,6 +86,18 @@ namespace ExpensesTracker.Services
                 return null;
             }
 
+            var category = await this.categoryRepository.GetCategoryByIdAsync(updateTransactionDto.CategoryId);
+
+            if (category == null)
+            {
+                throw new ArgumentException("Category not valid");
+            }
+
+            if (updateTransactionDto.TransactionType != category.TransactionType)
+            {
+                throw new ArgumentException("Category not compatible with the transaction");
+            }
+
             mapper.Map(updateTransactionDto, transactionEntity);
             await transactionRepository.SaveChangesAsync();
 
