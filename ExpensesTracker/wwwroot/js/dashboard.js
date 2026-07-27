@@ -1,28 +1,32 @@
-import { getDashboardSummary, getExpenses } from "./api.js";
+import { getDashboardSummary, getTransactions } from "./api.js";
 
 const chartColors = ["#176b5f", "#c78b36", "#537895", "#9a5b5b", "#7d6c9d", "#559176"];
 let categoryChart;
 let monthlyChart;
 
 export async function loadDashboard(year, month) {
-    const [summary, latestExpenses] = await Promise.all([
+    const [summary, latestTransactions] = await Promise.all([
         getDashboardSummary(year, month),
-        getExpenses({ PageNumber: 1, PageSize: 5, ExpenseSortBy: "Date", SortDirection: "Desc" })
+        getTransactions({ PageNumber: 1, PageSize: 5, TransactionType: "Expense", TransactionSortBy: "Date", SortDirection: "Desc" })
     ]);
 
-    return { summary, latestExpenses: latestExpenses.items };
+    return { summary, latestTransactions: latestTransactions.items };
 }
 
-export function renderDashboard(summary, latestExpenses, selectedDate) {
+export function renderDashboard(summary, latestTransactions, selectedDate) {
     const previousDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, 1);
-    document.querySelector("#current-month-total").textContent = formatCurrency(summary.currentMonthTotal);
-    document.querySelector("#previous-month-total").textContent = formatCurrency(summary.previousMonthTotal);
+    document.querySelector("#current-month-expenses").textContent = formatCurrency(summary.currentMonthTotalExpenses);
+    document.querySelector("#current-month-incomes").textContent = formatCurrency(summary.currentMonthTotalIncomes);
+    renderBalance(summary.currentMonthBalance);
+    document.querySelector("#previous-month-expenses").textContent = formatCurrency(summary.previousMonthTotalExpenses);
     document.querySelector("#current-month-label").textContent = formatMonth(selectedDate);
+    document.querySelector("#current-month-income-label").textContent = formatMonth(selectedDate);
+    document.querySelector("#current-month-balance-label").textContent = formatMonth(selectedDate);
     document.querySelector("#previous-month-label").textContent = formatMonth(previousDate);
-    renderDifference(summary.differencePercentage);
+    renderDifference(summary.differenceExpensePercentage);
     renderCategoryChart(summary.categoryTotals);
     renderMonthlyChart(summary.monthlyTotals);
-    renderLatestExpenses(latestExpenses);
+    renderLatestExpenses(latestTransactions);
 }
 
 export function formatMonth(date) {
@@ -30,8 +34,8 @@ export function formatMonth(date) {
 }
 
 function renderDifference(differencePercentage) {
-    const element = document.querySelector("#difference-percentage");
-    const description = document.querySelector("#difference-description");
+    const element = document.querySelector("#expense-difference-percentage");
+    const description = document.querySelector("#expense-difference-description");
 
     if (differencePercentage === null || differencePercentage === undefined) {
         element.textContent = "N/D";
@@ -44,6 +48,18 @@ function renderDifference(differencePercentage) {
     element.textContent = `${sign}${Number(differencePercentage).toLocaleString("it-IT", { maximumFractionDigits: 2 })}%`;
     element.className = differencePercentage > 0 ? "is-increase" : "is-decrease";
     description.textContent = "Rispetto al mese precedente";
+}
+
+function renderBalance(balance) {
+    const element = document.querySelector("#current-month-balance");
+    const numericBalance = Number(balance);
+
+    element.textContent = formatCurrency(numericBalance);
+    element.className = numericBalance > 0
+        ? "is-positive"
+        : numericBalance < 0
+            ? "is-negative"
+            : "is-neutral";
 }
 
 function renderCategoryChart(categoryTotals) {
@@ -82,21 +98,21 @@ function renderMonthlyChart(monthlyTotals) {
     });
 }
 
-function renderLatestExpenses(expenses) {
+function renderLatestExpenses(transactions) {
     const container = document.querySelector("#latest-expenses-list");
     container.innerHTML = "";
-    if (!expenses.length) {
+    if (!transactions.length) {
         container.innerHTML = '<p class="latest-expenses-empty">Non sono ancora presenti spese.</p>';
         return;
     }
 
-    expenses.forEach((expense) => {
+    transactions.forEach((transaction) => {
         const item = document.createElement("div");
         item.className = "latest-expense-item";
         item.innerHTML = `<div><strong></strong><span></span></div><b></b>`;
-        item.querySelector("strong").textContent = expense.title;
-        item.querySelector("span").textContent = `${expense.categoryName} · ${new Date(expense.date).toLocaleDateString("it-IT")}`;
-        item.querySelector("b").textContent = formatCurrency(expense.amount);
+        item.querySelector("strong").textContent = transaction.title;
+        item.querySelector("span").textContent = `${transaction.categoryName} · ${new Date(transaction.date).toLocaleDateString("it-IT")}`;
+        item.querySelector("b").textContent = formatCurrency(transaction.amount);
         container.appendChild(item);
     });
 }

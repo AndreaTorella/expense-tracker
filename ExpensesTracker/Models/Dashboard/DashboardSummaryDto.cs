@@ -2,11 +2,17 @@
 {
     public class DashboardSummaryDto
     {
-        public decimal CurrentMonthTotal { get; set; }
+        public decimal CurrentMonthTotalExpenses { get; set; }
 
-        public decimal PreviousMonthTotal { get; set; }
+        public decimal CurrentMonthTotalIncomes { get; set; }
 
-        public decimal? DifferencePercentage { get; set; }
+        public decimal CurrentMonthBalance { get; set; }
+
+        public decimal PreviousMonthTotalExpenses { get; set; }
+
+        public decimal? DifferenceExpensePercentage { get; set; }
+
+        public decimal? DifferenceIncomePercentage { get; set; }
 
         public IEnumerable<CategoryTotalDto> CategoryTotals { get; set; } = [];
 

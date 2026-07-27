@@ -1,6 +1,6 @@
 const baseUrl = "/api";
 
-export async function getExpenses(filters = {}) {
+export async function getTransactions(filters = {}) {
     const queryParams = new URLSearchParams();
 
     Object.entries(filters).forEach(([key, value]) => {
@@ -14,26 +14,26 @@ export async function getExpenses(filters = {}) {
     const queryString = queryParams.toString();
 
     const url = queryString
-        ? `${baseUrl}/Expenses?${queryString}`
-        : `${baseUrl}/Expenses`;
+        ? `${baseUrl}/Transactions?${queryString}`
+        : `${baseUrl}/Transactions`;
 
     const response = await fetch(url);
 
     if (!response.ok) {
         throw new Error(
-            `Errore durante il caricamento delle spese. Status: ${response.status}`
+            `Errore durante il caricamento dei movimenti. Status: ${response.status}`
         );
     }
 
     return await response.json();
 }
 
-export async function getExpenseById(expenseId) {
-    const response = await fetch(`${baseUrl}/Expenses/${expenseId}`);
+export async function getTransactionById(transactionId) {
+    const response = await fetch(`${baseUrl}/Transactions/${transactionId}`);
 
     if (!response.ok) {
         throw new Error(
-            `Errore durante il caricamento della spesa. Status: ${response.status}`
+            `Errore durante il caricamento del movimento. Status: ${response.status}`
         );
     }
 
@@ -64,50 +64,50 @@ export async function getPaymentMethods() {
     return await response.json();
 }
 
-export async function createExpense(expense) {
-    const response = await fetch(`${baseUrl}/Expenses`, {
+export async function createTransaction(transaction) {
+    const response = await fetch(`${baseUrl}/Transactions`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(expense)
+        body: JSON.stringify(transaction)
     });
 
     if (!response.ok) {
         throw new Error(
-            `Errore durante il salvataggio della spesa. Status: ${response.status}`
+            `Errore durante il salvataggio del movimento. Status: ${response.status}`
         );
     }
 
     return await response.json();
 }
 
-export async function updateExpense(id, expenseData) {
-    const response = await fetch(`${baseUrl}/Expenses/${id}`, {
+export async function updateTransaction(id, transactionData) {
+    const response = await fetch(`${baseUrl}/Transactions/${id}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(expenseData)
+        body: JSON.stringify(transactionData)
     });
 
     if (!response.ok) {
         throw new Error(
-            `Errore durante la modifica della spesa. Status: ${response.status}`
+            `Errore durante la modifica del movimento. Status: ${response.status}`
         );
     }
 
     return await response.json();
 }
 
-export async function deleteExpense(id) {
-    const response = await fetch(`${baseUrl}/Expenses/${id}`, {
+export async function deleteTransaction(id) {
+    const response = await fetch(`${baseUrl}/Transactions/${id}`, {
         method: "DELETE"
     });
 
     if (!response.ok) {
         throw new Error(
-            `Errore durante l'eliminazione della spesa. Status: ${response.status}`
+            `Errore durante l'eliminazione del movimento. Status: ${response.status}`
         );
     }
 }

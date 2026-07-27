@@ -41,7 +41,7 @@ body.app-is-loading {
 .app-navigation .nav-link.active { color: #fff; }
 .app-navigation .navbar-toggler { border-color: rgba(255, 255, 255, 0.45); }
 .app-navigation .navbar-toggler-icon { filter: invert(1); }
-.nav-new-expense { display: inline-flex; align-items: center; gap: 0.4rem; }
+.nav-new-transaction { display: inline-flex; align-items: center; gap: 0.4rem; }
 
 .app-hero {
     padding: 4rem 0 5.5rem;
@@ -64,6 +64,8 @@ body.app-is-loading {
 .summary-card strong { margin: .55rem 0 auto; color: var(--app-primary-dark); font-size: 1.8rem; }
 .summary-card strong.is-increase { color: #b54708; }
 .summary-card strong.is-decrease { color: var(--app-primary); }
+.summary-card strong.is-positive { color: var(--app-primary); }
+.summary-card strong.is-negative { color: #b42318; }
 .summary-card strong.is-neutral { color: var(--app-muted); }
 .dashboard-panels { margin-top: 1.5rem; }
 .dashboard-card { overflow: hidden; }
@@ -301,7 +303,7 @@ body.app-is-loading {
     margin-top: 1.25rem;
 }
 
-.expenses-summary {
+.transactions-summary {
     min-height: 1.25rem;
     margin: 0;
     padding: 0.75rem 1.25rem;
@@ -390,11 +392,11 @@ body.app-is-loading {
     gap: 0.4rem;
 }
 
-.expenses-table {
+.transactions-table {
     min-width: 760px;
 }
 
-.expenses-table thead th {
+.transactions-table thead th {
     padding: 0.85rem 1rem;
     color: var(--app-muted);
     background: var(--app-surface-muted);
@@ -406,30 +408,45 @@ body.app-is-loading {
     white-space: nowrap;
 }
 
-.expenses-table tbody td {
+.transactions-table tbody td {
     padding: 1rem;
     border-color: var(--app-border);
     vertical-align: middle;
 }
 
-.expenses-table tbody tr:last-child td {
+.transactions-table tbody tr:last-child td {
     border-bottom: 0;
 }
 
-.expense-title {
+.transaction-title {
     font-weight: 700;
 }
 
-.expense-meta {
+.transaction-meta {
     color: var(--app-muted);
     font-size: 0.92rem;
 }
 
-.expense-amount {
+.transaction-amount {
     color: var(--app-primary-dark);
     font-weight: 800;
     white-space: nowrap;
 }
+
+.transaction-amount-expense { color: #b54708; }
+.transaction-amount-income { color: var(--app-primary); }
+
+.transaction-type {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.88rem;
+    font-weight: 700;
+}
+
+.transaction-type-expense { color: #8a3d12; background: #fff4dc; }
+.transaction-type-income { color: var(--app-primary-dark); background: #e7f4f1; }
 
 .category-pill,
 .payment-pill {
@@ -637,21 +654,21 @@ body.app-is-loading {
         overflow: visible;
     }
 
-    .expenses-table {
+    .transactions-table {
         min-width: 0;
     }
 
-    .expenses-table thead {
+    .transactions-table thead {
         display: none;
     }
 
-    .expenses-table tbody {
+    .transactions-table tbody {
         display: block;
         padding: 0.75rem;
         background: #f8fafc;
     }
 
-    .expenses-table tbody tr {
+    .transactions-table tbody tr {
         display: grid;
         gap: 0.75rem;
         margin-bottom: 0.75rem;
@@ -661,11 +678,11 @@ body.app-is-loading {
         border-radius: 0.5rem;
     }
 
-    .expenses-table tbody tr:last-child {
+    .transactions-table tbody tr:last-child {
         margin-bottom: 0;
     }
 
-    .expenses-table tbody td {
+    .transactions-table tbody td {
         display: flex;
         align-items: flex-start;
         justify-content: space-between;
@@ -675,7 +692,7 @@ body.app-is-loading {
         text-align: right;
     }
 
-    .expenses-table tbody td::before {
+    .transactions-table tbody td::before {
         flex: 0 0 auto;
         color: var(--app-muted);
         font-size: 0.72rem;
@@ -684,32 +701,36 @@ body.app-is-loading {
         text-transform: uppercase;
     }
 
-    .expenses-table tbody td:nth-child(1)::before {
+    .transactions-table tbody td:nth-child(1)::before {
         content: "Data";
     }
 
-    .expenses-table tbody td:nth-child(2)::before {
+    .transactions-table tbody td:nth-child(2)::before {
         content: "Titolo";
     }
 
-    .expenses-table tbody td:nth-child(3)::before {
+    .transactions-table tbody td:nth-child(3)::before {
+        content: "Tipo";
+    }
+
+    .transactions-table tbody td:nth-child(4)::before {
         content: "Categoria";
     }
 
-    .expenses-table tbody td:nth-child(4)::before {
+    .transactions-table tbody td:nth-child(5)::before {
         content: "Metodo";
     }
 
-    .expenses-table tbody td:nth-child(5)::before {
+    .transactions-table tbody td:nth-child(6)::before {
         content: "Importo";
     }
 
-    .expenses-table tbody td:nth-child(6)::before {
+    .transactions-table tbody td:nth-child(7)::before {
         content: "Azioni";
     }
 
-    .expense-title,
-    .expense-meta {
+    .transaction-title,
+    .transaction-meta {
         text-align: right;
     }
 

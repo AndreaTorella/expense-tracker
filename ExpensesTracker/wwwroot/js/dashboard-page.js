@@ -22,8 +22,8 @@ async function refreshDashboard() {
     updateMonthNavigation();
     try {
         showLoading();
-        const { summary, latestExpenses } = await loadDashboard(selectedMonth.getFullYear(), selectedMonth.getMonth() + 1);
-        renderDashboard(summary, latestExpenses, selectedMonth);
+        const { summary, latestTransactions } = await loadDashboard(selectedMonth.getFullYear(), selectedMonth.getMonth() + 1);
+        renderDashboard(summary, latestTransactions, selectedMonth);
     } catch (error) {
         console.error(error);
         showError("Non è stato possibile caricare la dashboard.");

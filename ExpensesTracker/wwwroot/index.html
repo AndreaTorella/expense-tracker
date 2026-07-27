@@ -19,8 +19,8 @@
                 <div class="collapse navbar-collapse" id="main-navigation">
                     <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
                         <li class="nav-item"><a class="nav-link active" aria-current="page" href="/index.html">Dashboard</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/expenses.html">Spese</a></li>
-                        <li class="nav-item"><a class="btn btn-primary btn-sm nav-new-expense" href="/expenses.html#new-expense"><i class="bi bi-plus-lg" aria-hidden="true"></i> Nuova spesa</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/expenses.html">Movimenti</a></li>
+                        <li class="nav-item"><a class="btn btn-primary btn-sm nav-new-transaction" href="/expenses.html#new-transaction"><i class="bi bi-plus-lg" aria-hidden="true"></i> Nuovo movimento</a></li>
                     </ul>
                 </div>
             </div>
@@ -44,9 +44,11 @@
         <div class="container app-content dashboard-content">
             <div id="error-message" class="alert alert-danger" role="alert" hidden></div>
             <section class="row g-3" aria-label="Riepilogo del mese">
-                <div class="col-md-4"><article class="summary-card"><span>Spese del mese</span><strong id="current-month-total">—</strong><small id="current-month-label"></small></article></div>
-                <div class="col-md-4"><article class="summary-card"><span>Mese precedente</span><strong id="previous-month-total">—</strong><small id="previous-month-label"></small></article></div>
-                <div class="col-md-4"><article class="summary-card"><span>Variazione</span><strong id="difference-percentage">—</strong><small id="difference-description">Rispetto al mese precedente</small></article></div>
+                <div class="col-md-6 col-xl"><article class="summary-card"><span>Spese del mese</span><strong id="current-month-expenses">—</strong><small id="current-month-label"></small></article></div>
+                <div class="col-md-6 col-xl"><article class="summary-card"><span>Entrate del mese</span><strong id="current-month-incomes">—</strong><small id="current-month-income-label"></small></article></div>
+                <div class="col-md-6 col-xl"><article class="summary-card"><span>Saldo del mese</span><strong id="current-month-balance">—</strong><small id="current-month-balance-label"></small></article></div>
+                <div class="col-md-6 col-xl"><article class="summary-card"><span>Spese mese precedente</span><strong id="previous-month-expenses">—</strong><small id="previous-month-label"></small></article></div>
+                <div class="col-md-6 col-xl"><article class="summary-card"><span>Variazione spese</span><strong id="expense-difference-percentage">—</strong><small id="expense-difference-description">Rispetto al mese precedente</small></article></div>
             </section>
 
             <section class="row g-4 dashboard-panels">
@@ -55,7 +57,7 @@
             </section>
 
             <section class="dashboard-card latest-expenses" aria-labelledby="latest-expenses-heading">
-                <div class="dashboard-card-header"><div><span class="section-kicker">Movimenti recenti</span><h2 id="latest-expenses-heading">Ultime spese</h2></div><a class="btn btn-outline-secondary btn-sm" href="/expenses.html">Vedi tutte le spese <i class="bi bi-arrow-right" aria-hidden="true"></i></a></div>
+                <div class="dashboard-card-header"><div><span class="section-kicker">Movimenti recenti</span><h2 id="latest-expenses-heading">Ultime uscite</h2></div><a class="btn btn-outline-secondary btn-sm" href="/expenses.html">Vedi tutti i movimenti <i class="bi bi-arrow-right" aria-hidden="true"></i></a></div>
                 <div id="latest-expenses-list" class="latest-expenses-list"></div>
             </section>
         </div>

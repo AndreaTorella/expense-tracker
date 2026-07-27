@@ -109,17 +109,26 @@ namespace ExpensesTracker.Repositories
             await this.context.SaveChangesAsync();
         }
 
-        public Task<decimal> GetTotalAsync(DateTime fromDate, DateTime toDate)
+        public Task<decimal> GetTotalAsync(DateTime fromDate, DateTime toDate, TransactionType transactionType)
         {
             return this.context.Transactions
-                .Where(x => x.Date >= fromDate && x.Date < toDate)
+                .Where(x =>
+                    x.Date >= fromDate &&
+                    x.Date < toDate &&
+                    x.TransactionType == transactionType)
                 .SumAsync(x => x.Amount);
         }
 
-        public async Task<IEnumerable<CategoryTotal>> GetTotalsByCategoryAsync(DateTime fromDate, DateTime toDate)
+        public async Task<IEnumerable<CategoryTotal>> GetTotalsByCategoryAsync(
+            DateTime fromDate,
+            DateTime toDate,
+            TransactionType transactionType)
         {
             var transactionsByCategory = await this.context.Transactions
-                .Where(x => x.Date >= fromDate && x.Date < toDate)
+                .Where(x =>
+                    x.Date >= fromDate &&
+                    x.Date < toDate &&
+                    x.TransactionType == transactionType)
                 .GroupBy(x => new
                 {
                     x.CategoryId,
@@ -137,10 +146,16 @@ namespace ExpensesTracker.Repositories
             return transactionsByCategory;
         }
 
-        public async Task<IEnumerable<MonthlyTotal>> GetMonthlyTotalsAsync(DateTime fromDate, DateTime toDate)
+        public async Task<IEnumerable<MonthlyTotal>> GetMonthlyTotalsAsync(
+            DateTime fromDate,
+            DateTime toDate,
+            TransactionType transactionType)
         {
             var transactionsByMonth = await this.context.Transactions
-                .Where(x => x.Date >= fromDate && x.Date < toDate)
+                .Where(x =>
+                    x.Date >= fromDate &&
+                    x.Date < toDate &&
+                    x.TransactionType == transactionType)
                 .GroupBy(x => new
                 {
                     x.Date.Month,
