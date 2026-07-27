@@ -8,13 +8,16 @@ namespace ExpensesTracker.Services
     public class TransactionService : ITransactionService
     {
         private readonly ITransactionRepository transactionRepository;
+        private readonly ICategoryRepository categoryRepository;
         private readonly IMapper mapper;
 
         public TransactionService(
             ITransactionRepository transactionRepository,
+            ICategoryRepository categoryRepository,
             IMapper mapper)
         {
             this.transactionRepository = transactionRepository ?? throw new ArgumentNullException(nameof(transactionRepository));
+            this.categoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -48,6 +51,19 @@ namespace ExpensesTracker.Services
             if (transactionDto == null)
             {
                 throw new ArgumentNullException(nameof(transactionDto));
+            }
+
+            var category = await this.categoryRepository.GetCategoryByIdAsync(transactionDto.CategoryId);
+
+            if (category == null)
+            {
+                throw new ArgumentException("Category not valid");
+            }
+
+            //Business rule
+            if (transactionDto.TransactionType != category.TransactionType)
+            {
+                throw new ArgumentException("Category not compatible with the transaction");
             }
 
             var transactionEntity = mapper.Map<Transaction>(transactionDto);

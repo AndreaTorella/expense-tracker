@@ -21,10 +21,20 @@ namespace ExpensesTracker.Data
             modelBuilder.Entity<Category>().HasData(
                 Enum.GetValues(typeof(CategoryName))
                     .Cast<CategoryName>()
-                    .Select((e, index) => new Category
+                    .Select((categoryName, index) => new Category
                     {
                         Id = index + 1,
-                        Name = e
+                        Name = categoryName,
+                        TransactionType = categoryName switch
+                        {
+                            CategoryName.Salary
+                                or CategoryName.Bonus
+                                or CategoryName.Refund
+                                or CategoryName.Gift
+                                    => TransactionType.Income,
+
+                            _ => TransactionType.Expense
+                        }
                     })
             );
 
