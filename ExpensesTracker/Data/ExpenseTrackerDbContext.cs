@@ -1,9 +1,10 @@
 ﻿using ExpensesTracker.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpensesTracker.Data
 {
-    public class ExpenseTrackerDbContext : DbContext
+    public class ExpenseTrackerDbContext : IdentityDbContext<ApplicationUser>
     {
         public ExpenseTrackerDbContext(DbContextOptions<ExpenseTrackerDbContext> options) : base(options) { }
 
@@ -13,7 +14,7 @@ namespace ExpensesTracker.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            base.OnModelCreating(modelBuilder); // Con IdentityDbContext configura lo schema identity
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ExpenseTrackerDbContext).Assembly);
 
