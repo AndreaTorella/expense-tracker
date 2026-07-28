@@ -1,4 +1,5 @@
 using ExpensesTracker.Data;
+using ExpensesTracker.Entities;
 using ExpensesTracker.Repositories;
 using ExpensesTracker.Services;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +31,15 @@ builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+
+//For identity DI
+builder.Services
+    .AddIdentityCore<ApplicationUser>()
+    .AddEntityFrameworkStores<ExpenseTrackerDbContext>();
+
+//builder.Services
+//    .AddAuthentication()
+//    .A;
 
 var app = builder.Build();
 
