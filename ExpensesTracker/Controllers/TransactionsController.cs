@@ -85,5 +85,18 @@ namespace ExpensesTracker.Controllers
 
             return NoContent();
         }
+
+        [HttpGet("me")]
+        public ActionResult GetCurrentUser()
+        {
+            var userId = User.FindFirst("sub")?.Value;
+            var email = User.FindFirst("email")?.Value;
+
+            return Ok(new
+            {
+                userId,
+                email
+            });
+        }
     }
 }
