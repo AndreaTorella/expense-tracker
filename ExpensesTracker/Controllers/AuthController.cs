@@ -3,7 +3,6 @@ using ExpensesTracker.Models;
 using ExpensesTracker.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
 namespace ExpensesTracker.Controllers
 {
@@ -49,26 +48,26 @@ namespace ExpensesTracker.Controllers
         [HttpPost("login")]
         public async Task<ActionResult> LoginAsync([FromBody] LoginDto loginDto)
         {
-            if(loginDto == null)
+            if (loginDto == null)
             {
                 throw new ArgumentNullException(nameof(loginDto));
             }
 
-            var user = await this.userManager.FindByEmailAsync(loginDto.Email);
+            var user = await userManager.FindByEmailAsync(loginDto.Email);
 
-            if(user == null)
+            if (user == null)
             {
                 return Unauthorized();
             }
 
-            var isPasswordValid = await this.userManager.CheckPasswordAsync(user, loginDto.Password);
+            var isPasswordValid = await userManager.CheckPasswordAsync(user, loginDto.Password);
 
             if (!isPasswordValid)
             {
                 return Unauthorized();
             }
 
-            var token = this.tokenService.CreateToken(user);
+            var token = tokenService.CreateToken(user);
 
             return Ok(new
             {
