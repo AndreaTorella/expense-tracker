@@ -9,9 +9,6 @@ namespace ExpensesTracker.Profiles
         public HouseholdProfile()
         {
             this.CreateMap<CreateHouseholdDto, Household>();
-            this.CreateMap<Household, CreateHouseholdDto>();
-
-            this.CreateMap<HouseholdDto, Household>();
             this.CreateMap<Household, HouseholdDto>();
         }
     }

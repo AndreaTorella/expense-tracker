@@ -9,9 +9,9 @@ namespace ExpensesTracker.Data
         public ExpenseTrackerDbContext(DbContextOptions<ExpenseTrackerDbContext> options) : base(options) { }
 
         public DbSet<Transaction> Transactions { get; set; }
-        public DbSet<Category> Category { get; set; }
-        public DbSet<PaymentMethod> PaymentMethod { get; set; }
-        public DbSet<Household> Household { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<PaymentMethod> PaymentMethods { get; set; }
+        public DbSet<Household> Households { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

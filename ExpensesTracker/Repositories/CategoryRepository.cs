@@ -15,12 +15,12 @@ namespace ExpensesTracker.Repositories
 
         public async Task<IEnumerable<Category>> GetAllCategoriesAsync()
         {
-            return await context.Category.ToListAsync();
+            return await context.Categories.ToListAsync();
         }
 
         public async Task<Category?> GetCategoryByIdAsync(int id)
         {
-            return await context.Category.FirstOrDefaultAsync(x => x.Id == id);
+            return await context.Categories.FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task AddCategoryAsync(Category category)
@@ -30,7 +30,7 @@ namespace ExpensesTracker.Repositories
                 throw new ArgumentNullException(nameof(category));
             }
 
-            await context.Category.AddAsync(category);
+            await context.Categories.AddAsync(category);
         }
 
         public void DeleteCategoryAsync(Category category)
@@ -40,7 +40,7 @@ namespace ExpensesTracker.Repositories
                 throw new ArgumentNullException(nameof(category));
             }
 
-            context.Category.Remove(category);
+            context.Categories.Remove(category);
         }
 
         public async Task SaveChangesAsync()

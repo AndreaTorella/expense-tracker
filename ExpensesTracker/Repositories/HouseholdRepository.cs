@@ -19,7 +19,7 @@ namespace ExpensesTracker.Repositories
                 throw new ArgumentNullException(nameof(household));
             }
 
-            await this.context.Household.AddAsync(household);
+            await this.context.Households.AddAsync(household);
         }
 
         public async Task SaveChangesAsync()
