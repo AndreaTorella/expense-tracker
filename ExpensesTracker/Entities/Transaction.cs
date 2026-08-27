@@ -14,5 +14,8 @@
 
         public int PaymentMethodId { get; set; }
         public PaymentMethod PaymentMethod { get; set; } = null!;
+
+        public string CreatedByUserId { get; set; } = string.Empty;
+        public ApplicationUser CreatedByUser { get; set; } = null!;
     }
 }

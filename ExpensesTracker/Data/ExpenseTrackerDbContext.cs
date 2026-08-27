@@ -11,6 +11,7 @@ namespace ExpensesTracker.Data
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Category> Category { get; set; }
         public DbSet<PaymentMethod> PaymentMethod { get; set; }
+        public DbSet<Household> Household { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using ExpensesTracker.Entities;
 
 namespace ExpensesTracker.Profiles
 {
