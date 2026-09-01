@@ -10,16 +10,24 @@ namespace ExpensesTracker.Controllers
     [ApiController]
     public class AuthController : Controller
     {
-        private readonly ITokenService tokenService;
-        private readonly UserManager<ApplicationUser> userManager;
+        private IRegistrationService registrationService;
+        private ITokenService tokenService;
+        private UserManager<ApplicationUser> userManager;
 
         public AuthController(
+            IRegistrationService registrationService,
             ITokenService tokenService,
+            HouseholdService householdService,
             UserManager<ApplicationUser> userManager)
         {
+            this.registrationService = registrationService ?? throw new ArgumentNullException(nameof(registrationService));
             this.tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         }
+
+        //RegisterAsync() orchestri due operazioni:
+        //crea la Household
+        //crea l'ApplicationUser assegnandogli HouseholdId
 
         [HttpPost("register")]
         public async Task<ActionResult> RegisterAsync([FromBody] RegisterDto registerDto)
@@ -29,13 +37,7 @@ namespace ExpensesTracker.Controllers
                 throw new ArgumentNullException(nameof(registerDto));
             }
 
-            var user = new ApplicationUser
-            {
-                UserName = registerDto.Email,
-                Email = registerDto.Email,
-            };
-
-            var result = await userManager.CreateAsync(user, registerDto.Password);
+            var result = await this.registrationService.RegisterAsync(registerDto);
 
             if (!result.Succeeded)
             {
