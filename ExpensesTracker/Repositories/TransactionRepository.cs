@@ -16,12 +16,14 @@ namespace ExpensesTracker.Repositories
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));
         }
-        public async Task<PagedResult<Transaction>> GetTransactionAsync(TransactionFilterDto filters)
+        public async Task<PagedResult<Transaction>> GetTransactionAsync(TransactionFilterDto filters, int houseHoldId)
         {
             IQueryable<Transaction> query = this.context.Transactions
                 .AsNoTracking()
                 .Include(x => x.Category)
                 .Include(x => x.PaymentMethod);
+
+            query = query.Where(x => x.CreatedByUser.HouseholdId == houseHoldId);
 
             if (!string.IsNullOrWhiteSpace(filters.Search))
             {

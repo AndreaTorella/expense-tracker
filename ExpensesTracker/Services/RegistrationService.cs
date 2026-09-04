@@ -15,7 +15,6 @@ namespace ExpensesTracker.Services
         private readonly ExpenseTrackerDbContext context;
         private readonly UserManager<ApplicationUser> userManager;
 
-
         public RegistrationService(
             IHouseholdService household,
             ExpenseTrackerDbContext context,
@@ -37,7 +36,7 @@ namespace ExpensesTracker.Services
                     FamilyName = registerDto.FamilyName
                 };
 
-                var household = this.householdService.AddHouseholdAsync(createHouseholdDto);
+                var household = await this.householdService.AddHouseholdAsync(createHouseholdDto);
 
                 var user = new ApplicationUser
                 {

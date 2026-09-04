@@ -10,14 +10,13 @@ namespace ExpensesTracker.Controllers
     [ApiController]
     public class AuthController : Controller
     {
-        private IRegistrationService registrationService;
-        private ITokenService tokenService;
-        private UserManager<ApplicationUser> userManager;
+        private readonly IRegistrationService registrationService;
+        private readonly ITokenService tokenService;
+        private readonly UserManager<ApplicationUser> userManager;
 
         public AuthController(
             IRegistrationService registrationService,
             ITokenService tokenService,
-            HouseholdService householdService,
             UserManager<ApplicationUser> userManager)
         {
             this.registrationService = registrationService ?? throw new ArgumentNullException(nameof(registrationService));
