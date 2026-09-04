@@ -7,7 +7,7 @@ namespace ExpensesTracker.Repositories
     public interface ITransactionRepository
     {
         Task<PagedResult<Transaction>> GetTransactionAsync(TransactionFilterDto filters, int householdId);
-        Task<Transaction?> GetTransactionByIdAsync(int id);
+        Task<Transaction?> GetTransactionByIdAsync(int id, int householdId);
         Task AddTransactionAsync(Transaction transaction);
         void DeleteTransactionAsync(Transaction transaction);
         Task SaveChangesAsync();

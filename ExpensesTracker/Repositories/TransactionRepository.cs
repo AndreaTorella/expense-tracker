@@ -76,13 +76,14 @@ namespace ExpensesTracker.Repositories
             };
         }
 
-        public async Task<Transaction?> GetTransactionByIdAsync(int id)
+        public async Task<Transaction?> GetTransactionByIdAsync(int id, int householdId)
         {
             IQueryable<Transaction> query = this.context.Transactions;
 
             return await query
                 .Include(x => x.Category)
                 .Include(x => x.PaymentMethod)
+                .Where(x => x.CreatedByUser.HouseholdId == householdId)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
