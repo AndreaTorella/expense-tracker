@@ -30,16 +30,7 @@ namespace ExpensesTracker.Services
 
         public async Task<PagedResultDto<TransactionListDto>> GetAllTransactionsAsync(TransactionFilterDto filters)
         {
-            var currentUserId = this.currentUserService.UserId;
-            var currentUser = await this.userManager.FindByIdAsync(currentUserId);
-
-            if (currentUser == null)
-            {
-                throw new InvalidOperationException("Current user not found.");
-            }
-
-            var householdId = currentUser.HouseholdId;
-
+            var householdId = await this.currentUserService.GetHouseholdIdAsync();
             var result = await transactionRepository.GetTransactionAsync(filters, householdId);
 
             return new PagedResultDto<TransactionListDto>
@@ -53,16 +44,7 @@ namespace ExpensesTracker.Services
 
         public async Task<TransactionListDto?> GetTransactionByIdAsync(int id)
         {
-            var currentUserId = this.currentUserService.UserId;
-            var currentUser = await this.userManager.FindByIdAsync(currentUserId);
-
-            if (currentUser == null)
-            {
-                throw new InvalidOperationException("Current user not found.");
-            }
-
-            var householdId = currentUser.HouseholdId;
-
+            var householdId = await this.currentUserService.GetHouseholdIdAsync();
             var transactionEntity = await transactionRepository.GetTransactionByIdAsync(id, householdId);
 
             if (transactionEntity == null)
@@ -100,18 +82,12 @@ namespace ExpensesTracker.Services
             await transactionRepository.AddTransactionAsync(transactionEntity);
             await transactionRepository.SaveChangesAsync();
 
-            var currentUserId = currentUserService.UserId;
-            var currentUser = await userManager.FindByIdAsync(currentUserId);
-
-            if (currentUser == null)
-            {
-                throw new InvalidOperationException("Current user not found.");
-            }
+            var householdId = await this.currentUserService.GetHouseholdIdAsync();
 
             var createdTransaction =
                 await transactionRepository.GetTransactionByIdAsync(
                     transactionEntity.Id,
-                    currentUser.HouseholdId);
+                    householdId);
 
             return mapper.Map<TransactionListDto>(createdTransaction);
         }
@@ -120,16 +96,7 @@ namespace ExpensesTracker.Services
             int id,
             UpdateTransactionDto updateTransactionDto)
         {
-            var currentUserId = this.currentUserService.UserId;
-            var currentUser = await this.userManager.FindByIdAsync(currentUserId);
-
-            if (currentUser == null)
-            {
-                throw new InvalidOperationException("Current user not found.");
-            }
-
-            var householdId = currentUser.HouseholdId;
-
+            var householdId = await this.currentUserService.GetHouseholdIdAsync();
             var transactionEntity = await transactionRepository.GetTransactionByIdAsync(id, householdId);
 
             if (transactionEntity == null)
@@ -157,16 +124,7 @@ namespace ExpensesTracker.Services
 
         public async Task<bool> DeleteTransactionAsync(int transactionId)
         {
-            var currentUserId = this.currentUserService.UserId;
-            var currentUser = await this.userManager.FindByIdAsync(currentUserId);
-
-            if (currentUser == null)
-            {
-                throw new InvalidOperationException("Current user not found.");
-            }
-
-            var householdId = currentUser.HouseholdId;
-
+            var householdId = await this.currentUserService.GetHouseholdIdAsync();
             var transactionEntityToDelete = await transactionRepository.GetTransactionByIdAsync(transactionId, householdId);
 
             if (transactionEntityToDelete == null)

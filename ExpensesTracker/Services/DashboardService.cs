@@ -36,15 +36,7 @@ namespace ExpensesTracker.Services
             var nextMonthStart = currentMonthStart.AddMonths(1);
             var previousMonthStart = currentMonthStart.AddMonths(-1);
 
-            var currentUserId = this.currentUserService.UserId;
-            var currentUser = await this.userManager.FindByIdAsync(currentUserId);
-
-            if (currentUser == null)
-            {
-                throw new InvalidOperationException("Current user not found.");
-            }
-
-            var householdId = currentUser.HouseholdId;
+            var householdId = await this.currentUserService.GetHouseholdIdAsync();
 
             var currentMonthTotalExpenses = await this.transactionRepository.GetTotalAsync(currentMonthStart, nextMonthStart, TransactionType.Expense, householdId);
             var currentMonthTotalIncomes = await this.transactionRepository.GetTotalAsync(currentMonthStart, nextMonthStart, TransactionType.Income, householdId);
