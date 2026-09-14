@@ -2,7 +2,6 @@
 using ExpensesTracker.Entities;
 using ExpensesTracker.Models;
 using ExpensesTracker.Repositories;
-using Microsoft.AspNetCore.Identity;
 
 namespace ExpensesTracker.Services
 {
@@ -12,20 +11,17 @@ namespace ExpensesTracker.Services
         private readonly ICategoryRepository categoryRepository;
         private readonly IMapper mapper;
         private readonly ICurrentUserService currentUserService;
-        private readonly UserManager<ApplicationUser> userManager;
 
         public TransactionService(
             ITransactionRepository transactionRepository,
             ICategoryRepository categoryRepository,
             IMapper mapper,
-            ICurrentUserService currentUserService,
-            UserManager<ApplicationUser> userManager)
+            ICurrentUserService currentUserService)
         {
             this.transactionRepository = transactionRepository ?? throw new ArgumentNullException(nameof(transactionRepository));
             this.categoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.currentUserService = currentUserService ?? throw new ArgumentNullException(nameof(currentUserService));
-            this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         }
 
         public async Task<PagedResultDto<TransactionListDto>> GetAllTransactionsAsync(TransactionFilterDto filters)

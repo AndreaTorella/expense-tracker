@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
-using ExpensesTracker.Entities;
 using ExpensesTracker.Models.Dashboard;
 using ExpensesTracker.Repositories;
-using Microsoft.AspNetCore.Identity;
 
 namespace ExpensesTracker.Services
 {
@@ -12,18 +10,15 @@ namespace ExpensesTracker.Services
         private readonly IMapper mapper;
         private readonly ITransactionRepository transactionRepository;
         private readonly ICurrentUserService currentUserService;
-        private readonly UserManager<ApplicationUser> userManager;
 
         public DashboardService(
             IMapper mapper,
             ICurrentUserService currentUserService,
-            ITransactionRepository transactionRepository,
-            UserManager<ApplicationUser> userManager)
+            ITransactionRepository transactionRepository)
         {
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.currentUserService = currentUserService ?? throw new ArgumentNullException(nameof(currentUserService));
             this.transactionRepository = transactionRepository ?? throw new ArgumentNullException(nameof(transactionRepository));
-            this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         }
 
         public async Task<DashboardSummaryDto> GetSummaryAsync(DashboardFilterDto filters)
