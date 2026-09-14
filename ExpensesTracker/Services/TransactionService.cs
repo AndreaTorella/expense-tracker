@@ -100,7 +100,18 @@ namespace ExpensesTracker.Services
             await transactionRepository.AddTransactionAsync(transactionEntity);
             await transactionRepository.SaveChangesAsync();
 
-            var createdTransaction = await transactionRepository.GetTransactionByIdAsync(transactionEntity.Id, transactionEntity.CreatedByUser.HouseholdId);
+            var currentUserId = currentUserService.UserId;
+            var currentUser = await userManager.FindByIdAsync(currentUserId);
+
+            if (currentUser == null)
+            {
+                throw new InvalidOperationException("Current user not found.");
+            }
+
+            var createdTransaction =
+                await transactionRepository.GetTransactionByIdAsync(
+                    transactionEntity.Id,
+                    currentUser.HouseholdId);
 
             return mapper.Map<TransactionListDto>(createdTransaction);
         }
