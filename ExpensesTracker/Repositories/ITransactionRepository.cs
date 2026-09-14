@@ -12,16 +12,18 @@ namespace ExpensesTracker.Repositories
         void DeleteTransactionAsync(Transaction transaction);
         Task SaveChangesAsync();
 
-        Task<decimal> GetTotalAsync(DateTime fromDate, DateTime toDate, TransactionType transactionType);
+        Task<decimal> GetTotalAsync(DateTime fromDate, DateTime toDate, TransactionType transactionType, int householdId);
 
         Task<IEnumerable<CategoryTotal>> GetTotalsByCategoryAsync(
             DateTime fromDate,
             DateTime toDate,
-            TransactionType transactionType);
+            TransactionType transactionType,
+            int householdId);
 
         Task<IEnumerable<MonthlyTotal>> GetMonthlyTotalsAsync(
             DateTime fromDate,
             DateTime toDate,
-            TransactionType transactionType);
+            TransactionType transactionType,
+            int householdId);
     }
 }

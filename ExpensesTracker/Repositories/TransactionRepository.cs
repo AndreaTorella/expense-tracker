@@ -112,10 +112,11 @@ namespace ExpensesTracker.Repositories
             await this.context.SaveChangesAsync();
         }
 
-        public Task<decimal> GetTotalAsync(DateTime fromDate, DateTime toDate, TransactionType transactionType)
+        public Task<decimal> GetTotalAsync(DateTime fromDate, DateTime toDate, TransactionType transactionType, int householdId)
         {
             return this.context.Transactions
                 .Where(x =>
+                    x.CreatedByUser.HouseholdId == householdId &&
                     x.Date >= fromDate &&
                     x.Date < toDate &&
                     x.TransactionType == transactionType)
@@ -125,10 +126,12 @@ namespace ExpensesTracker.Repositories
         public async Task<IEnumerable<CategoryTotal>> GetTotalsByCategoryAsync(
             DateTime fromDate,
             DateTime toDate,
-            TransactionType transactionType)
+            TransactionType transactionType,
+            int householdId)
         {
             var transactionsByCategory = await this.context.Transactions
                 .Where(x =>
+                    x.CreatedByUser.HouseholdId == householdId &&
                     x.Date >= fromDate &&
                     x.Date < toDate &&
                     x.TransactionType == transactionType)
@@ -152,10 +155,12 @@ namespace ExpensesTracker.Repositories
         public async Task<IEnumerable<MonthlyTotal>> GetMonthlyTotalsAsync(
             DateTime fromDate,
             DateTime toDate,
-            TransactionType transactionType)
+            TransactionType transactionType,
+            int householdId)
         {
             var transactionsByMonth = await this.context.Transactions
                 .Where(x =>
+                    x.CreatedByUser.HouseholdId == householdId &&
                     x.Date >= fromDate &&
                     x.Date < toDate &&
                     x.TransactionType == transactionType)

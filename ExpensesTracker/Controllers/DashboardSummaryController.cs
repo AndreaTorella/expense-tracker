@@ -1,10 +1,11 @@
 ﻿using ExpensesTracker.Models.Dashboard;
 using ExpensesTracker.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpensesTracker.Controllers
 {
-
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class DashboardSummaryController : Controller

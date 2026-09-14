@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using ExpensesTracker.Entities;
 using ExpensesTracker.Models.Dashboard;
 using ExpensesTracker.Repositories;
+using Microsoft.AspNetCore.Identity;
 
 namespace ExpensesTracker.Services
 {
@@ -9,13 +11,19 @@ namespace ExpensesTracker.Services
         private const int DashboardMonthsCount = 6;
         private readonly IMapper mapper;
         private readonly ITransactionRepository transactionRepository;
+        private readonly ICurrentUserService currentUserService;
+        private readonly UserManager<ApplicationUser> userManager;
 
         public DashboardService(
             IMapper mapper,
-            ITransactionRepository transactionRepository)
+            ICurrentUserService currentUserService,
+            ITransactionRepository transactionRepository,
+            UserManager<ApplicationUser> userManager)
         {
-            this.mapper = mapper;
-            this.transactionRepository = transactionRepository;
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            this.currentUserService = currentUserService ?? throw new ArgumentNullException(nameof(currentUserService));
+            this.transactionRepository = transactionRepository ?? throw new ArgumentNullException(nameof(transactionRepository));
+            this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         }
 
         public async Task<DashboardSummaryDto> GetSummaryAsync(DashboardFilterDto filters)
@@ -28,11 +36,21 @@ namespace ExpensesTracker.Services
             var nextMonthStart = currentMonthStart.AddMonths(1);
             var previousMonthStart = currentMonthStart.AddMonths(-1);
 
-            var currentMonthTotalExpenses = await this.transactionRepository.GetTotalAsync(currentMonthStart, nextMonthStart, TransactionType.Expense);
-            var currentMonthTotalIncomes = await this.transactionRepository.GetTotalAsync(currentMonthStart, nextMonthStart, TransactionType.Income);
+            var currentUserId = this.currentUserService.UserId;
+            var currentUser = await this.userManager.FindByIdAsync(currentUserId);
 
-            var previousMonthTotalExpenses = await this.transactionRepository.GetTotalAsync(previousMonthStart, currentMonthStart, TransactionType.Expense);
-            var previousMonthTotalIncomes = await this.transactionRepository.GetTotalAsync(previousMonthStart, currentMonthStart, TransactionType.Income);
+            if (currentUser == null)
+            {
+                throw new InvalidOperationException("Current user not found.");
+            }
+
+            var householdId = currentUser.HouseholdId;
+
+            var currentMonthTotalExpenses = await this.transactionRepository.GetTotalAsync(currentMonthStart, nextMonthStart, TransactionType.Expense, householdId);
+            var currentMonthTotalIncomes = await this.transactionRepository.GetTotalAsync(currentMonthStart, nextMonthStart, TransactionType.Income, householdId);
+
+            var previousMonthTotalExpenses = await this.transactionRepository.GetTotalAsync(previousMonthStart, currentMonthStart, TransactionType.Expense, householdId);
+            var previousMonthTotalIncomes = await this.transactionRepository.GetTotalAsync(previousMonthStart, currentMonthStart, TransactionType.Income, householdId);
 
             var currentMonthBalance = currentMonthTotalIncomes - currentMonthTotalExpenses;
 
@@ -55,7 +73,8 @@ namespace ExpensesTracker.Services
                     await this.transactionRepository.GetTotalsByCategoryAsync(
                         currentMonthStart,
                         nextMonthStart,
-                        TransactionType.Expense));
+                        TransactionType.Expense,
+                        householdId));
 
             var sixMonthsBeforeStart = currentMonthStart.AddMonths(-5);
 
@@ -64,7 +83,8 @@ namespace ExpensesTracker.Services
                     await this.transactionRepository.GetMonthlyTotalsAsync(
                         sixMonthsBeforeStart,
                         nextMonthStart,
-                        TransactionType.Expense));
+                        TransactionType.Expense,
+                        householdId));
 
             var completeMonthlyTotals = Enumerable
                 .Range(0, DashboardMonthsCount)
