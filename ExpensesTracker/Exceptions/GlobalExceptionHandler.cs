@@ -5,6 +5,14 @@ namespace ExpensesTracker.Exceptions
 {
     public class GlobalExceptionHandler : IExceptionHandler
     {
+        private readonly ILogger<GlobalExceptionHandler> logger;
+
+        public GlobalExceptionHandler(
+            ILogger<GlobalExceptionHandler> logger)
+        {
+            this.logger = logger;
+        }
+
         public async ValueTask<bool> TryHandleAsync(
             HttpContext httpContext,
             Exception exception,
@@ -15,7 +23,7 @@ namespace ExpensesTracker.Exceptions
                 ArgumentException => new ProblemDetails
                 {
                     Status = StatusCodes.Status400BadRequest,
-                    Title = "Internal Server Error",
+                    Title = "Bad Request",
                     Detail = exception.Message
                 },
 
@@ -34,6 +42,14 @@ namespace ExpensesTracker.Exceptions
                 }
             };
 
+            if (problemDetails.Status == StatusCodes.Status500InternalServerError)
+            {
+                logger.LogError(
+                    exception,
+                    "An unhandled exception occurred while processing {Method} {Path}",
+                    httpContext.Request.Method,
+                    httpContext.Request.Path);
+            }
 
             httpContext.Response.StatusCode = problemDetails.Status!.Value;
 
