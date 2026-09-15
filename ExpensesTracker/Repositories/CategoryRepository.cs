@@ -13,14 +13,18 @@ namespace ExpensesTracker.Repositories
             this.context = context;
         }
 
-        public async Task<IEnumerable<Category>> GetAllCategoriesAsync()
+        public async Task<IEnumerable<Category>> GetAllCategoriesAsync(int householdId)
         {
-            return await context.Categories.ToListAsync();
+            return await context.Categories
+                .Where(x => x.HouseholdId == householdId)
+                .ToListAsync();
         }
 
-        public async Task<Category?> GetCategoryByIdAsync(int id)
+        public async Task<Category?> GetCategoryByIdAsync(int id, int householdId)
         {
-            return await context.Categories.FirstOrDefaultAsync(x => x.Id == id);
+            return await context.Categories
+                .Where(x => x.HouseholdId == householdId)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task AddCategoryAsync(Category category)

@@ -53,17 +53,10 @@ namespace ExpensesTracker.Services
 
         public async Task<TransactionListDto> AddTransactionAsync(CreateTransactionDto transactionDto)
         {
-            if (transactionDto == null)
-            {
-                throw new ArgumentNullException(nameof(transactionDto));
-            }
+            ArgumentNullException.ThrowIfNull(transactionDto);
 
-            var category = await this.categoryRepository.GetCategoryByIdAsync(transactionDto.CategoryId);
-
-            if (category == null)
-            {
-                throw new ArgumentException("Category not valid");
-            }
+            var householdId = await this.currentUserService.GetHouseholdIdAsync();
+            var category = await this.categoryRepository.GetCategoryByIdAsync(transactionDto.CategoryId, householdId) ?? throw new ArgumentException("Category not valid");
 
             //Business rule
             if (transactionDto.TransactionType != category.TransactionType)
@@ -73,12 +66,10 @@ namespace ExpensesTracker.Services
 
             var transactionEntity = mapper.Map<Transaction>(transactionDto);
 
-            transactionEntity.CreatedByUserId = currentUserService.UserId;
+            transactionEntity.CreatedByUserId = this.currentUserService.UserId;
 
             await transactionRepository.AddTransactionAsync(transactionEntity);
             await transactionRepository.SaveChangesAsync();
-
-            var householdId = await this.currentUserService.GetHouseholdIdAsync();
 
             var createdTransaction =
                 await transactionRepository.GetTransactionByIdAsync(
@@ -100,7 +91,7 @@ namespace ExpensesTracker.Services
                 return null;
             }
 
-            var category = await this.categoryRepository.GetCategoryByIdAsync(updateTransactionDto.CategoryId);
+            var category = await this.categoryRepository.GetCategoryByIdAsync(updateTransactionDto.CategoryId, householdId);
 
             if (category == null)
             {

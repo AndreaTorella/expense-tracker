@@ -9,24 +9,29 @@ namespace ExpensesTracker.Services
     {
         private readonly ICategoryRepository categoryRepository;
         private readonly IMapper mapper;
+        private readonly ICurrentUserService currentUserService;
 
         public CategoryService(
             ICategoryRepository categoryRepository,
-            IMapper mapper)
+            IMapper mapper,
+            ICurrentUserService currentUserService)
         {
             this.categoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            this.currentUserService = currentUserService ?? throw new ArgumentNullException(nameof(currentUserService));
         }
 
         public async Task<IEnumerable<CategoryDto>> GetAllCategoriesAsync()
         {
-            var categoryEntities = await categoryRepository.GetAllCategoriesAsync();
+            var householdId = await this.currentUserService.GetHouseholdIdAsync();
+            var categoryEntities = await categoryRepository.GetAllCategoriesAsync(householdId);
             return mapper.Map<IEnumerable<CategoryDto>>(categoryEntities);
         }
 
         public async Task<CategoryDto?> GetCategoryByIdAsync(int categoryId)
         {
-            var categoryEntity = await categoryRepository.GetCategoryByIdAsync(categoryId);
+            var householdId = await this.currentUserService.GetHouseholdIdAsync();
+            var categoryEntity = await categoryRepository.GetCategoryByIdAsync(categoryId, householdId);
 
             if (categoryEntity == null)
             {
@@ -38,12 +43,11 @@ namespace ExpensesTracker.Services
 
         public async Task<CategoryDto> AddCategoryAsync(CategoryDto categoryDto)
         {
-            if (categoryDto == null)
-            {
-                throw new ArgumentNullException(nameof(categoryDto));
-            }
+            ArgumentNullException.ThrowIfNull(categoryDto);
 
             var categoryEntity = mapper.Map<Category>(categoryDto);
+            categoryEntity.CreatedByUserId = this.currentUserService.UserId;
+
             await categoryRepository.AddCategoryAsync(categoryEntity);
             await categoryRepository.SaveChangesAsync();
 
@@ -52,7 +56,8 @@ namespace ExpensesTracker.Services
 
         public async Task<bool> DeleteCategoryAsync(int categoryId)
         {
-            var categoryEntity = await categoryRepository.GetCategoryByIdAsync(categoryId);
+            var householdId = await this.currentUserService.GetHouseholdIdAsync();
+            var categoryEntity = await categoryRepository.GetCategoryByIdAsync(categoryId, householdId);
 
             if (categoryEntity == null)
             {

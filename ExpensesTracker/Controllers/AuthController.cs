@@ -24,10 +24,6 @@ namespace ExpensesTracker.Controllers
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         }
 
-        //RegisterAsync() orchestri due operazioni:
-        //crea la Household
-        //crea l'ApplicationUser assegnandogli HouseholdId
-
         [HttpPost("register")]
         public async Task<ActionResult> RegisterAsync([FromBody] RegisterDto registerDto)
         {
