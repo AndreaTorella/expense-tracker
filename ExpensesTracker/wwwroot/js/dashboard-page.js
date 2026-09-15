@@ -1,4 +1,5 @@
 import { loadDashboard, renderDashboard, formatMonth } from "./dashboard.js";
+import { logout, requireAuth } from "./auth.js";
 import { hideLoading, showError, showLoading } from "./ui.js";
 
 const today = new Date();
@@ -37,4 +38,7 @@ function updateMonthNavigation() {
     document.querySelector("#next-month-button").disabled = selectedMonth >= currentMonth;
 }
 
-initializeDashboard();
+if (requireAuth()) {
+    document.querySelector("#logout-button").addEventListener("click", logout);
+    initializeDashboard();
+}

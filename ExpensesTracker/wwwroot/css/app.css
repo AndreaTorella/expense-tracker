@@ -42,6 +42,30 @@ body.app-is-loading {
 .app-navigation .navbar-toggler { border-color: rgba(255, 255, 255, 0.45); }
 .app-navigation .navbar-toggler-icon { filter: invert(1); }
 .nav-new-transaction { display: inline-flex; align-items: center; gap: 0.4rem; }
+.nav-logout { display: inline-flex; align-items: center; gap: 0.4rem; }
+
+.login-page {
+    display: grid;
+    min-height: 100vh;
+    place-items: center;
+    padding: 1.5rem;
+}
+
+.login-shell { width: min(100%, 28rem); }
+
+.login-card {
+    padding: 2rem;
+    background: var(--app-surface);
+    border: 1px solid var(--app-border);
+    border-radius: 0.5rem;
+    box-shadow: 0 1.5rem 4rem rgba(20, 32, 51, 0.14);
+}
+
+.login-brand { margin-bottom: 2rem; }
+.login-brand .app-eyebrow { margin-bottom: 0.75rem; }
+.login-brand h1 { margin: 0; color: var(--app-primary-dark); font-size: 2rem; font-weight: 800; }
+.login-brand p { margin: 0.75rem 0 0; color: var(--app-muted); }
+.login-button { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; font-weight: 700; }
 
 .app-hero {
     padding: 4rem 0 5.5rem;

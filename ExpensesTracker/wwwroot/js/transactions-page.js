@@ -1,4 +1,5 @@
 import { loadTransactions, loadCategories, loadPaymentMethods, saveTransaction, loadTransactionById, modifyTransaction, removeTransaction } from "./transactions.js";
+import { logout, requireAuth } from "./auth.js";
 import { renderTransactions, renderCategories, renderFilterCategories, renderPaymentMethods, renderFilterPaymentMethods, showLoading, hideLoading, showError, getTransactionFormData, resetTransactionForm, setDefaultTransactionDate, hideTransactionModal, showToast, confirmTransactionDeletion, getTransactionFilters, getTransactionSorting, getTransactionsPageSize, updateTransactionsSummary, renderPagination } from "./ui.js";
 
 let editingTransactionId = null;
@@ -142,4 +143,7 @@ function populateTransactionForm(transaction) {
     document.querySelector("#payment-method").value = String(transaction.paymentMethodId);
 }
 
-initializePage();
+if (requireAuth()) {
+    document.querySelector("#logout-button").addEventListener("click", logout);
+    initializePage();
+}

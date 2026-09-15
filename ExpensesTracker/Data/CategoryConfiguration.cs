@@ -12,9 +12,11 @@ namespace ExpensesTracker.Data
 
             entity.HasKey(e => e.Id);
 
-            entity.Property(e => e.Name);
+            entity.Property(e => e.Name)
+                .IsRequired()
+                .HasMaxLength(100);
 
-            entity.HasIndex(e => e.Name)
+            entity.HasIndex(e => new { e.HouseholdId, e.Name })
                 .IsUnique();
         }
     }

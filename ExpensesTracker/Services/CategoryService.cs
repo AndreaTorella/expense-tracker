@@ -45,8 +45,10 @@ namespace ExpensesTracker.Services
         {
             ArgumentNullException.ThrowIfNull(categoryDto);
 
+            var householdId = await this.currentUserService.GetHouseholdIdAsync();
             var categoryEntity = mapper.Map<Category>(categoryDto);
-            categoryEntity.CreatedByUserId = this.currentUserService.UserId;
+
+            categoryEntity.HouseholdId = householdId;
 
             await categoryRepository.AddCategoryAsync(categoryEntity);
             await categoryRepository.SaveChangesAsync();

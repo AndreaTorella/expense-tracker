@@ -4,7 +4,7 @@
     {
         public int CategoryId { get; set; }
 
-        public CategoryName CategoryName { get; set; } = CategoryName.Various;
+        public string CategoryName { get; set; } = string.Empty;
 
         public decimal Total { get; set; }
     }

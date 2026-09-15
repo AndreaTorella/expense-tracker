@@ -1,4 +1,25 @@
+import { clearToken, getToken, redirectToLogin } from "./auth.js";
+
 const baseUrl = "/api";
+
+async function apiFetch(url, options = {}) {
+    const headers = new Headers(options.headers);
+    const token = getToken();
+
+    if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+    }
+
+    const response = await fetch(url, { ...options, headers });
+
+    if (response.status === 401) {
+        clearToken();
+        redirectToLogin();
+        throw new Error("Sessione scaduta o non autorizzata.");
+    }
+
+    return response;
+}
 
 export async function getTransactions(filters = {}) {
     const queryParams = new URLSearchParams();
@@ -17,7 +38,7 @@ export async function getTransactions(filters = {}) {
         ? `${baseUrl}/Transactions?${queryString}`
         : `${baseUrl}/Transactions`;
 
-    const response = await fetch(url);
+    const response = await apiFetch(url);
 
     if (!response.ok) {
         throw new Error(
@@ -29,7 +50,7 @@ export async function getTransactions(filters = {}) {
 }
 
 export async function getTransactionById(transactionId) {
-    const response = await fetch(`${baseUrl}/Transactions/${transactionId}`);
+    const response = await apiFetch(`${baseUrl}/Transactions/${transactionId}`);
 
     if (!response.ok) {
         throw new Error(
@@ -41,7 +62,7 @@ export async function getTransactionById(transactionId) {
 }
 
 export async function getCategories() {
-    const response = await fetch(`${baseUrl}/Categories`);
+    const response = await apiFetch(`${baseUrl}/Categories`);
 
     if (!response.ok) {
         throw new Error(
@@ -53,7 +74,7 @@ export async function getCategories() {
 }
 
 export async function getPaymentMethods() {
-    const response = await fetch(`${baseUrl}/PaymentMethods`);
+    const response = await apiFetch(`${baseUrl}/PaymentMethods`);
 
     if (!response.ok) {
         throw new Error(
@@ -65,7 +86,7 @@ export async function getPaymentMethods() {
 }
 
 export async function createTransaction(transaction) {
-    const response = await fetch(`${baseUrl}/Transactions`, {
+    const response = await apiFetch(`${baseUrl}/Transactions`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -83,7 +104,7 @@ export async function createTransaction(transaction) {
 }
 
 export async function updateTransaction(id, transactionData) {
-    const response = await fetch(`${baseUrl}/Transactions/${id}`, {
+    const response = await apiFetch(`${baseUrl}/Transactions/${id}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
@@ -101,7 +122,7 @@ export async function updateTransaction(id, transactionData) {
 }
 
 export async function deleteTransaction(id) {
-    const response = await fetch(`${baseUrl}/Transactions/${id}`, {
+    const response = await apiFetch(`${baseUrl}/Transactions/${id}`, {
         method: "DELETE"
     });
 
@@ -118,7 +139,7 @@ export async function getDashboardSummary(year, month) {
         month
     });
 
-    const response = await fetch(`${baseUrl}/DashboardSummary?${params}`);
+    const response = await apiFetch(`${baseUrl}/DashboardSummary?${params}`);
 
     if (!response.ok) {
         throw new Error(
