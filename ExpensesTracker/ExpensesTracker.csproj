@@ -22,4 +22,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ExpensesTracker.Application\ExpensesTracker.Application.csproj" />
+    <ProjectReference Include="..\ExpensesTracker.Infrastructure\ExpensesTracker.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
