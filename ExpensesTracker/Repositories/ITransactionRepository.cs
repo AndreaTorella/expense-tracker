@@ -1,4 +1,5 @@
-﻿using ExpensesTracker.Entities;
+﻿using ExpensesTracker.Domain.Enums;
+using ExpensesTracker.Entities;
 using ExpensesTracker.Models;
 using ExpensesTracker.Models.Common;
 

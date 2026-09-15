@@ -1,4 +1,4 @@
-﻿namespace ExpensesTracker
+﻿namespace ExpensesTracker.Domain.Enums
 {
     public enum PaymentMethodName
     {

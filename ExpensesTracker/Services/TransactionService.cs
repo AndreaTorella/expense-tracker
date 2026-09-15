@@ -66,6 +66,7 @@ namespace ExpensesTracker.Services
 
             var transactionEntity = mapper.Map<Transaction>(transactionDto);
 
+            transactionEntity.HouseholdId = householdId;
             transactionEntity.CreatedByUserId = this.currentUserService.UserId;
 
             await transactionRepository.AddTransactionAsync(transactionEntity);

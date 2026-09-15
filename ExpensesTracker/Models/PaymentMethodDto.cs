@@ -1,4 +1,6 @@
-﻿namespace ExpensesTracker.Models
+﻿using ExpensesTracker.Domain.Enums;
+
+namespace ExpensesTracker.Models
 {
     public class PaymentMethodDto
     {

@@ -1,4 +1,5 @@
-﻿using ExpensesTracker.Models.Enums;
+﻿using ExpensesTracker.Domain.Enums;
+using ExpensesTracker.Models.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace ExpensesTracker.Models

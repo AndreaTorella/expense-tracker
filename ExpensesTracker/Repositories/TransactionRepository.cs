@@ -1,4 +1,5 @@
 ﻿using ExpensesTracker.Data;
+using ExpensesTracker.Domain.Enums;
 using ExpensesTracker.Entities;
 using ExpensesTracker.Models;
 using ExpensesTracker.Models.Common;
@@ -23,7 +24,7 @@ namespace ExpensesTracker.Repositories
                 .Include(x => x.Category)
                 .Include(x => x.PaymentMethod);
 
-            query = query.Where(x => x.CreatedByUser.HouseholdId == houseHoldId);
+            query = query.Where(x => x.HouseholdId == houseHoldId);
 
             if (!string.IsNullOrWhiteSpace(filters.Search))
             {
@@ -83,7 +84,7 @@ namespace ExpensesTracker.Repositories
             return await query
                 .Include(x => x.Category)
                 .Include(x => x.PaymentMethod)
-                .Where(x => x.CreatedByUser.HouseholdId == householdId)
+                .Where(x => x.HouseholdId == householdId)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
@@ -116,7 +117,7 @@ namespace ExpensesTracker.Repositories
         {
             return this.context.Transactions
                 .Where(x =>
-                    x.CreatedByUser.HouseholdId == householdId &&
+                    x.HouseholdId == householdId &&
                     x.Date >= fromDate &&
                     x.Date < toDate &&
                     x.TransactionType == transactionType)
@@ -131,7 +132,7 @@ namespace ExpensesTracker.Repositories
         {
             var transactionsByCategory = await this.context.Transactions
                 .Where(x =>
-                    x.CreatedByUser.HouseholdId == householdId &&
+                    x.HouseholdId == householdId &&
                     x.Date >= fromDate &&
                     x.Date < toDate &&
                     x.TransactionType == transactionType)
@@ -160,7 +161,7 @@ namespace ExpensesTracker.Repositories
         {
             var transactionsByMonth = await this.context.Transactions
                 .Where(x =>
-                    x.CreatedByUser.HouseholdId == householdId &&
+                    x.HouseholdId == householdId &&
                     x.Date >= fromDate &&
                     x.Date < toDate &&
                     x.TransactionType == transactionType)

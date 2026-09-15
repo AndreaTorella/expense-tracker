@@ -1,4 +1,6 @@
-﻿namespace ExpensesTracker.Entities
+﻿using ExpensesTracker.Domain.Enums;
+
+namespace ExpensesTracker.Entities
 {
     public class Transaction
     {
@@ -15,7 +17,9 @@
         public int PaymentMethodId { get; set; }
         public PaymentMethod PaymentMethod { get; set; } = null!;
 
+        public int HouseholdId { get; set; }
+        public Household Household { get; set; } = null!;
+
         public string CreatedByUserId { get; set; } = string.Empty;
-        public ApplicationUser CreatedByUser { get; set; } = null!;
     }
 }

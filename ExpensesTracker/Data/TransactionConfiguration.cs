@@ -35,6 +35,11 @@ namespace ExpensesTracker.Data
                 .WithMany(pm => pm.Transactions)
                 .HasForeignKey(e => e.PaymentMethodId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(e => e.Household)
+                .WithMany(h => h.Transactions)
+                .HasForeignKey(e => e.HouseholdId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
