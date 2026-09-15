@@ -8,7 +8,7 @@
         public DateTime Date { get; set; }
         public TransactionType TransactionType { get; set; }
         public int CategoryId { get; set; }
-        public CategoryName CategoryName { get; set; }
+        public string CategoryName { get; set; } = string.Empty;
         public int PaymentMethodId { get; set; }
         public PaymentMethodName PaymentMethodName { get; set; }
     }
