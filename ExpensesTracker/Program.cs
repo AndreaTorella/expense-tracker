@@ -1,5 +1,6 @@
 using ExpensesTracker.Data;
 using ExpensesTracker.Entities;
+using ExpensesTracker.Exceptions;
 using ExpensesTracker.Repositories;
 using ExpensesTracker.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -84,6 +85,9 @@ builder.Services
 builder.Services.AddAuthorization();
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
 
 var app = builder.Build();
 
@@ -91,6 +95,8 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+app.UseExceptionHandler();
 
 app.UseHttpsRedirection();
 

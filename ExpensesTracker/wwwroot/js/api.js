@@ -73,6 +73,36 @@ export async function getCategories() {
     return await response.json();
 }
 
+export async function createCategory(category) {
+    const response = await apiFetch(`${baseUrl}/Categories`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(category)
+    });
+
+    if (!response.ok) {
+        throw new Error(
+            `Errore durante il salvataggio della categoria. Status: ${response.status}`
+        );
+    }
+
+    return await response.json();
+}
+
+export async function deleteCategory(id) {
+    const response = await apiFetch(`${baseUrl}/Categories/${id}`, {
+        method: "DELETE"
+    });
+
+    if (!response.ok) {
+        throw new Error(
+            `Errore durante l'eliminazione della categoria. Status: ${response.status}`
+        );
+    }
+}
+
 export async function getPaymentMethods() {
     const response = await apiFetch(`${baseUrl}/PaymentMethods`);
 

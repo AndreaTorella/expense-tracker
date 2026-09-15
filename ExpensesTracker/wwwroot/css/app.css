@@ -76,6 +76,7 @@ body.app-is-loading {
 }
 
 .dashboard-hero { padding: 2.75rem 0 5rem; }
+.categories-hero { padding-bottom: 5rem; }
 .dashboard-heading { display: flex; align-items: end; justify-content: space-between; gap: 1.5rem; }
 .month-picker { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem; background: rgba(255,255,255,.12); border-radius: .5rem; }
 .month-picker span { min-width: 10.5rem; color: #fff; font-weight: 800; text-align: center; text-transform: capitalize; }
@@ -93,6 +94,14 @@ body.app-is-loading {
 .summary-card strong.is-neutral { color: var(--app-muted); }
 .dashboard-panels { margin-top: 1.5rem; }
 .dashboard-card { overflow: hidden; }
+.categories-content { margin-top: -3rem; }
+.category-form-card { height: 100%; }
+.category-form { padding: 1.25rem; }
+.category-form .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; }
+.categories-empty-message { margin: 0; padding: 1.25rem; color: var(--app-muted); font-weight: 700; }
+.categories-table thead th { padding: 0.85rem 1rem; color: var(--app-muted); background: var(--app-surface-muted); border-bottom: 1px solid var(--app-border); font-size: 0.78rem; font-weight: 800; text-transform: uppercase; }
+.categories-table tbody td { padding: 1rem; border-color: var(--app-border); }
+.categories-table tbody tr:last-child td { border-bottom: 0; }
 .dashboard-card-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.25rem; border-bottom: 1px solid var(--app-border); }
 .dashboard-card-header h2 { margin: 0; font-size: 1.25rem; font-weight: 800; }
 .chart-wrap { position: relative; min-height: 20rem; padding: 1.25rem; }
