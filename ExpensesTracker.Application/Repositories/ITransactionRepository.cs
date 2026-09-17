@@ -3,7 +3,7 @@ using ExpensesTracker.Application.Models;
 using ExpensesTracker.Domain.Entities;
 using ExpensesTracker.Domain.Enums;
 
-namespace ExpensesTracker.Repositories
+namespace ExpensesTracker.Application.Repositories
 {
     public interface ITransactionRepository
     {

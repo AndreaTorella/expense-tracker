@@ -1,6 +1,7 @@
 ﻿using ExpensesTracker.Application.Common;
 using ExpensesTracker.Application.Enums;
 using ExpensesTracker.Application.Models;
+using ExpensesTracker.Application.Repositories;
 using ExpensesTracker.Data;
 using ExpensesTracker.Domain.Entities;
 using ExpensesTracker.Domain.Enums;
@@ -162,6 +163,7 @@ namespace ExpensesTracker.Repositories
             var transactionsByMonth = await this.context.Transactions
                 .Where(x =>
                     x.HouseholdId == householdId &&
+                    x.Date >= fromDate &&
                     x.Date < toDate &&
                     x.TransactionType == transactionType)
                 .GroupBy(x => new

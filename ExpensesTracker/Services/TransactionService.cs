@@ -3,7 +3,6 @@ using ExpensesTracker.Application.Models;
 using ExpensesTracker.Application.Repositories;
 using ExpensesTracker.Domain.Entities;
 using ExpensesTracker.Models;
-using ExpensesTracker.Repositories;
 
 namespace ExpensesTracker.Services
 {

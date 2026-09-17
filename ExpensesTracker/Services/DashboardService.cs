@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using ExpensesTracker.Application.Repositories;
 using ExpensesTracker.Domain.Enums;
 using ExpensesTracker.Models.Dashboard;
-using ExpensesTracker.Repositories;
 
 namespace ExpensesTracker.Services
 {
