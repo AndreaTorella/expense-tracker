@@ -27,4 +27,9 @@
     <ProjectReference Include="..\ExpensesTracker.Infrastructure\ExpensesTracker.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\Common\" />
+    <Folder Include="Models\Enums\" />
+  </ItemGroup>
+
 </Project>

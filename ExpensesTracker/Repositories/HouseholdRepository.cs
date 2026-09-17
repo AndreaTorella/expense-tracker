@@ -1,5 +1,6 @@
-﻿using ExpensesTracker.Data;
-using ExpensesTracker.Entities;
+﻿using ExpensesTracker.Application.Repositories;
+using ExpensesTracker.Data;
+using ExpensesTracker.Domain.Entities;
 
 namespace ExpensesTracker.Repositories
 {

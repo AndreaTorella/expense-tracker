@@ -1,4 +1,5 @@
-﻿using ExpensesTracker.Domain.Enums;
+﻿using ExpensesTracker.Domain.Entities;
+using ExpensesTracker.Domain.Enums;
 using ExpensesTracker.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

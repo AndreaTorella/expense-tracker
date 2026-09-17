@@ -1,6 +1,6 @@
-﻿using ExpensesTracker.Entities;
+﻿using ExpensesTracker.Domain.Entities;
 
-namespace ExpensesTracker.Repositories
+namespace ExpensesTracker.Application.Repositories
 {
     public interface IHouseholdRepository
     {

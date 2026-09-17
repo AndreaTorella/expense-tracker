@@ -1,13 +1,13 @@
-﻿using ExpensesTracker.Domain.Enums;
-using ExpensesTracker.Entities;
-using ExpensesTracker.Models;
-using ExpensesTracker.Models.Common;
+﻿using ExpensesTracker.Application.Common;
+using ExpensesTracker.Application.Models;
+using ExpensesTracker.Domain.Entities;
+using ExpensesTracker.Domain.Enums;
 
 namespace ExpensesTracker.Repositories
 {
     public interface ITransactionRepository
     {
-        Task<PagedResult<Transaction>> GetTransactionAsync(TransactionFilterDto filters, int householdId);
+        Task<PagedResult<Transaction>> GetTransactionAsync(TransactionQuery filters, int householdId);
         Task<Transaction?> GetTransactionByIdAsync(int id, int householdId);
         Task AddTransactionAsync(Transaction transaction);
         void DeleteTransactionAsync(Transaction transaction);

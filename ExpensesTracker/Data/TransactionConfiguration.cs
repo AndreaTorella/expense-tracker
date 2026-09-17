@@ -1,3 +1,4 @@
+using ExpensesTracker.Domain.Entities;
 using ExpensesTracker.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

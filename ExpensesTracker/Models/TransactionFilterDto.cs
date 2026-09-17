@@ -1,5 +1,5 @@
-﻿using ExpensesTracker.Domain.Enums;
-using ExpensesTracker.Models.Enums;
+﻿using ExpensesTracker.Application.Enums;
+using ExpensesTracker.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace ExpensesTracker.Models
@@ -30,9 +30,9 @@ namespace ExpensesTracker.Models
             ErrorMessage = "L'identificativo del metodo di pagamento deve essere maggiore di zero.")]
         public int? PaymentMethodId { get; set; }
 
-        public TransactionSortBy TransactionSortBy { get; set; } = Enums.TransactionSortBy.Date;
+        public TransactionSortBy TransactionSortBy { get; set; } = TransactionSortBy.Date;
 
-        public SortDirection SortDirection { get; set; } = Enums.SortDirection.Desc;
+        public SortDirection SortDirection { get; set; } = SortDirection.Desc;
 
         [Range(1, int.MaxValue)]
         public int PageNumber { get; set; } = 1;

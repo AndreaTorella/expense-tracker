@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
-using ExpensesTracker.Entities;
+using ExpensesTracker.Application.Models;
+using ExpensesTracker.Application.Repositories;
+using ExpensesTracker.Domain.Entities;
 using ExpensesTracker.Models;
 using ExpensesTracker.Repositories;
 
@@ -27,7 +29,9 @@ namespace ExpensesTracker.Services
         public async Task<PagedResultDto<TransactionListDto>> GetAllTransactionsAsync(TransactionFilterDto filters)
         {
             var householdId = await this.currentUserService.GetHouseholdIdAsync();
-            var result = await transactionRepository.GetTransactionAsync(filters, householdId);
+
+            var filtersQuery = this.mapper.Map<TransactionQuery>(filters);
+            var result = await transactionRepository.GetTransactionAsync(filtersQuery, householdId);
 
             return new PagedResultDto<TransactionListDto>
             {

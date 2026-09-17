@@ -1,4 +1,4 @@
-﻿namespace ExpensesTracker.Models.Common
+﻿namespace ExpensesTracker.Application.Models
 {
     public class MonthlyTotal
     {

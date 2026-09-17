@@ -1,4 +1,4 @@
-namespace ExpensesTracker.Models.Enums
+namespace ExpensesTracker.Application.Enums
 {
     public enum TransactionSortBy
     {

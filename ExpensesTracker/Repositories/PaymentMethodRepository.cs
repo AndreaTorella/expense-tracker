@@ -1,5 +1,6 @@
-﻿using ExpensesTracker.Data;
-using ExpensesTracker.Entities;
+﻿using ExpensesTracker.Application.Repositories;
+using ExpensesTracker.Data;
+using ExpensesTracker.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpensesTracker.Repositories
@@ -17,7 +18,7 @@ namespace ExpensesTracker.Repositories
         {
             return await this.context.PaymentMethods.ToListAsync();
         }
-        
+
         public async Task<PaymentMethod?> GetPaymentMethodByIdAsync(int paymentMethodId)
         {
             return await this.context.PaymentMethods.FirstOrDefaultAsync(x => x.Id == paymentMethodId);
@@ -25,7 +26,7 @@ namespace ExpensesTracker.Repositories
 
         public async Task AddPaymentMethodAsync(PaymentMethod paymentMethod)
         {
-            if(paymentMethod == null)
+            if (paymentMethod == null)
             {
                 throw new ArgumentNullException(nameof(paymentMethod));
             }
@@ -35,7 +36,7 @@ namespace ExpensesTracker.Repositories
 
         public void DeletePaymentMethodAsync(PaymentMethod paymentMethod)
         {
-            if(paymentMethod == null)
+            if (paymentMethod == null)
             {
                 throw new ArgumentNullException(nameof(paymentMethod));
             }

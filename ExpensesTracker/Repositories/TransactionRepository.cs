@@ -1,9 +1,9 @@
-﻿using ExpensesTracker.Data;
+﻿using ExpensesTracker.Application.Common;
+using ExpensesTracker.Application.Enums;
+using ExpensesTracker.Application.Models;
+using ExpensesTracker.Data;
+using ExpensesTracker.Domain.Entities;
 using ExpensesTracker.Domain.Enums;
-using ExpensesTracker.Entities;
-using ExpensesTracker.Models;
-using ExpensesTracker.Models.Common;
-using ExpensesTracker.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -17,7 +17,7 @@ namespace ExpensesTracker.Repositories
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));
         }
-        public async Task<PagedResult<Transaction>> GetTransactionAsync(TransactionFilterDto filters, int houseHoldId)
+        public async Task<PagedResult<Transaction>> GetTransactionAsync(TransactionQuery filters, int houseHoldId)
         {
             IQueryable<Transaction> query = this.context.Transactions
                 .AsNoTracking()
@@ -162,7 +162,6 @@ namespace ExpensesTracker.Repositories
             var transactionsByMonth = await this.context.Transactions
                 .Where(x =>
                     x.HouseholdId == householdId &&
-                    x.Date >= fromDate &&
                     x.Date < toDate &&
                     x.TransactionType == transactionType)
                 .GroupBy(x => new
@@ -185,7 +184,7 @@ namespace ExpensesTracker.Repositories
 
         private static IQueryable<Transaction> ApplySorting(
             IQueryable<Transaction> query,
-            TransactionFilterDto filters)
+            TransactionQuery filters)
         {
             return filters.TransactionSortBy switch
             {

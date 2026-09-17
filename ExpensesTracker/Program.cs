@@ -1,3 +1,4 @@
+using ExpensesTracker.Application.Repositories;
 using ExpensesTracker.Data;
 using ExpensesTracker.Entities;
 using ExpensesTracker.Exceptions;

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using ExpensesTracker.Models.Common;
+using ExpensesTracker.Application.Models;
 using ExpensesTracker.Models.Dashboard;
 
 namespace ExpensesTracker.Profiles

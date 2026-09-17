@@ -1,6 +1,6 @@
 ﻿using ExpensesTracker.Domain.Enums;
 
-namespace ExpensesTracker.Entities
+namespace ExpensesTracker.Domain.Entities
 {
     public class Transaction
     {
