@@ -1,10 +1,10 @@
 ﻿using ExpensesTracker.Domain.Entities;
 using ExpensesTracker.Domain.Enums;
-using ExpensesTracker.Entities;
+using ExpensesTracker.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExpensesTracker.Data
+namespace ExpensesTracker.Infrastructure.Persitence
 {
     public class ExpenseTrackerDbContext : IdentityDbContext<ApplicationUser>
     {

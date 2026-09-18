@@ -1,8 +1,8 @@
 using ExpensesTracker.Application.Repositories;
-using ExpensesTracker.Data;
-using ExpensesTracker.Entities;
 using ExpensesTracker.Exceptions;
-using ExpensesTracker.Repositories;
+using ExpensesTracker.Infrastructure.Data;
+using ExpensesTracker.Infrastructure.Identity;
+using ExpensesTracker.Infrastructure.Repositories;
 using ExpensesTracker.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;

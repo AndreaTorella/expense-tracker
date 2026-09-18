@@ -1,9 +1,8 @@
 using ExpensesTracker.Domain.Entities;
-using ExpensesTracker.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace ExpensesTracker.Data
+namespace ExpensesTracker.Infrastructure.Persistence.Configurations
 {
     public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
     {

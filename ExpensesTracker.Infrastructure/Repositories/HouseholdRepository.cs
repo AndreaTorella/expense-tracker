@@ -1,8 +1,8 @@
 ﻿using ExpensesTracker.Application.Repositories;
-using ExpensesTracker.Data;
 using ExpensesTracker.Domain.Entities;
+using ExpensesTracker.Infrastructure.Data;
 
-namespace ExpensesTracker.Repositories
+namespace ExpensesTracker.Infrastructure.Repositories
 {
     public class HouseholdRepository : IHouseholdRepository
     {

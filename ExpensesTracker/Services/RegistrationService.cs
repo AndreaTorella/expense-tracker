@@ -1,5 +1,5 @@
-﻿using ExpensesTracker.Data;
-using ExpensesTracker.Entities;
+﻿using ExpensesTracker.Infrastructure.Data;
+using ExpensesTracker.Infrastructure.Identity;
 using ExpensesTracker.Models;
 using Microsoft.AspNetCore.Identity;
 

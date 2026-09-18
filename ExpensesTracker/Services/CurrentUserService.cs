@@ -1,4 +1,4 @@
-﻿using ExpensesTracker.Entities;
+﻿using ExpensesTracker.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 
 namespace ExpensesTracker.Services

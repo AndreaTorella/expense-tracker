@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ExpensesTracker.Application\ExpensesTracker.Application.csproj" />
     <ProjectReference Include="..\ExpensesTracker.Domain\ExpensesTracker.Domain.csproj" />
   </ItemGroup>

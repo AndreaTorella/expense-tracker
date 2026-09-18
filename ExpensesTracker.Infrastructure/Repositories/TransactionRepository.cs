@@ -2,13 +2,13 @@
 using ExpensesTracker.Application.Enums;
 using ExpensesTracker.Application.Models;
 using ExpensesTracker.Application.Repositories;
-using ExpensesTracker.Data;
 using ExpensesTracker.Domain.Entities;
 using ExpensesTracker.Domain.Enums;
+using ExpensesTracker.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace ExpensesTracker.Repositories
+namespace ExpensesTracker.Infrastructure.Repositories
 {
     public class TransactionRepository : ITransactionRepository
     {

@@ -1,4 +1,4 @@
-﻿using ExpensesTracker.Entities;
+﻿using ExpensesTracker.Infrastructure.Identity;
 
 namespace ExpensesTracker.Services
 {
