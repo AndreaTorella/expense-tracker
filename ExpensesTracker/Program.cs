@@ -1,7 +1,7 @@
 using ExpensesTracker.Application.Repositories;
 using ExpensesTracker.Exceptions;
-using ExpensesTracker.Infrastructure.Data;
 using ExpensesTracker.Infrastructure.Identity;
+using ExpensesTracker.Infrastructure.Persistence;
 using ExpensesTracker.Infrastructure.Repositories;
 using ExpensesTracker.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

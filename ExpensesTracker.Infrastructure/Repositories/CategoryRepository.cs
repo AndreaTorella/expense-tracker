@@ -1,6 +1,6 @@
 ﻿using ExpensesTracker.Application.Repositories;
 using ExpensesTracker.Domain.Entities;
-using ExpensesTracker.Infrastructure.Data;
+using ExpensesTracker.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpensesTracker.Infrastructure.Repositories

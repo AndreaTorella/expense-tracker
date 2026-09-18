@@ -4,7 +4,7 @@ using ExpensesTracker.Application.Models;
 using ExpensesTracker.Application.Repositories;
 using ExpensesTracker.Domain.Entities;
 using ExpensesTracker.Domain.Enums;
-using ExpensesTracker.Infrastructure.Data;
+using ExpensesTracker.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 

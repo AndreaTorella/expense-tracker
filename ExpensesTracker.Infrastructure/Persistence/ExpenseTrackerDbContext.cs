@@ -4,7 +4,7 @@ using ExpensesTracker.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExpensesTracker.Infrastructure.Persitence
+namespace ExpensesTracker.Infrastructure.Persistence
 {
     public class ExpenseTrackerDbContext : IdentityDbContext<ApplicationUser>
     {
