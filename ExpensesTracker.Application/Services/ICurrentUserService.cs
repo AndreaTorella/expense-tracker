@@ -1,4 +1,4 @@
-﻿namespace ExpensesTracker.Services
+﻿namespace ExpensesTracker.Application.Services
 {
     public interface ICurrentUserService
     {

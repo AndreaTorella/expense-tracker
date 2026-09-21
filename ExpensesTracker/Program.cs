@@ -1,4 +1,5 @@
 using ExpensesTracker.Application.Repositories;
+using ExpensesTracker.Application.Services;
 using ExpensesTracker.Exceptions;
 using ExpensesTracker.Infrastructure.Identity;
 using ExpensesTracker.Infrastructure.Persistence;

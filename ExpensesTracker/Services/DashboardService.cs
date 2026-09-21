@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ExpensesTracker.Application.Repositories;
+using ExpensesTracker.Application.Services;
 using ExpensesTracker.Domain.Enums;
 using ExpensesTracker.Models.Dashboard;
 

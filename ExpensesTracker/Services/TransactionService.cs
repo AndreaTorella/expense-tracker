@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ExpensesTracker.Application.Models;
 using ExpensesTracker.Application.Repositories;
+using ExpensesTracker.Application.Services;
 using ExpensesTracker.Domain.Entities;
 using ExpensesTracker.Models;
 
