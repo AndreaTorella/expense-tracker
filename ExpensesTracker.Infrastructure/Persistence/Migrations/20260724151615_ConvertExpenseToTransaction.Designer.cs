@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ExpensesTracker.Migrations
+namespace ExpensesTracker.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ExpenseTrackerDbContext))]
-    [Migration("20260422172309_SeedCategoryAndPaymentMethod")]
-    partial class SeedCategoryAndPaymentMethod
+    [Migration("20260724151615_ConvertExpenseToTransaction")]
+    partial class ConvertExpenseToTransaction
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,6 +36,9 @@ namespace ExpensesTracker.Migrations
                     b.Property<int>("Name")
                         .HasColumnType("int");
 
+                    b.Property<int>("TransactionType")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Name")
@@ -47,63 +50,33 @@ namespace ExpensesTracker.Migrations
                         new
                         {
                             Id = 1,
-                            Name = 0
+                            Name = 0,
+                            TransactionType = 0
                         },
                         new
                         {
                             Id = 2,
-                            Name = 1
+                            Name = 1,
+                            TransactionType = 0
                         },
                         new
                         {
                             Id = 3,
-                            Name = 2
+                            Name = 2,
+                            TransactionType = 0
                         },
                         new
                         {
                             Id = 4,
-                            Name = 3
+                            Name = 3,
+                            TransactionType = 0
                         },
                         new
                         {
                             Id = 5,
-                            Name = 4
+                            Name = 4,
+                            TransactionType = 0
                         });
-                });
-
-            modelBuilder.Entity("ExpensesTracker.Entities.Expense", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Amount")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("PaymentMethodId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("PaymentMethodId");
-
-                    b.ToTable("Expense", (string)null);
                 });
 
             modelBuilder.Entity("ExpensesTracker.Entities.PaymentMethod", b =>
@@ -142,16 +115,54 @@ namespace ExpensesTracker.Migrations
                         });
                 });
 
-            modelBuilder.Entity("ExpensesTracker.Entities.Expense", b =>
+            modelBuilder.Entity("ExpensesTracker.Entities.Transaction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PaymentMethodId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("TransactionType")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("PaymentMethodId");
+
+                    b.ToTable("Transaction", (string)null);
+                });
+
+            modelBuilder.Entity("ExpensesTracker.Entities.Transaction", b =>
                 {
                     b.HasOne("ExpensesTracker.Entities.Category", "Category")
-                        .WithMany("Expenses")
+                        .WithMany("Transactions")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("ExpensesTracker.Entities.PaymentMethod", "PaymentMethod")
-                        .WithMany("Expenses")
+                        .WithMany("Transactions")
                         .HasForeignKey("PaymentMethodId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -163,12 +174,12 @@ namespace ExpensesTracker.Migrations
 
             modelBuilder.Entity("ExpensesTracker.Entities.Category", b =>
                 {
-                    b.Navigation("Expenses");
+                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("ExpensesTracker.Entities.PaymentMethod", b =>
                 {
-                    b.Navigation("Expenses");
+                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

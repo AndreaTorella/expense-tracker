@@ -4,19 +4,16 @@ using ExpensesTracker.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ExpensesTracker.Migrations
+namespace ExpensesTracker.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ExpenseTrackerDbContext))]
-    [Migration("20260915095741_MakeCategoriesHouseholdSpecific")]
-    partial class MakeCategoriesHouseholdSpecific
+    partial class ExpenseTrackerDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -197,6 +194,9 @@ namespace ExpensesTracker.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("HouseholdId")
+                        .HasColumnType("int");
+
                     b.Property<int>("PaymentMethodId")
                         .HasColumnType("int");
 
@@ -213,6 +213,8 @@ namespace ExpensesTracker.Migrations
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("CreatedByUserId");
+
+                    b.HasIndex("HouseholdId");
 
                     b.HasIndex("PaymentMethodId");
 
@@ -355,7 +357,7 @@ namespace ExpensesTracker.Migrations
             modelBuilder.Entity("ExpensesTracker.Entities.ApplicationUser", b =>
                 {
                     b.HasOne("ExpensesTracker.Entities.Household", "Household")
-                        .WithMany("ApplicationUsers")
+                        .WithMany()
                         .HasForeignKey("HouseholdId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -382,10 +384,16 @@ namespace ExpensesTracker.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("ExpensesTracker.Entities.ApplicationUser", "CreatedByUser")
-                        .WithMany("Transactions")
+                    b.HasOne("ExpensesTracker.Entities.ApplicationUser", null)
+                        .WithMany()
                         .HasForeignKey("CreatedByUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ExpensesTracker.Entities.Household", "Household")
+                        .WithMany("Transactions")
+                        .HasForeignKey("HouseholdId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("ExpensesTracker.Entities.PaymentMethod", "PaymentMethod")
@@ -396,7 +404,7 @@ namespace ExpensesTracker.Migrations
 
                     b.Navigation("Category");
 
-                    b.Navigation("CreatedByUser");
+                    b.Navigation("Household");
 
                     b.Navigation("PaymentMethod");
                 });
@@ -452,11 +460,6 @@ namespace ExpensesTracker.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ExpensesTracker.Entities.ApplicationUser", b =>
-                {
-                    b.Navigation("Transactions");
-                });
-
             modelBuilder.Entity("ExpensesTracker.Entities.Category", b =>
                 {
                     b.Navigation("Transactions");
@@ -464,7 +467,7 @@ namespace ExpensesTracker.Migrations
 
             modelBuilder.Entity("ExpensesTracker.Entities.Household", b =>
                 {
-                    b.Navigation("ApplicationUsers");
+                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("ExpensesTracker.Entities.PaymentMethod", b =>

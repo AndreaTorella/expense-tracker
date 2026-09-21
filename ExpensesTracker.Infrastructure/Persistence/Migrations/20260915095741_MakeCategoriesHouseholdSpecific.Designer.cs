@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ExpensesTracker.Migrations
+namespace ExpensesTracker.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ExpenseTrackerDbContext))]
-    [Migration("20260901151433_AddHouseholdAndTransactionOwnership")]
-    partial class AddHouseholdAndTransactionOwnership
+    [Migration("20260915095741_MakeCategoriesHouseholdSpecific")]
+    partial class MakeCategoriesHouseholdSpecific
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -103,74 +103,23 @@ namespace ExpensesTracker.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Name")
+                    b.Property<int>("HouseholdId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("TransactionType")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name")
+                    b.HasIndex("HouseholdId", "Name")
                         .IsUnique();
 
                     b.ToTable("Category", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = 0,
-                            TransactionType = 0
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = 1,
-                            TransactionType = 0
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = 2,
-                            TransactionType = 0
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = 3,
-                            TransactionType = 0
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = 4,
-                            TransactionType = 0
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Name = 5,
-                            TransactionType = 1
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Name = 6,
-                            TransactionType = 1
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Name = 7,
-                            TransactionType = 1
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Name = 8,
-                            TransactionType = 1
-                        });
                 });
 
             modelBuilder.Entity("ExpensesTracker.Entities.Household", b =>
@@ -407,6 +356,17 @@ namespace ExpensesTracker.Migrations
                 {
                     b.HasOne("ExpensesTracker.Entities.Household", "Household")
                         .WithMany("ApplicationUsers")
+                        .HasForeignKey("HouseholdId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Household");
+                });
+
+            modelBuilder.Entity("ExpensesTracker.Entities.Category", b =>
+                {
+                    b.HasOne("ExpensesTracker.Entities.Household", "Household")
+                        .WithMany()
                         .HasForeignKey("HouseholdId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace ExpensesTracker.Migrations
+namespace ExpensesTracker.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
     public partial class AddHouseholdAndTransactionOwnership : Migration

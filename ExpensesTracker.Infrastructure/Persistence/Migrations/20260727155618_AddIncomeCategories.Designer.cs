@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ExpensesTracker.Migrations
+namespace ExpensesTracker.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ExpenseTrackerDbContext))]
-    [Migration("20260724151615_ConvertExpenseToTransaction")]
-    partial class ConvertExpenseToTransaction
+    [Migration("20260727155618_AddIncomeCategories")]
+    partial class AddIncomeCategories
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -76,6 +76,30 @@ namespace ExpensesTracker.Migrations
                             Id = 5,
                             Name = 4,
                             TransactionType = 0
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = 5,
+                            TransactionType = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = 6,
+                            TransactionType = 1
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Name = 7,
+                            TransactionType = 1
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Name = 8,
+                            TransactionType = 1
                         });
                 });
 
