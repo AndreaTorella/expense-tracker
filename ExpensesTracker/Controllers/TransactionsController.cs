@@ -52,7 +52,7 @@ namespace ExpensesTracker.Controllers
             }
 
             var response = this.mapper.Map<TransactionListDto>(transaction);
-            return Ok(transaction);
+            return Ok(response);
         }
 
         [HttpPost]
