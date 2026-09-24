@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
+using ExpensesTracker.Application.Common;
 using ExpensesTracker.Application.Models;
 using ExpensesTracker.Application.Repositories;
 using ExpensesTracker.Application.Services;
 using ExpensesTracker.Domain.Entities;
-using ExpensesTracker.Models;
 
 namespace ExpensesTracker.Services
 {
@@ -26,23 +26,21 @@ namespace ExpensesTracker.Services
             this.currentUserService = currentUserService ?? throw new ArgumentNullException(nameof(currentUserService));
         }
 
-        public async Task<PagedResultDto<TransactionListDto>> GetAllTransactionsAsync(TransactionFilterDto filters)
+        public async Task<PagedResult<TransactionResult>> GetAllTransactionsAsync(TransactionQuery filters)
         {
             var householdId = await this.currentUserService.GetHouseholdIdAsync();
 
             var filtersQuery = this.mapper.Map<TransactionQuery>(filters);
             var result = await transactionRepository.GetTransactionAsync(filtersQuery, householdId);
 
-            return new PagedResultDto<TransactionListDto>
+            return new PagedResult<TransactionResult>
             {
-                Items = mapper.Map<IEnumerable<TransactionListDto>>(result.Items),
-                PageNumber = filters.PageNumber,
-                PageSize = filters.PageSize,
+                Items = mapper.Map<IEnumerable<TransactionResult>>(result.Items),
                 TotalItems = result.TotalItems
             };
         }
 
-        public async Task<TransactionListDto?> GetTransactionByIdAsync(int id)
+        public async Task<TransactionResult?> GetTransactionByIdAsync(int id)
         {
             var householdId = await this.currentUserService.GetHouseholdIdAsync();
             var transactionEntity = await transactionRepository.GetTransactionByIdAsync(id, householdId);
@@ -52,10 +50,10 @@ namespace ExpensesTracker.Services
                 return null;
             }
 
-            return mapper.Map<TransactionListDto>(transactionEntity);
+            return mapper.Map<TransactionResult>(transactionEntity);
         }
 
-        public async Task<TransactionListDto> AddTransactionAsync(CreateTransactionDto transactionDto)
+        public async Task<TransactionResult> AddTransactionAsync(CreateTransactionCommand transactionDto)
         {
             ArgumentNullException.ThrowIfNull(transactionDto);
 
@@ -81,12 +79,12 @@ namespace ExpensesTracker.Services
                     transactionEntity.Id,
                     householdId);
 
-            return mapper.Map<TransactionListDto>(createdTransaction);
+            return mapper.Map<TransactionResult>(createdTransaction);
         }
 
-        public async Task<TransactionListDto?> UpdateTransactionAsync(
+        public async Task<TransactionResult?> UpdateTransactionAsync(
             int id,
-            UpdateTransactionDto updateTransactionDto)
+            UpdateTransactionCommand updateTransactionDto)
         {
             var householdId = await this.currentUserService.GetHouseholdIdAsync();
             var transactionEntity = await transactionRepository.GetTransactionByIdAsync(id, householdId);
@@ -111,7 +109,7 @@ namespace ExpensesTracker.Services
             mapper.Map(updateTransactionDto, transactionEntity);
             await transactionRepository.SaveChangesAsync();
 
-            return mapper.Map<TransactionListDto>(transactionEntity);
+            return mapper.Map<TransactionResult>(transactionEntity);
         }
 
         public async Task<bool> DeleteTransactionAsync(int transactionId)

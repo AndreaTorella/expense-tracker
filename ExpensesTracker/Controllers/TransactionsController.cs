@@ -1,4 +1,6 @@
-﻿using ExpensesTracker.Application.Services;
+﻿using AutoMapper;
+using ExpensesTracker.Application.Models;
+using ExpensesTracker.Application.Services;
 using ExpensesTracker.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,16 +13,22 @@ namespace ExpensesTracker.Controllers
     public class TransactionsController : ControllerBase
     {
         private readonly ITransactionService transactionService;
+        private readonly IMapper mapper;
 
-        public TransactionsController(ITransactionService transactionService)
+        public TransactionsController(
+            IMapper mapper,
+            ITransactionService transactionService)
         {
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.transactionService = transactionService ?? throw new ArgumentNullException(nameof(transactionService));
         }
 
         [HttpGet]
         public async Task<ActionResult<PagedResultDto<TransactionListDto>>> GetTransactions([FromQuery] TransactionFilterDto filters)
         {
-            var result = await transactionService.GetAllTransactionsAsync(filters);
+            var query = this.mapper.Map<TransactionQuery>(filters);
+
+            var result = await transactionService.GetAllTransactionsAsync(query);
             return Ok(result);
         }
 
@@ -45,7 +53,8 @@ namespace ExpensesTracker.Controllers
                 return BadRequest();
             }
 
-            var createdTransaction = await transactionService.AddTransactionAsync(createTransactionDto);
+            var createTransactionCommand = this.mapper.Map<CreateTransactionCommand>(createTransactionDto);
+            var createdTransaction = await transactionService.AddTransactionAsync(createTransactionCommand);
 
             return CreatedAtAction(
                 nameof(GetTransactionById),
@@ -63,7 +72,8 @@ namespace ExpensesTracker.Controllers
                 return BadRequest();
             }
 
-            var updatedTransaction = await transactionService.UpdateTransactionAsync(id, updateTransactionDto);
+            var updateTransactionCommand = this.mapper.Map<UpdateTransactionCommand>(updateTransactionDto);
+            var updatedTransaction = await transactionService.UpdateTransactionAsync(id, updateTransactionCommand);
 
             if (updatedTransaction == null)
             {

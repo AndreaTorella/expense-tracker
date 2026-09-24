@@ -23,6 +23,8 @@ namespace ExpensesTracker.Profiles
 
 
             CreateMap<TransactionFilterDto, TransactionQuery>();
+            CreateMap<CreateTransactionDto, CreateTransactionCommand>();
+            CreateMap<UpdateTransactionDto, UpdateTransactionCommand>();
         }
     }
 }
