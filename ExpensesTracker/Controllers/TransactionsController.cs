@@ -51,6 +51,7 @@ namespace ExpensesTracker.Controllers
                 return NotFound();
             }
 
+            var response = this.mapper.Map<TransactionListDto>(transaction);
             return Ok(transaction);
         }
 
@@ -65,10 +66,12 @@ namespace ExpensesTracker.Controllers
             var createTransactionCommand = this.mapper.Map<CreateTransactionCommand>(createTransactionDto);
             var createdTransaction = await transactionService.AddTransactionAsync(createTransactionCommand);
 
+            var response = mapper.Map<TransactionListDto>(createdTransaction);
+
             return CreatedAtAction(
                 nameof(GetTransactionById),
-                new { id = createdTransaction.Id },
-                createdTransaction);
+                new { id = response.Id },
+                response);
         }
 
         [HttpPut("{id}")]
@@ -82,6 +85,7 @@ namespace ExpensesTracker.Controllers
             }
 
             var updateTransactionCommand = this.mapper.Map<UpdateTransactionCommand>(updateTransactionDto);
+
             var updatedTransaction = await transactionService.UpdateTransactionAsync(id, updateTransactionCommand);
 
             if (updatedTransaction == null)
@@ -89,7 +93,9 @@ namespace ExpensesTracker.Controllers
                 return NotFound();
             }
 
-            return Ok(updatedTransaction);
+            var response = mapper.Map<TransactionListDto>(updatedTransaction);
+
+            return Ok(response);
         }
 
         [HttpDelete("{id}")]
