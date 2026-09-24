@@ -2,10 +2,9 @@
 using ExpensesTracker.Application.Common;
 using ExpensesTracker.Application.Models;
 using ExpensesTracker.Application.Repositories;
-using ExpensesTracker.Application.Services;
 using ExpensesTracker.Domain.Entities;
 
-namespace ExpensesTracker.Services
+namespace ExpensesTracker.Application.Services
 {
     public class TransactionService : ITransactionService
     {
@@ -30,8 +29,7 @@ namespace ExpensesTracker.Services
         {
             var householdId = await this.currentUserService.GetHouseholdIdAsync();
 
-            var filtersQuery = this.mapper.Map<TransactionQuery>(filters);
-            var result = await transactionRepository.GetTransactionAsync(filtersQuery, householdId);
+            var result = await transactionRepository.GetTransactionAsync(filters, householdId);
 
             return new PagedResult<TransactionResult>
             {

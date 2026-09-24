@@ -23,8 +23,22 @@ namespace ExpensesTracker.Profiles
 
 
             CreateMap<TransactionFilterDto, TransactionQuery>();
+
             CreateMap<CreateTransactionDto, CreateTransactionCommand>();
             CreateMap<UpdateTransactionDto, UpdateTransactionCommand>();
+
+            CreateMap<CreateTransactionCommand, Transaction>();
+            CreateMap<UpdateTransactionCommand, Transaction>();
+
+            CreateMap<Transaction, TransactionResult>()
+                .ForMember(
+                    dest => dest.CategoryName,
+                    opt => opt.MapFrom(x => x.Category.Name))
+                .ForMember(
+                    dest => dest.PaymentMethodName,
+                    opt => opt.MapFrom(x => x.PaymentMethod.Name));
+
+            CreateMap<TransactionResult, TransactionListDto>();
         }
     }
 }

@@ -29,7 +29,16 @@ namespace ExpensesTracker.Controllers
             var query = this.mapper.Map<TransactionQuery>(filters);
 
             var result = await transactionService.GetAllTransactionsAsync(query);
-            return Ok(result);
+
+            var response = new PagedResultDto<TransactionListDto>
+            {
+                Items = mapper.Map<IEnumerable<TransactionListDto>>(result.Items),
+                PageNumber = query.PageNumber,
+                PageSize = query.PageSize,
+                TotalItems = result.TotalItems
+            };
+
+            return Ok(response);
         }
 
         [HttpGet("{id}")]
