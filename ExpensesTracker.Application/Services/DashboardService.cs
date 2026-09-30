@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using ExpensesTracker.Application.Models;
+﻿using ExpensesTracker.Application.Models;
 using ExpensesTracker.Application.Repositories;
 using ExpensesTracker.Domain.Enums;
 
@@ -12,7 +11,6 @@ namespace ExpensesTracker.Application.Services
         private readonly ICurrentUserService currentUserService;
 
         public DashboardService(
-            IMapper mapper,
             ICurrentUserService currentUserService,
             ITransactionRepository transactionRepository)
         {

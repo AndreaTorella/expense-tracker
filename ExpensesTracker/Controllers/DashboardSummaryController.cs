@@ -28,9 +28,11 @@ namespace ExpensesTracker.Controllers
             [FromQuery] DashboardFilterDto dashboardFilterDto)
         {
             var dashboardQuery = this.mapper.Map<DashboardQuery>(dashboardFilterDto);
-            var result = await this.dashboardService.GetSummaryAsync(dashboardQuery);
+            var dashboardSummaryResult = await this.dashboardService.GetSummaryAsync(dashboardQuery);
 
-            return Ok(result);
+            var response = this.mapper.Map<DashboardSummaryDto>(dashboardSummaryResult);
+
+            return Ok(response);
         }
     }
 }
