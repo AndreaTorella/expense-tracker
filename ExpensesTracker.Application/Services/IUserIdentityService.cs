@@ -1,6 +1,6 @@
 ﻿using ExpensesTracker.Application.Models;
 
-namespace ExpensesTracker.Application
+namespace ExpensesTracker.Application.Services
 {
     public interface IUserIdentityService
     {
@@ -8,5 +8,9 @@ namespace ExpensesTracker.Application
             string email,
             string password,
             int householdId);
+
+        Task<AuthenticatedUserResult?> ValidateCredentialsAsync(
+            string email,
+            string password);
     }
 }

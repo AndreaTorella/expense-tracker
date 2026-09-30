@@ -1,5 +1,4 @@
-﻿using ExpensesTracker.Application;
-using ExpensesTracker.Application.Models;
+﻿using ExpensesTracker.Application.Models;
 using ExpensesTracker.Application.Services;
 using ExpensesTracker.Infrastructure.Persistence;
 

@@ -1,5 +1,5 @@
-﻿using ExpensesTracker.Application;
-using ExpensesTracker.Application.Models;
+﻿using ExpensesTracker.Application.Models;
+using ExpensesTracker.Application.Services;
 using Microsoft.AspNetCore.Identity;
 
 namespace ExpensesTracker.Infrastructure.Identity
@@ -36,6 +36,29 @@ namespace ExpensesTracker.Infrastructure.Identity
                         Description = error.Description
                     })
                     .ToList()
+            };
+        }
+
+        public async Task<AuthenticatedUserResult?> ValidateCredentialsAsync(string email, string password)
+        {
+            var user = await this.userManager.FindByEmailAsync(email);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            var isPasswordValid = await this.userManager.CheckPasswordAsync(user, password);
+
+            if (!isPasswordValid)
+            {
+                return null;
+            }
+
+            return new AuthenticatedUserResult
+            {
+                Id = user.Id,
+                Email = user.Email ?? string.Empty
             };
         }
     }
