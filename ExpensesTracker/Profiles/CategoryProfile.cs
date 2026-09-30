@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-using ExpensesTracker.Domain.Entities;
+using ExpensesTracker.Application.Models;
+using ExpensesTracker.Models;
 
 namespace ExpensesTracker.Profiles
 {
@@ -7,8 +8,8 @@ namespace ExpensesTracker.Profiles
     {
         public CategoryProfile()
         {
-            this.CreateMap<Category, Models.CategoryDto>();
-            this.CreateMap<Models.CategoryDto, Category>();
+            this.CreateMap<CategoryDto, CreateCategoryCommand>();
+            this.CreateMap<CategoryResult, CategoryDto>();
         }
     }
 }

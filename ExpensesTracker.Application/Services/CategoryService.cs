@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using ExpensesTracker.Application.Models;
 using ExpensesTracker.Application.Repositories;
 using ExpensesTracker.Application.Services;
 using ExpensesTracker.Domain.Entities;
-using ExpensesTracker.Models;
 
 namespace ExpensesTracker.Services
 {
@@ -22,14 +22,14 @@ namespace ExpensesTracker.Services
             this.currentUserService = currentUserService ?? throw new ArgumentNullException(nameof(currentUserService));
         }
 
-        public async Task<IEnumerable<CategoryDto>> GetAllCategoriesAsync()
+        public async Task<IEnumerable<CategoryResult>> GetAllCategoriesAsync()
         {
             var householdId = await this.currentUserService.GetHouseholdIdAsync();
             var categoryEntities = await categoryRepository.GetAllCategoriesAsync(householdId);
-            return mapper.Map<IEnumerable<CategoryDto>>(categoryEntities);
+            return mapper.Map<IEnumerable<CategoryResult>>(categoryEntities);
         }
 
-        public async Task<CategoryDto?> GetCategoryByIdAsync(int categoryId)
+        public async Task<CategoryResult?> GetCategoryByIdAsync(int categoryId)
         {
             var householdId = await this.currentUserService.GetHouseholdIdAsync();
             var categoryEntity = await categoryRepository.GetCategoryByIdAsync(categoryId, householdId);
@@ -39,10 +39,10 @@ namespace ExpensesTracker.Services
                 return null;
             }
 
-            return mapper.Map<CategoryDto>(categoryEntity);
+            return mapper.Map<CategoryResult>(categoryEntity);
         }
 
-        public async Task<CategoryDto> AddCategoryAsync(CategoryDto categoryDto)
+        public async Task<CategoryResult> AddCategoryAsync(CreateCategoryCommand categoryDto)
         {
             ArgumentNullException.ThrowIfNull(categoryDto);
 
@@ -54,7 +54,7 @@ namespace ExpensesTracker.Services
             await categoryRepository.AddCategoryAsync(categoryEntity);
             await categoryRepository.SaveChangesAsync();
 
-            return mapper.Map<CategoryDto>(categoryEntity);
+            return mapper.Map<CategoryResult>(categoryEntity);
         }
 
         public async Task<bool> DeleteCategoryAsync(int categoryId)

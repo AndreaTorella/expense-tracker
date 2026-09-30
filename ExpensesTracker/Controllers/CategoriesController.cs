@@ -1,5 +1,7 @@
-﻿using ExpensesTracker.Models;
-using ExpensesTracker.Services;
+﻿using AutoMapper;
+using ExpensesTracker.Application.Models;
+using ExpensesTracker.Application.Services;
+using ExpensesTracker.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,10 +12,14 @@ namespace ExpensesTracker.Controllers
     [ApiController]
     public class CategoriesController : ControllerBase
     {
+        private readonly IMapper mapper;
         private readonly ICategoryService categoryService;
 
-        public CategoriesController(ICategoryService categoryService)
+        public CategoriesController(
+            IMapper mapper,
+            ICategoryService categoryService)
         {
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.categoryService = categoryService ?? throw new ArgumentNullException(nameof(categoryService));
         }
 
@@ -21,7 +27,7 @@ namespace ExpensesTracker.Controllers
         public async Task<ActionResult<IEnumerable<CategoryDto>>> GetAllCategories()
         {
             var categories = await categoryService.GetAllCategoriesAsync();
-            return Ok(categories);
+            return Ok(this.mapper.Map<IEnumerable<CategoryDto>>(categories));
         }
 
         [HttpGet("{id}")]
@@ -33,7 +39,8 @@ namespace ExpensesTracker.Controllers
             {
                 return NotFound();
             }
-            return Ok(category);
+
+            return Ok(this.mapper.Map<CategoryDto>(category));
         }
 
         [HttpPost]
@@ -44,9 +51,10 @@ namespace ExpensesTracker.Controllers
                 return BadRequest();
             }
 
-            var createdCategory = await categoryService.AddCategoryAsync(categoryDto);
+            var createCategoryCommand = this.mapper.Map<CreateCategoryCommand>(categoryDto);
+            var result = await categoryService.AddCategoryAsync(createCategoryCommand);
 
-            return CreatedAtAction(nameof(GetCategoryById), new { id = createdCategory.Id }, createdCategory);
+            return CreatedAtAction(nameof(GetCategoryById), new { id = result.Id }, result);
         }
 
         [HttpDelete("{id}")]
