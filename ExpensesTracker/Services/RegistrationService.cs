@@ -2,7 +2,6 @@
 using ExpensesTracker.Application.Services;
 using ExpensesTracker.Infrastructure.Identity;
 using ExpensesTracker.Infrastructure.Persistence;
-using ExpensesTracker.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace ExpensesTracker.Services
@@ -18,16 +17,16 @@ namespace ExpensesTracker.Services
         private readonly UserManager<ApplicationUser> userManager;
 
         public RegistrationService(
-            IHouseholdService household,
+            IHouseholdService householdService,
             ExpenseTrackerDbContext context,
             UserManager<ApplicationUser> userManager)
         {
-            this.householdService = household ?? throw new ArgumentNullException(nameof(householdService));
+            this.householdService = householdService ?? throw new ArgumentNullException(nameof(householdService));
             this.context = context ?? throw new ArgumentNullException(nameof(context));
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         }
 
-        public async Task<IdentityResult> RegisterAsync(RegisterDto registerDto)
+        public async Task<RegistrationResult> RegisterAsync(RegisterCommand registerDto)
         {
             await using var transaction = await this.context.Database.BeginTransactionAsync();
 
@@ -47,17 +46,23 @@ namespace ExpensesTracker.Services
                     HouseholdId = household.Id,
                 };
 
-                var result = await userManager.CreateAsync(user, registerDto.Password);
+                var identityResult = await userManager.CreateAsync(user, registerDto.Password);
 
-                if (!result.Succeeded)
+                var registrationResult = new RegistrationResult
+                {
+                    Succeeded = identityResult.Succeeded,
+                    Errors = identityResult.Errors.Select(x => new RegistrationError { Code = x.Code, Description = x.Description })
+                };
+
+                if (!registrationResult.Succeeded)
                 {
                     await transaction.RollbackAsync();
-                    return result;
+                    return registrationResult;
                 }
 
                 await transaction.CommitAsync();
 
-                return result;
+                return registrationResult;
             }
             catch
             {
