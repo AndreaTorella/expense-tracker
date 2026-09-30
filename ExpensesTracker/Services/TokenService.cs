@@ -23,10 +23,10 @@ namespace ExpensesTracker.Services
             var audience = configuration["jwt:Audience"];
             var expirationMinutes = int.Parse(configuration["jwt:ExpirationMinutes"] ?? "60");
 
-            var claims = new List<Claim> //JWT payload
+            var claims = new List<Claim>
             {
                 new(JwtRegisteredClaimNames.Sub, user.Id),
-                new(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
+                new(JwtRegisteredClaimNames.Email, user.Email),
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));

@@ -29,13 +29,12 @@ namespace ExpensesTracker.Infrastructure.Identity
             return new UserCreationResult
             {
                 Succeeded = identityResult.Succeeded,
-                Errors = identityResult.Errors
+                Errors = [.. identityResult.Errors
                     .Select(error => new UserIdentityError
                     {
                         Code = error.Code,
                         Description = error.Description
-                    })
-                    .ToList()
+                    })]
             };
         }
 

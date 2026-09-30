@@ -12,28 +12,22 @@ namespace ExpensesTracker.Controllers
     {
         private readonly IMapper mapper;
         private readonly IRegistrationService registrationService;
-        private readonly ITokenService tokenService;
-        private readonly IUserIdentityService userIdentityService;
+        private readonly IAuthenticationService authenticationService;
 
         public AuthController(
             IMapper mapper,
             IRegistrationService registrationService,
-            ITokenService tokenService,
-            IUserIdentityService userIdentityService)
+            IAuthenticationService authenticationService)
         {
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.registrationService = registrationService ?? throw new ArgumentNullException(nameof(registrationService));
-            this.tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
-            this.userIdentityService = userIdentityService ?? throw new ArgumentNullException(nameof(userIdentityService));
+            this.authenticationService = authenticationService ?? throw new ArgumentNullException(nameof(authenticationService));
         }
 
         [HttpPost("register")]
         public async Task<ActionResult> RegisterAsync([FromBody] RegisterDto registerDto)
         {
-            if (registerDto == null)
-            {
-                throw new ArgumentNullException(nameof(registerDto));
-            }
+            ArgumentNullException.ThrowIfNull(registerDto);
 
             var registerCommand = this.mapper.Map<RegisterCommand>(registerDto);
             var registrationResult = await this.registrationService.RegisterAsync(registerCommand);
@@ -49,25 +43,24 @@ namespace ExpensesTracker.Controllers
         [HttpPost("login")]
         public async Task<ActionResult> LoginAsync([FromBody] LoginDto loginDto)
         {
-            if (loginDto == null)
+            ArgumentNullException.ThrowIfNull(loginDto);
+
+            var loginCommand = new LoginCommand
             {
-                throw new ArgumentNullException(nameof(loginDto));
-            }
+                Email = loginDto.Email,
+                Password = loginDto.Password,
+            };
 
-            var authenticatedUser = await this.userIdentityService.ValidateCredentialsAsync(
-                loginDto.Email,
-                loginDto.Password);
+            var loginResult = await this.authenticationService.LoginAsync(loginCommand);
 
-            if (authenticatedUser == null)
+            if (loginResult == null)
             {
                 return Unauthorized();
             }
 
-            var token = tokenService.CreateToken(authenticatedUser);
-
             return Ok(new
             {
-                token
+                loginResult.Token
             });
         }
     }
