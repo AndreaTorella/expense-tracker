@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-using ExpensesTracker.Domain.Entities;
+using ExpensesTracker.Application.Models;
+using ExpensesTracker.Models;
 
 namespace ExpensesTracker.Profiles
 {
@@ -7,8 +8,8 @@ namespace ExpensesTracker.Profiles
     {
         public PaymentMethodProfile()
         {
-            this.CreateMap<PaymentMethod, Models.PaymentMethodDto>();
-            this.CreateMap<Models.PaymentMethodDto, PaymentMethod>();
+            this.CreateMap<PaymentMethodResult, PaymentMethodDto>();
+            this.CreateMap<PaymentMethodDto, CreatePaymentMethodCommand>();
         }
     }
 }
