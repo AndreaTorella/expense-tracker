@@ -8,11 +8,12 @@ namespace ExpensesTracker.Profiles
     {
         public DashboardSummaryProfile()
         {
-            this.CreateMap<CategoryTotal, CategoryTotalDto>();
-            this.CreateMap<CategoryTotalDto, CategoryTotal>();
+            this.CreateMap<DashboardFilterDto, DashboardQuery>();
 
+            this.CreateMap<CategoryTotal, CategoryTotalDto>();
             this.CreateMap<MonthlyTotal, MonthlyTotalDto>();
-            this.CreateMap<MonthlyTotalDto, MonthlyTotal>();
+
+            this.CreateMap<DashboardSummaryResult, DashboardSummaryDto>();
         }
     }
 }

@@ -1,15 +1,13 @@
 ﻿using AutoMapper;
+using ExpensesTracker.Application.Models;
 using ExpensesTracker.Application.Repositories;
-using ExpensesTracker.Application.Services;
 using ExpensesTracker.Domain.Enums;
-using ExpensesTracker.Models.Dashboard;
 
-namespace ExpensesTracker.Services
+namespace ExpensesTracker.Application.Services
 {
     public class DashboardService : IDashboardService
     {
         private const int DashboardMonthsCount = 6;
-        private readonly IMapper mapper;
         private readonly ITransactionRepository transactionRepository;
         private readonly ICurrentUserService currentUserService;
 
@@ -18,12 +16,11 @@ namespace ExpensesTracker.Services
             ICurrentUserService currentUserService,
             ITransactionRepository transactionRepository)
         {
-            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.currentUserService = currentUserService ?? throw new ArgumentNullException(nameof(currentUserService));
             this.transactionRepository = transactionRepository ?? throw new ArgumentNullException(nameof(transactionRepository));
         }
 
-        public async Task<DashboardSummaryDto> GetSummaryAsync(DashboardFilterDto filters)
+        public async Task<DashboardSummaryResult> GetSummaryAsync(DashboardQuery filters)
         {
             var today = DateTime.Today;
             var requestYear = filters.Year ?? today.Year;
@@ -57,23 +54,21 @@ namespace ExpensesTracker.Services
                         * 100, 2)
                     : null;
 
-            var categoryTotalsDto =
-                this.mapper.Map<IEnumerable<CategoryTotalDto>>(
+            var categoryTotals =
                     await this.transactionRepository.GetTotalsByCategoryAsync(
                         currentMonthStart,
                         nextMonthStart,
                         TransactionType.Expense,
-                        householdId));
+                        householdId);
 
             var sixMonthsBeforeStart = currentMonthStart.AddMonths(-5);
 
-            var monthlyTotalsDto =
-                this.mapper.Map<IEnumerable<MonthlyTotalDto>>(
+            var monthlyTotals =
                     await this.transactionRepository.GetMonthlyTotalsAsync(
                         sixMonthsBeforeStart,
                         nextMonthStart,
                         TransactionType.Expense,
-                        householdId));
+                        householdId);
 
             var completeMonthlyTotals = Enumerable
                 .Range(0, DashboardMonthsCount)
@@ -81,11 +76,11 @@ namespace ExpensesTracker.Services
                 {
                     var monthDate = sixMonthsBeforeStart.AddMonths(i);
 
-                    var existingMonth = monthlyTotalsDto.FirstOrDefault(x =>
+                    var existingMonth = monthlyTotals.FirstOrDefault(x =>
                         x.Year == monthDate.Year &&
                         x.Month == monthDate.Month);
 
-                    return new MonthlyTotalDto
+                    return new MonthlyTotal
                     {
                         Year = monthDate.Year,
                         Month = monthDate.Month,
@@ -94,7 +89,7 @@ namespace ExpensesTracker.Services
                 })
                 .ToList();
 
-            return new DashboardSummaryDto
+            return new DashboardSummaryResult
             {
                 CurrentMonthTotalExpenses = currentMonthTotalExpenses,
                 CurrentMonthTotalIncomes = currentMonthTotalIncomes,
@@ -102,7 +97,7 @@ namespace ExpensesTracker.Services
                 PreviousMonthTotalExpenses = previousMonthTotalExpenses,
                 DifferenceExpensePercentage = differenceExpensePercentage,
                 DifferenceIncomePercentage = differenceIncomePercentage,
-                CategoryTotals = categoryTotalsDto,
+                CategoryTotals = categoryTotals,
                 MonthlyTotals = completeMonthlyTotals
             };
         }
