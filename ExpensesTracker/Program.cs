@@ -1,3 +1,4 @@
+using ExpensesTracker.Application;
 using ExpensesTracker.Application.Repositories;
 using ExpensesTracker.Application.Services;
 using ExpensesTracker.Exceptions;
@@ -42,6 +43,7 @@ builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddScoped<IUserIdentityService, UserIdentityService>();
 
 //For identity DI
 builder.Services

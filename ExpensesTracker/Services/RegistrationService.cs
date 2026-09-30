@@ -1,8 +1,7 @@
-﻿using ExpensesTracker.Application.Models;
+﻿using ExpensesTracker.Application;
+using ExpensesTracker.Application.Models;
 using ExpensesTracker.Application.Services;
-using ExpensesTracker.Infrastructure.Identity;
 using ExpensesTracker.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Identity;
 
 namespace ExpensesTracker.Services
 {
@@ -13,20 +12,20 @@ namespace ExpensesTracker.Services
     public class RegistrationService : IRegistrationService
     {
         private readonly IHouseholdService householdService;
+        private readonly IUserIdentityService userIdentityService;
         private readonly ExpenseTrackerDbContext context;
-        private readonly UserManager<ApplicationUser> userManager;
 
         public RegistrationService(
             IHouseholdService householdService,
-            ExpenseTrackerDbContext context,
-            UserManager<ApplicationUser> userManager)
+            IUserIdentityService userIdentityService,
+            ExpenseTrackerDbContext context)
         {
             this.householdService = householdService ?? throw new ArgumentNullException(nameof(householdService));
+            this.userIdentityService = userIdentityService ?? throw new ArgumentNullException(nameof(userIdentityService));
             this.context = context ?? throw new ArgumentNullException(nameof(context));
-            this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
         }
 
-        public async Task<RegistrationResult> RegisterAsync(RegisterCommand registerDto)
+        public async Task<RegistrationResult> RegisterAsync(RegisterCommand registerCommand)
         {
             await using var transaction = await this.context.Database.BeginTransactionAsync();
 
@@ -34,24 +33,20 @@ namespace ExpensesTracker.Services
             {
                 var createHouseholdCommand = new CreateHouseholdCommand
                 {
-                    FamilyName = registerDto.FamilyName
+                    FamilyName = registerCommand.FamilyName
                 };
 
                 var household = await this.householdService.AddHouseholdAsync(createHouseholdCommand);
 
-                var user = new ApplicationUser
-                {
-                    UserName = registerDto.Email,
-                    Email = registerDto.Email,
-                    HouseholdId = household.Id,
-                };
-
-                var identityResult = await userManager.CreateAsync(user, registerDto.Password);
+                var userCreationResult = await this.userIdentityService.CreateUserAsync(
+                    registerCommand.Email,
+                    registerCommand.Password,
+                    household.Id);
 
                 var registrationResult = new RegistrationResult
                 {
-                    Succeeded = identityResult.Succeeded,
-                    Errors = identityResult.Errors.Select(x => new RegistrationError { Code = x.Code, Description = x.Description })
+                    Succeeded = userCreationResult.Succeeded,
+                    Errors = [.. userCreationResult.Errors.Select(x => new RegistrationError { Code = x.Code, Description = x.Description })]
                 };
 
                 if (!registrationResult.Succeeded)
