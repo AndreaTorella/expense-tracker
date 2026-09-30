@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
 using ExpensesTracker.Application.Models;
 using ExpensesTracker.Application.Services;
-using ExpensesTracker.Infrastructure.Identity;
 using ExpensesTracker.Models;
-using ExpensesTracker.Services;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpensesTracker.Controllers
@@ -16,18 +13,18 @@ namespace ExpensesTracker.Controllers
         private readonly IMapper mapper;
         private readonly IRegistrationService registrationService;
         private readonly ITokenService tokenService;
-        private readonly UserManager<ApplicationUser> userManager;
+        private readonly IUserIdentityService userIdentityService;
 
         public AuthController(
             IMapper mapper,
             IRegistrationService registrationService,
             ITokenService tokenService,
-            UserManager<ApplicationUser> userManager)
+            IUserIdentityService userIdentityService)
         {
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.registrationService = registrationService ?? throw new ArgumentNullException(nameof(registrationService));
             this.tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
-            this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            this.userIdentityService = userIdentityService ?? throw new ArgumentNullException(nameof(userIdentityService));
         }
 
         [HttpPost("register")]
@@ -57,21 +54,16 @@ namespace ExpensesTracker.Controllers
                 throw new ArgumentNullException(nameof(loginDto));
             }
 
-            var user = await userManager.FindByEmailAsync(loginDto.Email);
+            var authenticatedUser = await this.userIdentityService.ValidateCredentialsAsync(
+                loginDto.Email,
+                loginDto.Password);
 
-            if (user == null)
+            if (authenticatedUser == null)
             {
                 return Unauthorized();
             }
 
-            var isPasswordValid = await userManager.CheckPasswordAsync(user, loginDto.Password);
-
-            if (!isPasswordValid)
-            {
-                return Unauthorized();
-            }
-
-            var token = tokenService.CreateToken(user);
+            var token = tokenService.CreateToken(authenticatedUser);
 
             return Ok(new
             {

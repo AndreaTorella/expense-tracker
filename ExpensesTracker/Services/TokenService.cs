@@ -1,4 +1,5 @@
-﻿using ExpensesTracker.Infrastructure.Identity;
+﻿using ExpensesTracker.Application.Models;
+using ExpensesTracker.Application.Services;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -15,7 +16,7 @@ namespace ExpensesTracker.Services
             this.configuration = configuration;
         }
 
-        public string CreateToken(ApplicationUser user)
+        public string CreateToken(AuthenticatedUserResult user)
         {
             var jwtKey = configuration["jwt:Key"] ?? throw new InvalidOperationException("JWT key is not configured");
             var issuer = configuration["jwt:Issuer"];
