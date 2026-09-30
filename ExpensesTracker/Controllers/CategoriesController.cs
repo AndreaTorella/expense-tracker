@@ -52,9 +52,11 @@ namespace ExpensesTracker.Controllers
             }
 
             var createCategoryCommand = this.mapper.Map<CreateCategoryCommand>(categoryDto);
-            var result = await categoryService.AddCategoryAsync(createCategoryCommand);
+            var categoryResult = await categoryService.AddCategoryAsync(createCategoryCommand);
 
-            return CreatedAtAction(nameof(GetCategoryById), new { id = result.Id }, result);
+            var response = this.mapper.Map<CategoryDto>(categoryResult);
+
+            return CreatedAtAction(nameof(GetCategoryById), new { id = response.Id }, response);
         }
 
         [HttpDelete("{id}")]

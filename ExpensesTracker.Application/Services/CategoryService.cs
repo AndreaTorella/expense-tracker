@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
 using ExpensesTracker.Application.Models;
 using ExpensesTracker.Application.Repositories;
-using ExpensesTracker.Application.Services;
 using ExpensesTracker.Domain.Entities;
 
-namespace ExpensesTracker.Services
+namespace ExpensesTracker.Application.Services
 {
     public class CategoryService : ICategoryService
     {
@@ -42,12 +41,12 @@ namespace ExpensesTracker.Services
             return mapper.Map<CategoryResult>(categoryEntity);
         }
 
-        public async Task<CategoryResult> AddCategoryAsync(CreateCategoryCommand categoryDto)
+        public async Task<CategoryResult> AddCategoryAsync(CreateCategoryCommand createCategoryCommand)
         {
-            ArgumentNullException.ThrowIfNull(categoryDto);
+            ArgumentNullException.ThrowIfNull(createCategoryCommand);
 
             var householdId = await this.currentUserService.GetHouseholdIdAsync();
-            var categoryEntity = mapper.Map<Category>(categoryDto);
+            var categoryEntity = mapper.Map<Category>(createCategoryCommand);
 
             categoryEntity.HouseholdId = householdId;
 
