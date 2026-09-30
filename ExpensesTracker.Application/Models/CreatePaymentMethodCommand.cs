@@ -4,6 +4,6 @@ namespace ExpensesTracker.Application.Models
 {
     public class CreatePaymentMethodCommand
     {
-        public PaymentMethodName PaymentMethodName { get; set; }
+        public PaymentMethodName Name { get; set; }
     }
 }

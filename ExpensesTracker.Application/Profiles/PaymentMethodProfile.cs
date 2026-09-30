@@ -9,7 +9,7 @@ namespace ExpensesTracker.Application.Profiles
         public PaymentMethodProfile()
         {
             this.CreateMap<PaymentMethod, PaymentMethodResult>();
-            this.CreateMap<CreatePaymentMethodCommand, PaymentMethodResult>();
+            this.CreateMap<CreatePaymentMethodCommand, PaymentMethod>();
         }
     }
 }
