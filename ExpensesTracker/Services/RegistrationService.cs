@@ -1,4 +1,6 @@
-﻿using ExpensesTracker.Infrastructure.Identity;
+﻿using ExpensesTracker.Application.Models;
+using ExpensesTracker.Application.Services;
+using ExpensesTracker.Infrastructure.Identity;
 using ExpensesTracker.Infrastructure.Persistence;
 using ExpensesTracker.Models;
 using Microsoft.AspNetCore.Identity;
@@ -31,12 +33,12 @@ namespace ExpensesTracker.Services
 
             try
             {
-                var createHouseholdDto = new CreateHouseholdDto
+                var createHouseholdCommand = new CreateHouseholdCommand
                 {
                     FamilyName = registerDto.FamilyName
                 };
 
-                var household = await this.householdService.AddHouseholdAsync(createHouseholdDto);
+                var household = await this.householdService.AddHouseholdAsync(createHouseholdCommand);
 
                 var user = new ApplicationUser
                 {

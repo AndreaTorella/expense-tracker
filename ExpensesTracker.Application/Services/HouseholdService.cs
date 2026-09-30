@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
+using ExpensesTracker.Application.Models;
 using ExpensesTracker.Application.Repositories;
 using ExpensesTracker.Domain.Entities;
-using ExpensesTracker.Models;
 
-namespace ExpensesTracker.Services
+namespace ExpensesTracker.Application.Services
 {
     public class HouseholdService : IHouseholdService
     {
@@ -18,13 +18,13 @@ namespace ExpensesTracker.Services
             this.householdRepository = householdRepository ?? throw new ArgumentNullException(nameof(householdRepository));
         }
 
-        public async Task<HouseholdDto> AddHouseholdAsync(CreateHouseholdDto createHouseholdDto)
+        public async Task<HouseholdResult> AddHouseholdAsync(CreateHouseholdCommand createHouseholdCommand)
         {
-            var household = this.mapper.Map<Household>(createHouseholdDto);
+            var household = this.mapper.Map<Household>(createHouseholdCommand);
             await this.householdRepository.AddHouseholdAsync(household);
             await this.householdRepository.SaveChangesAsync();
 
-            return this.mapper.Map<HouseholdDto>(household);
+            return this.mapper.Map<HouseholdResult>(household);
         }
     }
 }
