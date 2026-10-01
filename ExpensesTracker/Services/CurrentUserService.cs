@@ -8,7 +8,8 @@ namespace ExpensesTracker.Services
         private readonly IUserIdentityService userIdentityService;
 
         public CurrentUserService(
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            IUserIdentityService userIdentityService)
         {
             this.httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
             this.userIdentityService = userIdentityService ?? throw new ArgumentNullException(nameof(userIdentityService));
@@ -35,7 +36,7 @@ namespace ExpensesTracker.Services
 
             if (householdId == null)
             {
-                throw new ArgumentNullException(nameof(householdId));
+                throw new InvalidOperationException("Current user household is not available.");
             }
 
             return householdId.Value;
