@@ -4,11 +4,12 @@ using ExpensesTracker.Models;
 
 namespace ExpensesTracker.Profiles
 {
-    public class RegistrationProfile : Profile
+    public class AuthenticationProfile : Profile
     {
-        public RegistrationProfile()
+        public AuthenticationProfile()
         {
             this.CreateMap<RegisterDto, RegisterCommand>();
+            this.CreateMap<LoginDto, LoginCommand>();
         }
     }
 }

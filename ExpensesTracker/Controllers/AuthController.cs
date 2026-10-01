@@ -45,11 +45,7 @@ namespace ExpensesTracker.Controllers
         {
             ArgumentNullException.ThrowIfNull(loginDto);
 
-            var loginCommand = new LoginCommand
-            {
-                Email = loginDto.Email,
-                Password = loginDto.Password,
-            };
+            var loginCommand = this.mapper.Map<LoginCommand>(loginDto);
 
             var loginResult = await this.authenticationService.LoginAsync(loginCommand);
 
