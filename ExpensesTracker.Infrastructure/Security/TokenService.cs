@@ -1,11 +1,12 @@
 ﻿using ExpensesTracker.Application.Models;
 using ExpensesTracker.Application.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace ExpensesTracker.Services
+namespace ExpensesTracker.Infrastructure.Security
 {
     public class TokenService : ITokenService
     {

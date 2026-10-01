@@ -4,6 +4,7 @@ using ExpensesTracker.Exceptions;
 using ExpensesTracker.Infrastructure.Identity;
 using ExpensesTracker.Infrastructure.Persistence;
 using ExpensesTracker.Infrastructure.Repositories;
+using ExpensesTracker.Infrastructure.Security;
 using ExpensesTracker.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -45,6 +46,7 @@ builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<IUserIdentityService, UserIdentityService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IDbTransactionManager, EfTransactionManager>();
+
 
 //For identity DI
 builder.Services
