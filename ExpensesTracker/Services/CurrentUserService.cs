@@ -1,20 +1,17 @@
 ﻿using ExpensesTracker.Application.Services;
-using ExpensesTracker.Infrastructure.Identity;
-using Microsoft.AspNetCore.Identity;
 
 namespace ExpensesTracker.Services
 {
     public class CurrentUserService : ICurrentUserService
     {
         private readonly IHttpContextAccessor httpContextAccessor;
-        private readonly UserManager<ApplicationUser> userManager;
+        private readonly IUserIdentityService userIdentityService;
 
         public CurrentUserService(
-            IHttpContextAccessor httpContextAccessor,
-            UserManager<ApplicationUser> userManager)
+            IHttpContextAccessor httpContextAccessor)
         {
             this.httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
-            this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            this.userIdentityService = userIdentityService ?? throw new ArgumentNullException(nameof(userIdentityService));
         }
 
         public string UserId
@@ -34,15 +31,14 @@ namespace ExpensesTracker.Services
 
         public async Task<int> GetHouseholdIdAsync()
         {
-            var currentUserId = this.UserId;
-            var currentUser = await this.userManager.FindByIdAsync(currentUserId);
+            var householdId = await this.userIdentityService.GetHouseholdIdByUserIdAsync(this.UserId);
 
-            if (currentUser == null)
+            if (householdId == null)
             {
-                throw new ArgumentNullException(nameof(currentUser));
+                throw new ArgumentNullException(nameof(householdId));
             }
 
-            return currentUser.HouseholdId;
+            return householdId.Value;
         }
     }
 }

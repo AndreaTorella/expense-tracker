@@ -60,5 +60,17 @@ namespace ExpensesTracker.Infrastructure.Identity
                 Email = user.Email ?? string.Empty
             };
         }
+
+        public async Task<int?> GetHouseholdIdByUserIdAsync(string userId)
+        {
+            var user = await this.userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            return user.HouseholdId;
+        }
     }
 }

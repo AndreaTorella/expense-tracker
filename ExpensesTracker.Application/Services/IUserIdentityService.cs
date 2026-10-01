@@ -12,5 +12,7 @@ namespace ExpensesTracker.Application.Services
         Task<AuthenticatedUserResult?> ValidateCredentialsAsync(
             string email,
             string password);
+
+        Task<int?> GetHouseholdIdByUserIdAsync(string userId);
     }
 }
