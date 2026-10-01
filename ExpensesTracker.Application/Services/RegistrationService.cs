@@ -1,8 +1,6 @@
 ﻿using ExpensesTracker.Application.Models;
-using ExpensesTracker.Application.Services;
-using ExpensesTracker.Infrastructure.Persistence;
 
-namespace ExpensesTracker.Services
+namespace ExpensesTracker.Application.Services
 {
     /*
         Orchestration service beacuse the registration involves both Household and Identity.
@@ -12,21 +10,21 @@ namespace ExpensesTracker.Services
     {
         private readonly IHouseholdService householdService;
         private readonly IUserIdentityService userIdentityService;
-        private readonly ExpenseTrackerDbContext context;
+        private readonly IDbTransactionManager transactionManager;
 
         public RegistrationService(
             IHouseholdService householdService,
             IUserIdentityService userIdentityService,
-            ExpenseTrackerDbContext context)
+            IDbTransactionManager transactionManager)
         {
             this.householdService = householdService ?? throw new ArgumentNullException(nameof(householdService));
             this.userIdentityService = userIdentityService ?? throw new ArgumentNullException(nameof(userIdentityService));
-            this.context = context ?? throw new ArgumentNullException(nameof(context));
+            this.transactionManager = transactionManager ?? throw new ArgumentNullException(nameof(transactionManager));
         }
 
         public async Task<RegistrationResult> RegisterAsync(RegisterCommand registerCommand)
         {
-            await using var transaction = await this.context.Database.BeginTransactionAsync();
+            await this.transactionManager.BeginTransactionAsync();
 
             try
             {
@@ -50,17 +48,16 @@ namespace ExpensesTracker.Services
 
                 if (!registrationResult.Succeeded)
                 {
-                    await transaction.RollbackAsync();
+                    await this.transactionManager.RollbackTransactionAsync();
                     return registrationResult;
                 }
 
-                await transaction.CommitAsync();
-
+                await this.transactionManager.CommitTransactionAsync();
                 return registrationResult;
             }
             catch
             {
-                await transaction.RollbackAsync();
+                await this.transactionManager.RollbackTransactionAsync();
                 throw;
             }
         }
