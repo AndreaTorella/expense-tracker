@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ExpensesTracker.Application\ExpensesTracker.Application.csproj" />
     <ProjectReference Include="..\ExpensesTracker.Domain\ExpensesTracker.Domain.csproj" />
+	<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
   </ItemGroup>
 
 </Project>

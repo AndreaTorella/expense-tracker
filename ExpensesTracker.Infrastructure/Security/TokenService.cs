@@ -14,7 +14,7 @@ namespace ExpensesTracker.Infrastructure.Security
 
         public TokenService(IConfiguration configuration)
         {
-            this.configuration = configuration;
+            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
         public string CreateToken(AuthenticatedUserResult user)
