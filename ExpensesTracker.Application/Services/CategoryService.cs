@@ -23,14 +23,14 @@ namespace ExpensesTracker.Application.Services
 
         public async Task<IEnumerable<CategoryResult>> GetAllCategoriesAsync()
         {
-            var householdId = await this.currentUserService.GetHouseholdIdAsync();
+            var householdId = this.currentUserService.HouseholdId;
             var categoryEntities = await categoryRepository.GetAllCategoriesAsync(householdId);
             return mapper.Map<IEnumerable<CategoryResult>>(categoryEntities);
         }
 
         public async Task<CategoryResult?> GetCategoryByIdAsync(int categoryId)
         {
-            var householdId = await this.currentUserService.GetHouseholdIdAsync();
+            var householdId = this.currentUserService.HouseholdId;
             var categoryEntity = await categoryRepository.GetCategoryByIdAsync(categoryId, householdId);
 
             if (categoryEntity == null)
@@ -45,7 +45,7 @@ namespace ExpensesTracker.Application.Services
         {
             ArgumentNullException.ThrowIfNull(createCategoryCommand);
 
-            var householdId = await this.currentUserService.GetHouseholdIdAsync();
+            var householdId = this.currentUserService.HouseholdId;
             var categoryEntity = mapper.Map<Category>(createCategoryCommand);
 
             categoryEntity.HouseholdId = householdId;
@@ -58,7 +58,7 @@ namespace ExpensesTracker.Application.Services
 
         public async Task<bool> DeleteCategoryAsync(int categoryId)
         {
-            var householdId = await this.currentUserService.GetHouseholdIdAsync();
+            var householdId = this.currentUserService.HouseholdId;
             var categoryEntity = await categoryRepository.GetCategoryByIdAsync(categoryId, householdId);
 
             if (categoryEntity == null)

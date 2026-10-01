@@ -4,15 +4,13 @@ namespace ExpensesTracker.Services
 {
     public class CurrentUserService : ICurrentUserService
     {
+        private const string HouseholdIdClaim = "household_id";
         private readonly IHttpContextAccessor httpContextAccessor;
-        private readonly IUserIdentityService userIdentityService;
 
         public CurrentUserService(
-            IHttpContextAccessor httpContextAccessor,
-            IUserIdentityService userIdentityService)
+            IHttpContextAccessor httpContextAccessor)
         {
             this.httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
-            this.userIdentityService = userIdentityService ?? throw new ArgumentNullException(nameof(userIdentityService));
         }
 
         public string UserId
@@ -30,16 +28,22 @@ namespace ExpensesTracker.Services
             }
         }
 
-        public async Task<int> GetHouseholdIdAsync()
+        public int HouseholdId
         {
-            var householdId = await this.userIdentityService.GetHouseholdIdByUserIdAsync(this.UserId);
-
-            if (householdId == null)
+            get
             {
-                throw new InvalidOperationException("Current user household is not available.");
-            }
+                var householdIdClaim = this.httpContextAccessor.HttpContext?
+                    .User
+                    .FindFirst(HouseholdIdClaim)?
+                    .Value;
 
-            return householdId.Value;
+                if (!int.TryParse(householdIdClaim, out var householdId))
+                {
+                    throw new InvalidOperationException("Current user household id is not available.");
+                }
+
+                return householdId;
+            }
         }
     }
 }

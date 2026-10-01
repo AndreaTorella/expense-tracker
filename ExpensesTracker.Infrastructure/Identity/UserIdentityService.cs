@@ -57,20 +57,9 @@ namespace ExpensesTracker.Infrastructure.Identity
             return new AuthenticatedUserResult
             {
                 Id = user.Id,
-                Email = user.Email ?? string.Empty
+                Email = user.Email ?? string.Empty,
+                HouseholdId = user.HouseholdId,
             };
-        }
-
-        public async Task<int?> GetHouseholdIdByUserIdAsync(string userId)
-        {
-            var user = await this.userManager.FindByIdAsync(userId);
-
-            if (user == null)
-            {
-                return null;
-            }
-
-            return user.HouseholdId;
         }
     }
 }

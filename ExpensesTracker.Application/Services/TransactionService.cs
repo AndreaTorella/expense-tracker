@@ -27,7 +27,7 @@ namespace ExpensesTracker.Application.Services
 
         public async Task<PagedResult<TransactionResult>> GetAllTransactionsAsync(TransactionQuery filters)
         {
-            var householdId = await this.currentUserService.GetHouseholdIdAsync();
+            var householdId = this.currentUserService.HouseholdId;
 
             var result = await transactionRepository.GetTransactionAsync(filters, householdId);
 
@@ -40,7 +40,7 @@ namespace ExpensesTracker.Application.Services
 
         public async Task<TransactionResult?> GetTransactionByIdAsync(int id)
         {
-            var householdId = await this.currentUserService.GetHouseholdIdAsync();
+            var householdId = this.currentUserService.HouseholdId;
             var transactionEntity = await transactionRepository.GetTransactionByIdAsync(id, householdId);
 
             if (transactionEntity == null)
@@ -55,7 +55,7 @@ namespace ExpensesTracker.Application.Services
         {
             ArgumentNullException.ThrowIfNull(transactionDto);
 
-            var householdId = await this.currentUserService.GetHouseholdIdAsync();
+            var householdId = this.currentUserService.HouseholdId;
             var category = await this.categoryRepository.GetCategoryByIdAsync(transactionDto.CategoryId, householdId) ?? throw new ArgumentException("Category not valid");
 
             //Business rule
@@ -84,7 +84,7 @@ namespace ExpensesTracker.Application.Services
             int id,
             UpdateTransactionCommand updateTransactionDto)
         {
-            var householdId = await this.currentUserService.GetHouseholdIdAsync();
+            var householdId = this.currentUserService.HouseholdId;
             var transactionEntity = await transactionRepository.GetTransactionByIdAsync(id, householdId);
 
             if (transactionEntity == null)
@@ -112,7 +112,7 @@ namespace ExpensesTracker.Application.Services
 
         public async Task<bool> DeleteTransactionAsync(int transactionId)
         {
-            var householdId = await this.currentUserService.GetHouseholdIdAsync();
+            var householdId = this.currentUserService.HouseholdId;
             var transactionEntityToDelete = await transactionRepository.GetTransactionByIdAsync(transactionId, householdId);
 
             if (transactionEntityToDelete == null)

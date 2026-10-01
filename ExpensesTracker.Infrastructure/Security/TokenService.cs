@@ -28,6 +28,7 @@ namespace ExpensesTracker.Infrastructure.Security
             {
                 new(JwtRegisteredClaimNames.Sub, user.Id),
                 new(JwtRegisteredClaimNames.Email, user.Email),
+                new("household_id", user.HouseholdId.ToString())
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));

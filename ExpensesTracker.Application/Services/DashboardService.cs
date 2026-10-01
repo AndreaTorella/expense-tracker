@@ -28,7 +28,7 @@ namespace ExpensesTracker.Application.Services
             var nextMonthStart = currentMonthStart.AddMonths(1);
             var previousMonthStart = currentMonthStart.AddMonths(-1);
 
-            var householdId = await this.currentUserService.GetHouseholdIdAsync();
+            var householdId = this.currentUserService.HouseholdId;
 
             var currentMonthTotalExpenses = await this.transactionRepository.GetTotalAsync(currentMonthStart, nextMonthStart, TransactionType.Expense, householdId);
             var currentMonthTotalIncomes = await this.transactionRepository.GetTotalAsync(currentMonthStart, nextMonthStart, TransactionType.Income, householdId);
