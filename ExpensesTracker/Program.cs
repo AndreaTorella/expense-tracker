@@ -1,13 +1,8 @@
-using ExpensesTracker.Application.Repositories;
 using ExpensesTracker.Application.Services;
 using ExpensesTracker.Exceptions;
-using ExpensesTracker.Infrastructure.Identity;
-using ExpensesTracker.Infrastructure.Persistence;
-using ExpensesTracker.Infrastructure.Repositories;
-using ExpensesTracker.Infrastructure.Security;
+using ExpensesTracker.Infrastructure;
 using ExpensesTracker.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -23,35 +18,17 @@ builder.Services
     });
 
 builder.Services.AddOpenApi();
-
-builder.Services.AddDbContext<ExpenseTrackerDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")));
-
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
-builder.Services.AddScoped<IHouseholdRepository, HouseholdRepository>();
+builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
 builder.Services.AddScoped<IHouseholdService, HouseholdService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
-builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
-builder.Services.AddScoped<IUserIdentityService, UserIdentityService>();
-builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
-builder.Services.AddScoped<IDbTransactionManager, EfTransactionManager>();
-
-
-//For identity DI
-builder.Services
-    .AddIdentityCore<ApplicationUser>()
-    .AddEntityFrameworkStores<ExpenseTrackerDbContext>();
 
 var jwtKey = builder.Configuration["jwt:Key"] ?? throw new InvalidOperationException("JWT key is not configured");
 var jwtIssuer = builder.Configuration["jwt:Issuer"];
