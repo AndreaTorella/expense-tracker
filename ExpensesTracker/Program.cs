@@ -1,7 +1,10 @@
+using ExpensesTracker.Application.Models;
 using ExpensesTracker.Application.Services;
+using ExpensesTracker.Application.Validation;
 using ExpensesTracker.Exceptions;
 using ExpensesTracker.Infrastructure;
 using ExpensesTracker.Services;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -22,7 +25,33 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddInfrastructure(builder.Configuration);
 
-builder.Services.AddScoped<ITransactionService, TransactionService>();
+builder.Services.AddScoped<TransactionService>();
+
+builder.Services.AddScoped<
+    IValidator<CreateTransactionCommand>,
+    CreateTransactionCommandValidator>();
+
+builder.Services.AddScoped<
+    IValidator<UpdateTransactionCommand>,
+    UpdateTransactionCommandValidator>();
+
+builder.Services.AddScoped<ITransactionService>(serviceProvider =>
+{
+    var transactionService =
+        serviceProvider.GetRequiredService<TransactionService>();
+
+    var createValidator =
+        serviceProvider.GetRequiredService<IValidator<CreateTransactionCommand>>();
+
+    var updateValidator =
+        serviceProvider.GetRequiredService<IValidator<UpdateTransactionCommand>>();
+
+    return new ValidatingTransactionService(
+        transactionService,
+        createValidator,
+        updateValidator);
+});
+
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
 builder.Services.AddScoped<IHouseholdService, HouseholdService>();

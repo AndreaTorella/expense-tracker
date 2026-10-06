@@ -14,10 +14,10 @@ namespace ExpensesTracker.Application.Validation
             this.RuleFor(x => x.Amount)
                 .GreaterThan(0);
 
-            RuleFor(x => x.Date)
+            this.RuleFor(x => x.Date)
                 .NotEmpty();
 
-            RuleFor(x => x.TransactionType)
+            this.RuleFor(x => x.TransactionType)
                 .IsInEnum();
 
             this.RuleFor(x => x.CategoryId)
