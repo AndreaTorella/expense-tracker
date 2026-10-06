@@ -28,6 +28,7 @@ builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
 builder.Services.AddScoped<IHouseholdService, HouseholdService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 var jwtKey = builder.Configuration["jwt:Key"] ?? throw new InvalidOperationException("JWT key is not configured");
